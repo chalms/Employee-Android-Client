@@ -9,12 +9,9 @@ public class Message {
     private Date delivered_at; 
     private Boolean delivered; 
     private Boolean read;
-    
-    
     public String messageCode() {
     	 return (getDelivered_at().toString() + chat.getNodeID()); 
     }    
-    
 	public String getMessageBody() {
 		return messageBody;
 	}
@@ -51,8 +48,4 @@ public class Message {
 	public void setDelivered_at(Date delivered_at) {
 		this.delivered_at = delivered_at;
 	}
-    
-    
-    
-    
 }

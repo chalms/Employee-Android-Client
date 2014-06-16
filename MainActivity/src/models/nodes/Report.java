@@ -9,7 +9,6 @@ import util.WebClient;
 import models.Manager;
 
 public class Report extends FireNode {
-	
 	private String description = null;
 	private Date reportDate = null;
 	private Date checkin = null;
@@ -31,7 +30,16 @@ public class Report extends FireNode {
 		if (reportDate != null) params.put("report_date", reportDate);
 		if (checkin != null) params.put("checkin", checkin.toString());
 		if (checkout != null) params.put("checkout", checkout.toString());
+		
 		webClient.post("/report/" + nodeID, params);
+	}
+	
+	private boolean valStr(String str) {
+		return (!str.isEmpty() && !str.equals("nil"));
+	}
+	
+	public boolean isValid() {
+		return valStr(nodeID) && valStr(description) && (reportDate != null) && (manager != null); 
 	}
 
 	void makeChildList() {

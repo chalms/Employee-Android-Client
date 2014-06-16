@@ -19,13 +19,13 @@ public class LoginController {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			if (authenticated(getPassword(), getUserName())) {
-				makeToast("Welcome to the Mobile Dashboard");
-				dismissDialog();
-				((MainActivity) context).getListViewController().renderListView();
-			} else {
-				makeToast("Password Unsuccessful!");
+			try {
+				authenticated(getPassword(), getUserName());
+			} catch (Exception e) {
+				System.out.println(e.getCause().getMessage());
+				makeToast("Invalid! Try again");
 			}
+			
 		}
 	};
 
@@ -56,6 +56,12 @@ public class LoginController {
 		System.out.println("Showing Login Controller");
 		showDialog();
 	}
+	
+	 public void login() {
+		makeToast("Welcome to the Mobile Dashboard");
+		dismissDialog();
+		((MainActivity) context).getListViewController().renderListView();
+	}
 
 	private Button getSignInButton() {
 		return (Button) this.dialog.findViewById(main.firealertapp.R.id.buttonSignIn);
@@ -84,19 +90,11 @@ public class LoginController {
 		return (EditText) this.dialog.findViewById(main.firealertapp.R.id.editTextPasswordToLogin);
 	}
 
-	public boolean authenticated(final EditText password, final EditText username) {
-		boolean passwordValid = false;
+	public void authenticated(final EditText password, final EditText username) {
 		try {
 			this.context.getMainController().login(username.getText().toString(), password.getText().toString());
-			passwordValid = true;
 		} catch (Exception e) {
 			makeToast(e.getMessage());
 		}
-
-		if (passwordValid) {
-			((MainActivity) context).setCurrentUserName(getUserName().getText().toString());
-
-		}
-		return (passwordValid);
 	}
 }

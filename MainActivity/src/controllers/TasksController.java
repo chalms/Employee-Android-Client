@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class TasksController {
-
 	private Context window;
 
 	public TasksController(Context context) {

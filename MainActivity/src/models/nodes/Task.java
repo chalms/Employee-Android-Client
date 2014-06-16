@@ -1,9 +1,7 @@
 package models.nodes;
 
 import java.util.Date;
-
 import com.loopj.android.http.RequestParams;
-
 import android.location.Location;
 import util.WebClient;
 import views.ListItemContent;
@@ -136,25 +134,17 @@ public class Task extends FireNode {
 		return completed_at;
 	}
 
-
-
 	public void setCompleted_at(Date completed_at) {
 		this.completed_at = completed_at;
 	}
-
-
-
+	
 	public String getReportIndex() {
 		return reportIndex;
 	}
-
-
-
+	
 	public void setReportIndex(String reportIndex) {
 		this.reportIndex = reportIndex;
 	}
-
-
 
 	public String getReportId() {
 		return reportId;

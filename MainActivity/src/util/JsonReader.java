@@ -9,33 +9,32 @@ import org.json.JSONObject;
 
 public class JsonReader {
 
-	private Model model; 
+	private Model model;
 
 	public JsonReader(Model m) {
-		this.model = m; 
+		this.model = m;
 	}
-	
-	public void read(String response){
+
+	public void read(JSONObject response){
 		try {
-			JSONObject j = new JSONObject(response);
-			JSONArray names = j.names();
+			JSONArray names = response.names();
 			int i = 0; 
 			while (i < names.length()) {
 				String key = names.optString(i);
 				if (key == null) key = "";
-
-				if (key.equals("report")) {
-					jsonReport(j.getJSONArray("report")); 
+				if (key.equals("reports")) {
+					jsonReport(response.getJSONArray("reports")); 
 				}
 				if (key.equals("chats"))  {
-					jsonChats(j.getJSONArray("chats"));
+					jsonChats(response.getJSONArray("chats"));
 				}
 				if (key.equals("managers")) {
-					jsonManagers(j.getJSONArray("managers"));
+					jsonManagers(response.getJSONArray("managers"));
 				}
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
+			System.out.println("Error thrown with message: " + e.getMessage());
 			errorMessage(e.getMessage());
 		}
 		return ;
@@ -43,7 +42,7 @@ public class JsonReader {
 
 	public void jsonReport(JSONArray reports) {
 		try {
-			int i = 0; 
+			int i = 0;
 			while (i < reports.length()) {
 				model.setOrUpdateReport(reports.optJSONObject(i));
 			}
@@ -55,7 +54,7 @@ public class JsonReader {
 
 	public void jsonChats(JSONArray chats) {
 		try {
-			int i = 0; 
+			int i = 0;
 			while (i < chats.length()) {
 				model.setOrUpdateChat(chats.optJSONObject(i));
 			}
@@ -67,7 +66,7 @@ public class JsonReader {
 
 	public void jsonManagers(JSONArray managers) {
 		try {
-			int i = 0; 
+			int i = 0;
 			while (i < managers.length()) {
 				model.setOrUpdateManager(managers.optJSONObject(i));
 			}
@@ -77,13 +76,7 @@ public class JsonReader {
 		}
 	}
 
-	public void errorMessage(String msg){
+	public void errorMessage(String msg) {
 
 	}
 }
-
-
-
-
-
-

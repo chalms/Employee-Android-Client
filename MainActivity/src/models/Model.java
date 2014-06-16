@@ -28,7 +28,6 @@ public class Model {
 	private boolean saved = true; 
 	private MainActivity context; 
 	
-	
 	public boolean upload() {
 // <----- below is the untest method call for chats
 //		for (String key : chats.keySet()) {
@@ -142,6 +141,7 @@ public class Model {
 			this.report = tempReport; 
 		} 
 		this.reports.put(tempReport.hashString(), tempReport); 
+		
 	}
 
 	public void setOrUpdateChat(JSONObject jObject) throws JSONException {

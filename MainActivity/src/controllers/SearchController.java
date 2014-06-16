@@ -37,7 +37,6 @@ public class SearchController {
 		setButtonOnClickListener(submitBtn, failDescription, descriptionDialog);
 		((MainActivity) context).setPopUpPresent(true); 
 		descriptionDialog.show();
-		
 	}
 	
 	private void  setButtonOnClickListener(
@@ -47,19 +46,16 @@ public class SearchController {
 		submitBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				String noteValue = failDescription.getText().toString();
 				((MainActivity) context).getListViewController().goToEquipment(noteValue);
 				d.dismiss();
 				((MainActivity) context).setPopUpPresent(false); 
-				// .setTestNote(noteValue);
 			}
 		});
 	}
 	
 	public void callIt(String input){
 		((MainActivity) context).getListViewController().goToEquipment(input);
-//		descriptionDialog.dismiss();
 		return;	
 	}
 	

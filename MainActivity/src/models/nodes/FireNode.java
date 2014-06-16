@@ -91,6 +91,7 @@ public class FireNode{
 	public FireNode getChildByID (String id) {
 		//Algorithm that finds a child node from the elements childList, by matching the 'id'attribute
 		//If it cannot find a matching node it returns the first child in the list 
+		
 		for (int i=0;i < childList.size(); i++) {
 			if (id.equals(childList.get(i).getID())) {
 				return childList.get(i);
@@ -102,6 +103,7 @@ public class FireNode{
 	public ListItemContent createRowContent () {
 		//passes attribute information into 'Row Content Item', a class that holds the necessary data to display 
 		//each element in a 'Row' the in the list. The 'Row' class attaches this information to the lists TextViews
+		
 		ListItemContent item = new ListItemContent (this);
 		return item;
 	}
@@ -109,6 +111,7 @@ public class FireNode{
 	public boolean checkCompleted(boolean t) {
 		//Checks to see if this nodes children are completed. If all its children are completed the node sets its
 		//completed attribute to 'true'
+		
 		int size = this.childList().size();
 		this.completed = true; 
 		for (int i=0; i < size; i++) {

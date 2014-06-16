@@ -16,7 +16,6 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
 	Context mContext;
 	int layoutResourceId;
 	ListItemContent data[] = null;
-
 	private boolean[] failCheckBoxes = new boolean[100];
 	private boolean[] passCheckBoxes = new boolean[100];
 	private int[] checkedItems = new int[100];
@@ -99,6 +98,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				((MainActivity) context).getTasksController().showTasks(listItem.getID(), "N/A");
     	 			}
                 }));
+                
             } else { 
         	 	final CheckBox fail_button = (CheckBox) convertView.findViewById(R.id.FailCheckBox);
                 final CheckBox pass_button = (CheckBox) convertView.findViewById(R.id.PassCheckBox);
@@ -163,8 +163,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
         return convertView;
     }
 
-	private View inflateView(View convertView, ViewGroup parent,
-			ListItemContent listItem) {
+	private View inflateView(View convertView, ViewGroup parent, ListItemContent listItem) {
 
 		if (convertView == null) {
 			LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
@@ -178,7 +177,6 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
 					R.layout.list_view_row_triplebuttons, parent, false);
 			System.out.println("Changed view");
 		}
-
 		return convertView;
 	}
 

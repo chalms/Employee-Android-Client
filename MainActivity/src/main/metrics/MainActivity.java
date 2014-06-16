@@ -139,8 +139,11 @@ public class MainActivity extends Activity {
 	}
 	
 	//login
-	public void getLoginController() {
-		this.loginController = new LoginController(MainActivity.this);
+	public LoginController getLoginController() {
+		if (this.loginController == null) {
+			this.loginController = new LoginController(this); 
+		}
+		return this.loginController; 
 	}
 	
 	//logout

@@ -38,5 +38,4 @@ public class ListItemContent {
 	public boolean getCompleted(boolean t) {
 		return ref.checkCompleted(t);
 	}
-	
 }

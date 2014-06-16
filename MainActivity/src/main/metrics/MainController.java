@@ -6,11 +6,9 @@ import models.Model;
 import util.WebClient;
 
 public class MainController {
-	@SuppressWarnings("unused")
 	private MainActivity context; 
 	private WebClient webClient; 
 	private Model model; 
-	
 	
 	public MainController(MainActivity c) {
 		webClient = c.getWebClient();
@@ -23,6 +21,12 @@ public class MainController {
 		params.put("email", username);
 		params.put("password", password);
 		webClient.post("/users/sign_in", params);
+		if (model.getReport().isValid()) {
+			context.root = model.getReport();
+			if (context.root != null) {
+				context.getLoginController().login();
+			}
+		}
 	}
 
 	public static void requestError(String errorString) {
@@ -45,9 +49,4 @@ public class MainController {
 	public void setModel(Model model) {
 		this.model = model;
 	}
-	
-	
-	
-	
-	
 }

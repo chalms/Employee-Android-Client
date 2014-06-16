@@ -25,18 +25,13 @@ public class NodeController {
 	// the top element of the 'parentNodes' stack is the users current node in the application 
 	// The Arraylist, 'childnodes' displays all children of the top parentNode element, and the current clickable 
 	// Items in the checklist - items in white
-
-
+	
 	public NodeController(FireNode mikesList) {
 		//Create the Stack and Array list by passing this constructor the root node
 		childNodes = mikesList.childList();
 		if (childNodes == null) {
-			System.out.println("its null");
 			return; 
-		} else {
-			System.out.println("its gucci");
 		}
-
 		myDict = new HashMap <String, HashMap<String, String[]>>();
 		parentNodes = new Stack <FireNode> ();
 		this.root = mikesList; 
@@ -59,8 +54,7 @@ public class NodeController {
 		String equipmentID = parentNodes.peek().getNodeID();
 		Task inspectionElement = getTaskById(id);
 		HashMap<String, String[]> secondaryMap = new HashMap<String, String[]>();
-
-
+		
 		if (myDict != null){
 			if (myDict.containsKey(equipmentID)){
 				secondaryMap = myDict.get(equipmentID);
@@ -120,7 +114,6 @@ public class NodeController {
 			}
 		}
 		return 0;
-
 	}
 
 	public String getParentNodeId(){
@@ -133,7 +126,6 @@ public class NodeController {
 
 	public void traverseControlToInput(String input) {
 		goToNodeItemInList(input);
-
 		for (int i = 0; i < getChildren().size(); i++) {
 			if (input.equals(getChildren().get(i).getID())) {
 				goToNodeItemInList(getChildren().get(i).getID());
@@ -152,44 +144,33 @@ public class NodeController {
 		return set ;
 	}
 
-
 	public void goToNodeItemInList(String id) {
 		// Pushes the child with an 'id' matching the String 'id' to the current parent node 
 		// (top of the parentNode stack) and sets its childList() to the ArrayList childNodes 
 		// If no match can be found the function returns the first child in the list 
 
 		FireNode newParent = new FireNode();
-
 		newParent = getChildByID(new String(id));
 		System.out.println(newParent.getTag());
 		if (!newParent.getTag().equals("Task")) {
 			System.out.println(newParent.getID().toString());
 			parentNodes.push(newParent);
-
 			childNodes = parentNodes.peek().childList();
 		}
-
-		System.out.println("pushed the node");
 	}
-
-
 
 	public FireNode getChildByID (String id) {
 		//If any of the parentNodes children have an 'id' matching String 'id', return them, 
 		// if not, return the first item in the child list. 
 		FireNode child = null;
-
 		for (int i=0;i < childNodes.size(); i++) {
-			System.out.println("HERE IS THE ID OF THE CHILD: |"+ childNodes.get(i).getID().toString() + "|");
 			if (id.equals(childNodes.get(i).getID().toString())) {
 				child = childNodes.get(i);
 			}
 		}
-
 		if (child != null){
 			return child;
 		} else {
-			System.out.println("couldnt get child by id");
 			return childNodes.get(0);
 		}
 	}
@@ -199,6 +180,7 @@ public class NodeController {
 		// and calling the FireNodes 'createRowContent' method. This creates an array of 
 		// row content items for each child to be displayed as rows in the ListView. 
 		// These row content items define the clickable ('white') elements in the list view
+		
 		System.out.println("creating list item");
 		ListItemContent[] data = new ListItemContent[childNodes.size()];
 		System.out.println("list item created");
@@ -222,7 +204,6 @@ public class NodeController {
 		// Public getter for the current Context Nodes children
 		return childNodes;
 	}
-
 
 	public FireNode getContextNode() {
 		// Returns the Node object of the current parent node in the stack. 
