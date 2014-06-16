@@ -1,27 +1,55 @@
 TODO: 
 
-Remove Send button clicked in list view controller 
-
-Chats parsing
-
-Message getters and setters and parsing 
-
-Proper instantiation of Equipment/Tasks
+Removed Send button clicked in list view controller, 
+Put in Chats parsing and Message getters and setters and parsing. 
+Add Proper instantiation of Equipment/Tasks, 
+Remove send document / display document controllers from list view,
+Connect main activity and main controller,
+Re-format UI (change xml buttons and what not),
+Add upload of Model and other models (getModel().saved() && getModel.saveChanges())
 
 Add editTextUserNameToLogin view to login 
-
-Remove send document / display document controllers from list view
 
 Add location services 
 
 Add asynchronous java load 
 
-Connect main activity and main controller 
-
-Re-format UI (change xml buttons and what not) 
-
 Checkin -> Upload to server 
 
-Add upload of Model and other models (getModel().saved() && getModel.saveChanges())
-
 Test server integration 
+
+		//report: 
+			//checkin: 
+			//checkout: 
+			//manager: 
+				//first_name: 
+				//last_name:
+				//email: 
+				//id: 
+			//description: 
+			//report_date: 
+			//equipment [equipment:
+							//description: 
+							//part_name:
+							//report_id: 
+							//note: 
+							//.... ]
+			//task 		[task: 
+							//description:
+							//task_name:
+							//report_id:
+							//note:
+							//....]
+		//managers [ manager: .... ]
+		//chats [ chat: 
+					//manager:
+					//id: 
+					//messages: [ message: 
+									//messageBody: 	
+									//delivery_time: 
+									//delivered: 
+									//read:
+									//recipient:
+									//...
+									
+public void upload() {} ---> for everything BUT chats and messages ---> should call web client 

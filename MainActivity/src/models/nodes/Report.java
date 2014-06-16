@@ -12,9 +12,12 @@ public class Report extends FireNode {
 	private Date checkin = null;
 	private Date checkout = null;
 	public Manager manager = null;
+	private String nodeID = null;
 
-	public Report() {}
-
+	public Report() {
+	
+	}
+	
 	void makeChildList() {
 		if (this.childList == null) {
 			this.childList = new ArrayList<FireNode>() ;
@@ -84,5 +87,11 @@ public class Report extends FireNode {
 
 	public Date getReportDate() {
 		return reportDate; 
+	}
+
+	public void upload() {
+		// TODO Auto-generated method stub
+
+		
 	}
 }

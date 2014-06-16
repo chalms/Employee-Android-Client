@@ -1,15 +1,31 @@
 package models.nodes;
 
+import java.util.Date;
+
+import android.location.Location;
 import views.ListItemContent;
 
 
 public class Task extends FireNode {
-	private String testResult; 
-	private String testNote;
+	private String testResult; // used below for json
+	private String testNote; //note: (testResult.to_string().upcase() +': ' +  testNote)
+	private String description; //name: 
+	private Date completed_at; //datestamp for the completion method --> completed: 
+	private String reportId;  //the way to find the correct report --> report_id: 
+	private String reportIndex; // the order for display in a list --> report_index: 
+	private Location geoLocation; //  geo_locations_id:
+	private boolean completed;
+	private static String tag = "Leaf";
 
-	public Task(String name, String id, String nodeID, String tag, String testResult, String testNote) {
-
+	public Task(String name, String id, String nodeID, String desc, Date scan, String repId, String repIndex, String geo, String pn) {
 		super(name, id, nodeID, tag);
+		setCompleted(Boolean.valueOf(pn));
+		setDescription(desc); 
+		setCompleted_at(scan); 
+		setReportId(repId); 
+		setReportIndex(repIndex);
+		setGeoLocation(geo); 
+		
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
 	}
@@ -93,5 +109,65 @@ public class Task extends FireNode {
 		ListItemContent item = new ListItemContent (this);
 		item.setChecked(getNumericalResult());
 		return item;
+	}
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+	public Date getCompleted_at() {
+		return completed_at;
+	}
+
+
+
+	public void setCompleted_at(Date completed_at) {
+		this.completed_at = completed_at;
+	}
+
+
+
+	public String getReportIndex() {
+		return reportIndex;
+	}
+
+
+
+	public void setReportIndex(String reportIndex) {
+		this.reportIndex = reportIndex;
+	}
+
+
+
+	public String getReportId() {
+		return reportId;
+	}
+
+
+
+	public void setReportId(String reportId) {
+		this.reportId = reportId;
+	}
+
+
+
+	public Location getGeoLocation() {
+		return geoLocation;
+	}
+
+
+
+	public void setGeoLocation(String geoLocation) {
+		//this.geoLocation = geoLocation;
 	}
 }

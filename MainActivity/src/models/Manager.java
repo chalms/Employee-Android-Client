@@ -5,6 +5,7 @@ public class Manager {
 	private String lastName = null; 
 	private String email = null; 
 	private String id = null; 
+	private String company_name = null;
 
 	public Manager() {}; 
 
@@ -35,5 +36,13 @@ public class Manager {
 
 	public String getId() {
 		return this.id; 
+	}
+
+	public String getCompany_name() {
+		return company_name;
+	}
+
+	public void setCompany_name(String company_name) {
+		this.company_name = company_name;
 	}
 }

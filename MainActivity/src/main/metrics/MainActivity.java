@@ -137,11 +137,13 @@ public class MainActivity extends Activity {
 	public String getCurrentUserName(){
 		return this.userName;
 	}
-
+	
+	//login
 	public void getLoginController() {
 		this.loginController = new LoginController(MainActivity.this);
 	}
-
+	
+	//logout
 	public void launchSettingsView() {
 		this.settingsView = new SettingsView(this); 
 	}

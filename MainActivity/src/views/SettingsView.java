@@ -18,10 +18,9 @@ public class SettingsView {
 			// TODO Auto-generated method stub
 			dialog.dismiss();
 				((MainActivity) window).Logout();
-				
-			
 		}
 	};
+	
 	public SettingsView(Context c) {
 		
 		this.window = c;
@@ -30,9 +29,7 @@ public class SettingsView {
 		this.dialog.setTitle("User Settings");
 
 		Button logoutButton = this.SetLogoutButton();
-
 		logoutButton.setOnClickListener(logout);
-		
 		this.dialog.show();
 		
 	}

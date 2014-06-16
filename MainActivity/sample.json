@@ -1,0 +1,35 @@
+{
+    "id": 17,
+    "description": nil,
+    "report_date": "2014-06-15",
+    "checkin": nil,
+    "checkout": nil,
+    "completed": false,
+    "manager_id": 17,
+    "created_at": "2014-06-15T07:22:56.271Z",
+    "updated_at": "2014-06-15T07:22:56.271Z",
+    "worker_id": 17, // --> my_id 
+    "clients_id": nil,
+    "manager": {
+        "id": 17,
+        "first_name": "Kyle",
+        "last_name": "Macklroy",
+        "company_name": "cj",
+        "created_at": "2014-06-15T07:22:56.170Z",
+        "updated_at": "2014-06-15T07:22:56.170Z"
+    },
+    "tasks": [{
+        "id": 1,
+        "description": "run the city",
+        "completed": nil,
+        "completed_at": nil,
+        "note": nil,
+        "photo": nil,
+        "created_at": "2014-06-15T07:22:56.304Z",
+        "updated_at": "2014-06-15T07:22:56.304Z",
+        "report_id": 17,
+        "report_index": nil,
+        "geo_locations_id": nil
+    }],
+    "equipment": []
+}

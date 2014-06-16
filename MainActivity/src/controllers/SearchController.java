@@ -10,11 +10,9 @@ import android.widget.EditText;
 public class SearchController {
 	private Context context; 
 
-	
 	public SearchController(Context context){
 		this.context = context;
 	}
-	
 	
 	public void showSearchDialog() {
 		// TODO Auto-generated method stub
@@ -42,11 +40,6 @@ public class SearchController {
 		
 	}
 	
-	/* 
-	 * -----------------------------Private Methods---------------------------------
-	 */
-	
-	
 	private void  setButtonOnClickListener(
 			Button submitBtn, 
 			final EditText failDescription,
@@ -67,13 +60,10 @@ public class SearchController {
 	public void callIt(String input){
 		((MainActivity) context).getListViewController().goToEquipment(input);
 //		descriptionDialog.dismiss();
-		return;
-		
+		return;	
 	}
 	
-	
 	private Dialog createDescriptionDialog(){
-		
 		Dialog descriptionDialog = new Dialog(context);
 		descriptionDialog.setContentView(main.firealertapp.R.layout.search_layout);
 		descriptionDialog.setTitle("Equipment Search");

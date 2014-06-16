@@ -25,9 +25,23 @@ public class Model {
 	private HashMap<String, Chat> chats;
 	private HashMap<String, Report> reports; 
 	private HashMap<String, Manager> managers; 
-	private boolean saved = false; 
+	private boolean saved = true; 
+	
+	
+	public boolean upload() {
+		
+// <----- below is the untest method call for chats
+//		for (String key : chats.keySet()) {
+//			chats.get(key).upload(); 
+//		}
+		
+		for (String key : reports.keySet()) {
+			reports.get(key).upload(); 
+		}
 
-	private String createID() {
+	}
+
+	public String createID() {
 		String nug = globalId.toString();
 		globalId = globalId + 1;
 		return nug;
@@ -74,10 +88,15 @@ public class Model {
 			if (key.equals("email") && (managerJSON.optString(key) != null)) {
 				this.report.manager.setEmail(managerJSON.getString(key));
 			}
+			if (key.equals("id") && (managerJSON.optString(key) != null)) {
+				this.report.manager.setId(managerJSON.getString(key));
+			}
+			
+			if (key.equals("company_name") && (managerJSON.optString(key) != null)) {
+				this.report.manager.setCompany_name(managerJSON.getString(key));
+			}
 		}
 	}
-
-	public void saveChanges() {}
 
 	public void setReportDate(Report tempReport, JSONObject jObject) {
 		Date reportDate;
@@ -106,6 +125,7 @@ public class Model {
 		}
 
 		addManager(jObject.optJSONObject("manager"));
+		
 		setReportDate(tempReport, jObject);
 		Calendar reportDate = Calendar.getInstance();
 		reportDate.setTime(tempReport.getReportDate());
@@ -216,11 +236,16 @@ public class Model {
 	}
 
 	public boolean saved() {
-		return false;
+		return saved;
 	}
 
 	public boolean isSaved() {
 		return saved;
+	}
+
+	public void saveChanges() {
+		saved = false; 
+		upload();
 	}
 
 	public void setSaved(boolean saved) {

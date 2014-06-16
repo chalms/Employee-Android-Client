@@ -137,9 +137,7 @@ public class FireNode{
 			Stack <FireNode> nodeList = new Stack <FireNode> ();
 			nodeList.push(this);
 			return nodeList;
-
 		} 
-
 		if (!this.getTag().equals("Leaf")) {
 			int size = this.childList().size();
 			for (int i=0; i < size; i++) {
