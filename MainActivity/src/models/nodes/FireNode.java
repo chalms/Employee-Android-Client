@@ -2,14 +2,10 @@ package models.nodes;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
+import util.WebClient;
 import views.ListItemContent;
-
-
-
 //import java.util.Map;
 
-//This class defines an XML element in the application 
 public class FireNode{
 
 	protected String name; //the name of the element, eg. 'North Bay Inc'
@@ -103,8 +99,6 @@ public class FireNode{
 		return null;
 	}
 
-
-
 	public ListItemContent createRowContent () {
 		//passes attribute information into 'Row Content Item', a class that holds the necessary data to display 
 		//each element in a 'Row' the in the list. The 'Row' class attaches this information to the lists TextViews
@@ -122,7 +116,6 @@ public class FireNode{
 		}
 		return this.completed;
 	}
-
 
 	public Stack <FireNode> checkForId(String id) {
 		//Algorithm that checks if this elements nodeID attribute is equal to the String 'id' variable
@@ -164,6 +157,5 @@ public class FireNode{
 		}
 	}
 
+	public void upload(WebClient webClient) { }
 }
-
-

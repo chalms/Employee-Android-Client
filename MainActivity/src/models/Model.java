@@ -26,19 +26,18 @@ public class Model {
 	private HashMap<String, Report> reports; 
 	private HashMap<String, Manager> managers; 
 	private boolean saved = true; 
+	private MainActivity context; 
 	
 	
 	public boolean upload() {
-		
 // <----- below is the untest method call for chats
 //		for (String key : chats.keySet()) {
 //			chats.get(key).upload(); 
 //		}
-		
 		for (String key : reports.keySet()) {
 			reports.get(key).upload(); 
 		}
-
+		return true; 
 	}
 
 	public String createID() {
@@ -49,6 +48,7 @@ public class Model {
 
 	public Model(MainActivity c){
 		this.errors = new ArrayList <String> (); 
+		context = c; 
 	}
 
 	public void addEquipment(JSONArray equipment) {
@@ -113,8 +113,7 @@ public class Model {
 		if (this.reports == null) {
 			this.reports = new HashMap <String, Report> (); 
 		}
-		Report tempReport = new Report();
-		
+		Report tempReport = new Report(context.getWebClient());
 		String checkinString = jObject.optString("checkin");
 		if (checkinString != null) {
 			tempReport.setCheckin(stringToDate(checkinString));
@@ -123,7 +122,6 @@ public class Model {
 		if (checkoutString != null) {
 			tempReport.setCheckout(stringToDate(checkoutString));
 		}
-
 		addManager(jObject.optJSONObject("manager"));
 		
 		setReportDate(tempReport, jObject);
@@ -131,13 +129,12 @@ public class Model {
 		reportDate.setTime(tempReport.getReportDate());
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(new Date());
-
 		String description = jObject.optString("description");
 
 		if (description != null) {
 			tempReport.setDescription(description);
 		}
-
+		
 		addEquipment(jObject.optJSONArray("equipment"));
 		addTask(jObject.optJSONArray("task")); 
 
@@ -245,7 +242,7 @@ public class Model {
 
 	public void saveChanges() {
 		saved = false; 
-		upload();
+		saved = upload();
 	}
 
 	public void setSaved(boolean saved) {

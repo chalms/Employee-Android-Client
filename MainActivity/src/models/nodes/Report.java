@@ -3,6 +3,9 @@ package models.nodes;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.loopj.android.http.RequestParams;
+
+import util.WebClient;
 import models.Manager;
 
 public class Report extends FireNode {
@@ -13,11 +16,24 @@ public class Report extends FireNode {
 	private Date checkout = null;
 	public Manager manager = null;
 	private String nodeID = null;
+	private WebClient webClient; 
 
-	public Report() {
-	
+	public Report(WebClient wc) {
+		webClient = wc; 
 	}
-	
+	public void upload() {
+		for (int i = 0; i < childList().size(); i++) {
+			childList().get(i).upload(webClient);
+		}
+		RequestParams params = new RequestParams();
+		if (nodeID == null) return ; else params.put("id", nodeID);
+		if (description != null) params.put("description", description);
+		if (reportDate != null) params.put("report_date", reportDate);
+		if (checkin != null) params.put("checkin", checkin.toString());
+		if (checkout != null) params.put("checkout", checkout.toString());
+		webClient.post("/report/" + nodeID, params);
+	}
+
 	void makeChildList() {
 		if (this.childList == null) {
 			this.childList = new ArrayList<FireNode>() ;
@@ -87,11 +103,5 @@ public class Report extends FireNode {
 
 	public Date getReportDate() {
 		return reportDate; 
-	}
-
-	public void upload() {
-		// TODO Auto-generated method stub
-
-		
 	}
 }

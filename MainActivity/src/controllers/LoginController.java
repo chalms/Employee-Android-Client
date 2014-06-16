@@ -41,7 +41,7 @@ public class LoginController {
 					}
 				}
 			}
-			return true;
+		return true;
 		}
 	};
 
@@ -99,5 +99,4 @@ public class LoginController {
 		}
 		return (passwordValid);
 	}
-
 }

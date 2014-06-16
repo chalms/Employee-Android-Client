@@ -2,7 +2,10 @@ package models.nodes;
 
 import java.util.Date;
 
+import com.loopj.android.http.RequestParams;
+
 import android.location.Location;
+import util.WebClient;
 import views.ListItemContent;
 
 
@@ -14,7 +17,6 @@ public class Task extends FireNode {
 	private String reportId;  //the way to find the correct report --> report_id: 
 	private String reportIndex; // the order for display in a list --> report_index: 
 	private Location geoLocation; //  geo_locations_id:
-	private boolean completed;
 	private static String tag = "Leaf";
 
 	public Task(String name, String id, String nodeID, String desc, Date scan, String repId, String repIndex, String geo, String pn) {
@@ -28,6 +30,17 @@ public class Task extends FireNode {
 		
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
+	}
+	
+	public void upload (WebClient webClient) {
+		RequestParams params = new RequestParams(); 
+		if (id == null) { return ; } else  params.add("id", id);
+		if (reportIndex != null) params.add("report_index", reportIndex);
+		if (reportId != null) params.add("report_id", reportId);
+		if (completed_at != null) params.add("completed_at", completed_at.toString());
+		if (description != null) params.add("description", description);
+		if (testNote != null) params.add("note", testNote );
+		webClient.post("/tasks/" + nodeID, params);
 	}
 
 	String getResult(String result){
@@ -111,19 +124,13 @@ public class Task extends FireNode {
 		return item;
 	}
 
-
-
 	public String getDescription() {
 		return description;
 	}
 
-
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
 
 	public Date getCompleted_at() {
 		return completed_at;
@@ -153,19 +160,13 @@ public class Task extends FireNode {
 		return reportId;
 	}
 
-
-
 	public void setReportId(String reportId) {
 		this.reportId = reportId;
 	}
 
-
-
 	public Location getGeoLocation() {
 		return geoLocation;
 	}
-
-
 
 	public void setGeoLocation(String geoLocation) {
 		//this.geoLocation = geoLocation;

@@ -19,7 +19,6 @@ public class JsonReader {
 		try {
 			JSONObject j = new JSONObject(response);
 			JSONArray names = j.names();
-			
 			int i = 0; 
 			while (i < names.length()) {
 				String key = names.optString(i);
@@ -28,16 +27,13 @@ public class JsonReader {
 				if (key.equals("report")) {
 					jsonReport(j.getJSONArray("report")); 
 				}
-
 				if (key.equals("chats"))  {
 					jsonChats(j.getJSONArray("chats"));
 				}
-
 				if (key.equals("managers")) {
 					jsonManagers(j.getJSONArray("managers"));
 				}
 			}
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			errorMessage(e.getMessage());

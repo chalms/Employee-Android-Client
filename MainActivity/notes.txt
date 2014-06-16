@@ -1,13 +1,5 @@
 TODO: 
 
-Removed Send button clicked in list view controller, 
-Put in Chats parsing and Message getters and setters and parsing. 
-Add Proper instantiation of Equipment/Tasks, 
-Remove send document / display document controllers from list view,
-Connect main activity and main controller,
-Re-format UI (change xml buttons and what not),
-Add upload of Model and other models (getModel().saved() && getModel.saveChanges())
-
 Add editTextUserNameToLogin view to login 
 
 Add location services 

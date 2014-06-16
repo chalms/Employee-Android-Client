@@ -24,7 +24,7 @@ public class EquipmentFactory {
 			
 			//id+report_id, createID, id, description, scanned_at, report_id, report_index, geolocation
 			
-			Equipment t = new Equipment(name, createID, description, scanned_at, report_id, report_index, geolocation_id, part_name);
+			Equipment t = new Equipment(name, createID, actualID, description, scanned_at, report_id, report_index, geolocation_id, part_name);
 			return t; 
 		} catch (JSONException e) {
 			e.printStackTrace();

@@ -2,7 +2,10 @@ package models.nodes;
 
 import java.util.Date;
 
+import com.loopj.android.http.RequestParams;
+
 import android.location.Location;
+import util.WebClient;
 import views.ListItemContent;
 
 public class Equipment extends FireNode {
@@ -31,11 +34,17 @@ public class Equipment extends FireNode {
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
 	}
-
-	public Equipment(String name, String createID, String description2,
-			Date scanned_at2, String report_id, String report_index,
-			String geolocation_id, String part_name2) {
-		// TODO Auto-generated constructor stub
+	
+	public void upload (WebClient webClient) {
+		RequestParams params = new RequestParams(); 
+		if (id == null) { return ; } else  params.add("id", id);
+		if (part_name != null) params.add("part_name", part_name);
+		if (reportIndex != null) params.add("report_index", reportIndex);
+		if (reportId != null) params.add("report_id", reportId);
+		if (scanned_at != null) params.add("scanned_at", scanned_at.toString());
+		if (description != null) params.add("description", description);
+		if (testNote != null) params.add("note", testNote );
+		webClient.post("/equipment/" + nodeID, params);
 	}
 
 	String getResult(String result){
