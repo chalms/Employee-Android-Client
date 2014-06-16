@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:addStatesFromChildren="true"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/enterIP"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:hint="IP Address"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/enterPort"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:hint="Port Number"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/connectData"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Send" />
+
+</LinearLayout>

@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:addStatesFromChildren="true"
+    android:background="@color/lightGray"
+    android:fadingEdge="horizontal"
+    android:fadingEdgeLength="5dp"
+    android:padding="15dp" >
+
+      <TextView
+        android:id="@+id/headerViewItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@drawable/header_color_selector"
+        android:textColorHint="@color/test_color"
+        android:textColorLink="@color/maroonred"
+        android:textSize="14sp" />
+      
+      <Button
+          android:id="@+id/sendXmlButton"
+          android:layout_width="30dp"
+          android:layout_height="35dp"
+          android:layout_alignRight="@+id/headerViewItem"
+          android:layout_alignTop="@+id/headerViewItem"
+          android:background="@drawable/send_drawable"
+          android:button="@drawable/send_drawable"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:saveEnabled="false" />
+
+      <Button
+          android:id="@+id/viewXmlButton"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:layout_alignBaseline="@+id/sendXmlButton"
+          android:layout_alignBottom="@+id/sendXmlButton"
+          android:layout_marginRight="16dp"
+          android:layout_toLeftOf="@+id/sendXmlButton"
+          android:background="@drawable/document"
+          android:button="@drawable/send_drawable"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:saveEnabled="false" />
+
+      <Button
+          android:id="@+id/searchButton"
+          android:layout_width="35dp"
+          android:layout_height="30dp"
+          android:layout_alignBaseline="@+id/viewXmlButton"
+          android:layout_alignBottom="@+id/viewXmlButton"
+          android:layout_marginRight="21dp"
+          android:layout_toLeftOf="@+id/viewXmlButton"
+          android:background="@drawable/icon_search"
+          android:button="@drawable/send_drawable"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:saveEnabled="false" />
+
+</RelativeLayout>
+    

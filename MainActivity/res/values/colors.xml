@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="next_color">#BBA597</color>
+    <color name="green">#397D02</color>
+    <color name="red">#ffff0000</color>
+    <color name="lightred">#ecc0b8</color>
+    <color name="lightGray">#f6f6f6</color>
+    <color name="black">#ff000000</color>
+    <color name="blue">#33b5e5</color>
+   	<color name="lightblue">#d3ddec</color>
+    <color name="cyan">#ff00ffff</color>
+    <color name="eggshell">#e0e2da</color>
+    <color name="purple">#514e86</color>
+    <color name="maroonred">#c22313</color>
+    <color name="bettergreen">#F0FFF0</color>
+    <color name="test_color">#FFF</color>
+</resources>
