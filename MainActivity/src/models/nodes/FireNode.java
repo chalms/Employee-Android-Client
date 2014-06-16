@@ -30,7 +30,6 @@ public class FireNode{
 	}
 
 	protected FireNode(String name, String id, String nodeID, String tag) {
-		//set necessary FireNode attributes aquired from the Xml Parser 
 		this.name = name;
 		this.id = id;
 		this.nodeID = nodeID;
@@ -38,8 +37,7 @@ public class FireNode{
 		this.childList = null;
 		this.completed = false; 
 	}
-	
-//GETTERS AND SETTERS [CAN BE OVERWRITTEN] ------> 
+
 	public String getName() {
 		return name;
 	}
@@ -67,11 +65,11 @@ public class FireNode{
 	public String getTag() {
 		return tag;
 	}
-	
+
 	public void setChecked(int check) {
 		this.checked = check;
 	}
-	
+
 	public int getChecked() {
 		return this.checked;
 	}
@@ -81,35 +79,30 @@ public class FireNode{
 	}
 
 	public String getDisplay(){
-		//Will be overridden to display certain attributes
 		return name;
 	}
-	
-    //Getter for the list of child nodes 
+
 	public ArrayList <FireNode> childList() {
 		return childList;
 	}
-	
-	//Add a node to the set of children 
+
 	public void add(FireNode newNode) {
 		childList.add(newNode);
 	}
-   
-    //RECURSIVE ALGORITHMS -----> 
-	
+
+	//RECURSIVE ALGORITHMS -----> 
+
 	public FireNode getChildByID (String id) {
 		//Algorithm that finds a child node from the elements childList, by matching the 'id'attribute
 		//If it cannot find a matching node it returns the first child in the list 
-		System.out.println("running get child id");
 		for (int i=0;i < childList.size(); i++) {
 			if (id.equals(childList.get(i).getID())) {
 				return childList.get(i);
 			}
 		}
-		System.out.println("couldnt get child by id");
 		return null;
 	}
-	
+
 
 
 	public ListItemContent createRowContent () {
@@ -118,57 +111,49 @@ public class FireNode{
 		ListItemContent item = new ListItemContent (this);
 		return item;
 	}
-	
+
 	public boolean checkCompleted(boolean t) {
 		//Checks to see if this nodes children are completed. If all its children are completed the node sets its
 		//completed attribute to 'true'
-	    int size = this.childList().size();
-	    this.completed = true; 
+		int size = this.childList().size();
+		this.completed = true; 
 		for (int i=0; i < size; i++) {
 			if (!this.childList().get(i).checkCompleted(t)) this.completed = false; 
 		}
 		return this.completed;
 	}
-	
-	
+
+
 	public Stack <FireNode> checkForId(String id) {
-        //Algorithm that checks if this elements nodeID attribute is equal to the String 'id' variable
+		//Algorithm that checks if this elements nodeID attribute is equal to the String 'id' variable
 		//If it is equal, this element creates a stack and pushes itself into the stack
 		//If it is not equal, it recursively calls this function on each of its children 
 		//If any of its children return a non-empty stack, this function pushes itself to the top of the stack and 
 		//returns the stack. If all of its children return an empty stack, the element returns an empty stack 
 		//If this element is a leaf node, EG. 'testResult' it returns an empty stack. 
 		//The result will be a stack of all childNodes from this node to the node that has the matching product ID
-		
-		
-    	if(this.getNodeID().equals(id)){
-    		Stack <FireNode> nodeList = new Stack <FireNode> ();
-    		nodeList.push(this);
-    		return nodeList;
-    	
-    	} 
-    	
-		if (!this.getTag().equals("InspectionElement")) {
-			
-			int size = this.childList().size();
-			
-    		for (int i=0; i < size; i++) {
-    			
-    			Stack <FireNode> theReturnStack = this.childList().get(i).checkForId(id);
-    			
-    				if (!theReturnStack.empty()) {
-    					
-    					theReturnStack.push(this);
-    					
-    					return theReturnStack;
-    				}
-    				
-    		}
-    	} 
-	    return (new Stack <FireNode> ());
 
+		if(this.getNodeID().equals(id)){
+			Stack <FireNode> nodeList = new Stack <FireNode> ();
+			nodeList.push(this);
+			return nodeList;
+
+		} 
+
+		if (!this.getTag().equals("Leaf")) {
+			int size = this.childList().size();
+			for (int i=0; i < size; i++) {
+				Stack <FireNode> theReturnStack = this.childList().get(i).checkForId(id);
+				if (!theReturnStack.empty()) {
+					theReturnStack.push(this);
+					return theReturnStack;
+				}
+			}
+		} 
+
+		return (new Stack <FireNode> ());
 	}
-	
+
 	public void clear(){
 		if(this.childList().isEmpty()){
 			this.checked = 0; 
@@ -180,16 +165,8 @@ public class FireNode{
 			}
 			return; 
 		}
-		
 	}
-	
 
-	//standard overwrite toString
-	@Override
-	public String toString() {
-		String description = new String("This is an FireNode object");
-		return description;
-	}
 }
 
 

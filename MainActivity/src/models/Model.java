@@ -8,12 +8,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import Factories.EquipmentFactory;
 import Factories.TaskFactory;
-import main.firealertapp.MainActivity;
+import main.metrics.MainActivity;
 import models.nodes.Report;
 
 public class Model {
@@ -23,6 +25,7 @@ public class Model {
 	private HashMap<String, Chat> chats;
 	private HashMap<String, Report> reports; 
 	private HashMap<String, Manager> managers; 
+	private boolean saved = false; 
 	
 	private String createID() {
 		String nug = globalId.toString();
@@ -74,6 +77,10 @@ public class Model {
 				this.report.manager.setEmail(managerJSON.getString(key));
 			}
 		}
+	}
+	
+	public void saveChanges() {
+		
 	}
 	
 	public void setReportDate(Report tempReport, JSONObject jObject) {
@@ -135,6 +142,22 @@ public class Model {
 			this.chats = new HashMap <String, Chat>(); 
 		}
 		
+		if (jObject == null) return ; 
+		Chat chat = new Chat(); 
+		
+		String str = jObject.optJSONObject("manager");
+
+		if (str != null) chat.setManager(str);
+		
+		if (str != null) chat.setWorkerId(str);
+		
+		str = jObject.optString("email");
+		if (str != null) manager.setEmail(str);
+		
+		str = jObject.optString("id");
+		if (str != null) manager.setId(str);
+		
+		managers.put(, manager);
 	}
 	
 	public void setOrUpdateManager(JSONObject jObject) {
@@ -182,5 +205,9 @@ public class Model {
 	
 	public void addError(String error) {
 		this.errors.add(error);
+	}
+
+	public boolean saved() {
+		return false;
 	}
 }

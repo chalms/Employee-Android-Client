@@ -1,22 +1,16 @@
 package util;
 
-import java.util.Iterator;
-
-import main.firealertapp.MainController;
+import main.metrics.MainController;
 import models.Model;
-import models.nodes.FireNode;
-import models.nodes.Report;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
 public class JsonReader {
-	
+
 	private Model model; 
-	
+
 	public JsonReader(Model m) {
 		this.model = m; 
 	}
@@ -24,31 +18,33 @@ public class JsonReader {
 	public void read(String response){
 		try {
 			JSONObject j = new JSONObject(response);
-			Iterator <String> i = j.keys();
-			while (i.hasNext()) {
-				String key = i.next();
-				
+			JSONArray names = j.names();
+			
+			int i = 0; 
+			while (i < names.length()) {
+				String key = names.optString(i);
+				if (key == null) key = "";
+
 				if (key.equals("report")) {
 					jsonReport(j.getJSONArray("report")); 
 				}
-				
+
 				if (key.equals("chats"))  {
 					jsonChats(j.getJSONArray("chats"));
 				}
-				
+
 				if (key.equals("managers")) {
 					jsonManagers(j.getJSONArray("managers"));
 				}
-				
 			}
-			
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			errorMessage(e.getMessage());
 		}
 		return ;
 	}
-	
+
 	public void jsonReport(JSONArray reports) {
 		try {
 			int i = 0; 
@@ -60,7 +56,7 @@ public class JsonReader {
 			MainController.requestError(errorString);
 		}
 	}
-	
+
 	public void jsonChats(JSONArray chats) {
 		try {
 			int i = 0; 
@@ -72,7 +68,7 @@ public class JsonReader {
 			MainController.requestError(errorString);
 		}
 	}
-	
+
 	public void jsonManagers(JSONArray managers) {
 		try {
 			int i = 0; 
@@ -84,14 +80,12 @@ public class JsonReader {
 			MainController.requestError(errorString);
 		}
 	}
-	
+
 	public void errorMessage(String msg){
-		
+
 	}
-	
-			
 }
-		
+
 
 
 

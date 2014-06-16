@@ -6,14 +6,14 @@ import views.ListItemContent;
 public class Task extends FireNode {
 	private String testResult; 
 	private String testNote;
- 
+
 	public Task(String name, String id, String nodeID, String tag, String testResult, String testNote) {
+
 		super(name, id, nodeID, tag);
-		
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
 	}
-	
+
 	String getResult(String result){
 		if (result == null){
 			return new String("");
@@ -21,20 +21,19 @@ public class Task extends FireNode {
 			return result; 
 		}
 	}
-	
+
 	@Override
 	public int getChecked(){
-		System.out.println("getting checked");
 		return getNumericalResult();
 	}
-	
+
 	int ensurePresent(){
 		if (this.testResult == null){
 			this.testResult = "";
 		}
 		return checked; 
 	}
-	
+
 	public void clear(){ 
 		this.testNote = "";
 		this.testResult = "";
@@ -59,7 +58,6 @@ public class Task extends FireNode {
 			return ensurePresent(); 
 	}
 
-
 	public String getTestResult() {
 		return testResult;
 	}
@@ -67,9 +65,8 @@ public class Task extends FireNode {
 	public void setTestResult(String testResult) {
 		this.testResult = testResult;
 		setCompleted(true);
-	
 	}
-	
+
 	public String getTestNote() {
 		return testNote;
 	}
@@ -78,11 +75,11 @@ public class Task extends FireNode {
 		this.testNote = testNote;
 		setCompleted(true);
 	}
-	
+
 	public void setCompleted(boolean c) {
 		this.completed = c;
 	}
-	
+
 	@Override
 	public boolean checkCompleted(boolean t) {
 		if (!this.testResult.equals("")) {
@@ -90,12 +87,10 @@ public class Task extends FireNode {
 		} 
 		return this.completed; 
 	}
-	
+
 	@Override
 	public ListItemContent createRowContent () {
 		ListItemContent item = new ListItemContent (this);
-		System.out.println("Printing this list item");
-		System.out.println(String.valueOf(item.getChecked()));
 		item.setChecked(getNumericalResult());
 		return item;
 	}

@@ -1,4 +1,4 @@
-package main.firealertapp;
+package main.metrics;
 
 import com.loopj.android.http.RequestParams;
 
@@ -6,6 +6,7 @@ import models.Model;
 import util.WebClient;
 
 public class MainController {
+	@SuppressWarnings("unused")
 	private MainActivity context; 
 	private WebClient webClient; 
 	private Model model; 
@@ -13,7 +14,7 @@ public class MainController {
 	
 	public MainController(MainActivity c) {
 		webClient = c.getWebClient();
-		model = c.getModel();
+		setModel(c.getModel());
 		context = c; 
 	}
 	
@@ -27,6 +28,14 @@ public class MainController {
 	public static void requestError(String errorString) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
 	}
 	
 	

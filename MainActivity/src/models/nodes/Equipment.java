@@ -5,14 +5,14 @@ import views.ListItemContent;
 public class Equipment extends FireNode {
 	private String testResult; 
 	private String testNote;
- 
+
 	public Equipment(String name, String id, String nodeID, String tag, String testResult, String testNote) {
+
 		super(name, id, nodeID, tag);
-		
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
 	}
-	
+
 	String getResult(String result){
 		if (result == null){
 			return new String("");
@@ -20,20 +20,19 @@ public class Equipment extends FireNode {
 			return result; 
 		}
 	}
-	
+
 	@Override
 	public int getChecked(){
-		System.out.println("getting checked");
 		return getNumericalResult();
 	}
-	
+
 	int ensurePresent(){
 		if (this.testResult == null){
 			this.testResult = "";
 		}
 		return checked; 
 	}
-	
+
 	public void clear(){ 
 		this.testNote = "";
 		this.testResult = "";
@@ -43,7 +42,6 @@ public class Equipment extends FireNode {
 	}
 
 	public int getNumericalResult() {	
-		System.out.println(this.testResult);
 		if (this.testResult.equals("Good"))
 			return 4;
 		else if (this.testResult.equals("Poor"))
@@ -66,9 +64,9 @@ public class Equipment extends FireNode {
 	public void setTestResult(String testResult) {
 		this.testResult = testResult;
 		setCompleted(true);
-	
+
 	}
-	
+
 	public String getTestNote() {
 		return testNote;
 	}
@@ -77,11 +75,11 @@ public class Equipment extends FireNode {
 		this.testNote = testNote;
 		setCompleted(true);
 	}
-	
+
 	public void setCompleted(boolean c) {
 		this.completed = c;
 	}
-	
+
 	@Override
 	public boolean checkCompleted(boolean t) {
 		if (!this.testResult.equals("")) {
@@ -89,16 +87,11 @@ public class Equipment extends FireNode {
 		} 
 		return this.completed; 
 	}
-	
+
 	@Override
 	public ListItemContent createRowContent () {
 		ListItemContent item = new ListItemContent (this);
-		System.out.println("Printing this list item");
-		System.out.println(String.valueOf(item.getChecked()));
 		item.setChecked(getNumericalResult());
 		return item;
 	}
-	
-	
-
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import util.WebClient;
-import main.firealertapp.MainActivity;
+import main.metrics.MainActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;

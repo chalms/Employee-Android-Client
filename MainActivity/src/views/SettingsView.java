@@ -1,6 +1,6 @@
 package views;
 
-import main.firealertapp.MainActivity;
+import main.metrics.MainActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;

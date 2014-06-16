@@ -1,7 +1,6 @@
 package views;
 
-
-import main.firealertapp.MainActivity;
+import main.metrics.MainActivity;
 import main.firealertapp.R;
 import android.app.Activity;
 import android.content.Context;
@@ -12,26 +11,26 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class ListItem extends ArrayAdapter <ListItemContent> {
+public class ListItem extends ArrayAdapter<ListItemContent> {
 
-    Context mContext;
-    int layoutResourceId;
-    ListItemContent data[] = null;
-    
-    private boolean[] failCheckBoxes =  new boolean[100]; 
-    private boolean[] passCheckBoxes =  new boolean[100]; 
-    private int[] checkedItems = new int[100];
-    
+	Context mContext;
+	int layoutResourceId;
+	ListItemContent data[] = null;
 
-    public ListItem(Context mContext, int layoutResourceId, ListItemContent[] data) {
+	private boolean[] failCheckBoxes = new boolean[100];
+	private boolean[] passCheckBoxes = new boolean[100];
+	private int[] checkedItems = new int[100];
 
-        super(mContext, layoutResourceId, data);
-        this.layoutResourceId = layoutResourceId;
-        this.mContext = mContext;
-        this.data = data;    
-    }
-    
-    @Override
+	public ListItem(Context mContext, int layoutResourceId,
+			ListItemContent[] data) {
+
+		super(mContext, layoutResourceId, data);
+		this.layoutResourceId = layoutResourceId;
+		this.mContext = mContext;
+		this.data = data;
+	}
+
+	@Override
     public View getView(final int position, View convertView, ViewGroup parent) {
     	final Context context = parent.getContext();
     	
@@ -44,7 +43,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
         textViewItem.setText(listItem.getDisplay());
         textViewItem.setTag(listItem.getID());
 
-        if (listItem.getTag().equals("InspectionElement")) {
+        if (listItem.getTag().equals("Task")) {
         	
           	//Set Specific Listeners for Good, Poor, and N/A
         	if (listItem.getDisplay().equals("Cabinet Condition") || listItem.getDisplay().equals("Nozzle Condition"))
@@ -54,7 +53,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
                 final CheckBox poor_button = (CheckBox) convertView.findViewById(R.id.PoorCheckBox);
                 final CheckBox NA_button = (CheckBox) convertView.findViewById(R.id.NACheckBox);
                 
-                textViewItem.setTag("InspectionElement");	
+                textViewItem.setTag("Task");	
                
                 int checked = listItem.getChecked();
                 
@@ -88,7 +87,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
     	 				poor_button.setChecked(false);
     	 				NA_button.setChecked(false);
     	 				listItem.setChecked(4);
-    	 				((MainActivity) context).getNodeController().getInspectionElementById(listItem.getID()).setTestResult("Good");
+    	 				((MainActivity) context).getNodeController().getTaskById(listItem.getID()).setTestResult("Good");
     	 				((MainActivity) context).getNodeController().addToDictionary(listItem.getID());
     	 			}
                 }));
@@ -103,7 +102,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
     	 				listItem.setChecked(3);
     	 				((MainActivity) context).getInspectionItemsController().showInspectionItems(listItem.getID(), "Poor");
     	 				
-    	 				//((MainActivity) context).getNodeController().getInspectionElementById(listItem.getID()).setTestResult("Fail");
+    	 				//((MainActivity) context).getNodeController().getTaskById(listItem.getID()).setTestResult("Fail");
     	 				//((MainActivity) context).getNodeController().addToDictionary(listItem.getID());
     	 			}
                 }));
@@ -116,7 +115,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
     	 				poor_button.setChecked(false);
     	 				NA_button.setChecked(true);
     	 				listItem.setChecked(2);
-    	 				//((MainActivity) context).getNodeController().getInspectionElementById(listItem.getID()).setTestResult("N/A");
+    	 				//((MainActivity) context).getNodeController().getTaskById(listItem.getID()).setTestResult("N/A");
     	 				//((MainActivity) context).getNodeController().addToDictionary(listItem.getID());
     	 				((MainActivity) context).getInspectionItemsController().showInspectionItems(listItem.getID(), "N/A");
     	 			}
@@ -129,7 +128,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
                 
           
                 
-                textViewItem.setTag("InspectionElement");
+                textViewItem.setTag("Task");
                 
        
             	checkedItems[Integer.valueOf(position)] = listItem.getChecked();
@@ -168,7 +167,7 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
     	 				
     	 				failCheckBoxes[Integer.valueOf(position)] = true; 
             			passCheckBoxes[Integer.valueOf(position)] = false;
-    	 				((MainActivity) context).getInspectionItemsController().(listItem.getID());
+    	 				((MainActivity) context).getTasksController().(listItem.getID());
     	 			}
     			}));
        
@@ -208,26 +207,24 @@ public class ListItem extends ArrayAdapter <ListItemContent> {
         convertView.setTag(convertView.getTag());
         return convertView;
     }
-    
-    private View inflateView(View convertView, ViewGroup parent, ListItemContent listItem)
-    {
-    	
-    	if(convertView == null)
-    	{
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            convertView = inflater.inflate(layoutResourceId, parent, false);
-        }
-    	
-    	if (listItem.getDisplay().equals("Cabinet Condition") || listItem.getDisplay().equals("Nozzle Condition"))
-    	{
-    		LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-    		convertView = inflater.inflate(R.layout.list_view_row_triplebuttons, parent, false);
-    		System.out.println("Changed view");
-    	}
-		
-        return convertView;
-    }
-    
-    
-    
+
+	private View inflateView(View convertView, ViewGroup parent,
+			ListItemContent listItem) {
+
+		if (convertView == null) {
+			LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+			convertView = inflater.inflate(layoutResourceId, parent, false);
+		}
+
+		if (listItem.getDisplay().equals("Cabinet Condition")
+				|| listItem.getDisplay().equals("Nozzle Condition")) {
+			LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+			convertView = inflater.inflate(
+					R.layout.list_view_row_triplebuttons, parent, false);
+			System.out.println("Changed view");
+		}
+
+		return convertView;
+	}
+
 }
