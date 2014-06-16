@@ -2,7 +2,6 @@ package main.metrics;
 
 import java.util.Stack;
 
-import main.metrics.R;
 import models.Model;
 import models.nodes.FireNode;
 import util.WebClient;

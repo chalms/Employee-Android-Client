@@ -1,11 +1,13 @@
 package models.nodes;
 
 import java.util.Date;
-import com.loopj.android.http.RequestParams;
-import android.location.Location;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import util.WebClient;
 import views.ListItemContent;
-
+import android.location.Location;
 
 public class Task extends FireNode {
 	private String testResult; // used below for json
@@ -31,14 +33,18 @@ public class Task extends FireNode {
 	}
 	
 	public void upload (WebClient webClient) {
-		RequestParams params = new RequestParams(); 
-		if (id == null) { return ; } else  params.add("id", id);
-		if (reportIndex != null) params.add("report_index", reportIndex);
-		if (reportId != null) params.add("report_id", reportId);
-		if (completed_at != null) params.add("completed_at", completed_at.toString());
-		if (description != null) params.add("description", description);
-		if (testNote != null) params.add("note", testNote );
+		JSONObject params = new JSONObject(); 
+		try { 
+		if (id == null) { return ; } else  params.put("id", id);
+		if (reportIndex != null) params.put("report_index", reportIndex);
+		if (reportId != null) params.put("report_id", reportId);
+		if (completed_at != null) params.put("completed_at", completed_at.toString());
+		if (description != null) params.put("description", description);
+		if (testNote != null) params.put("note", testNote);
 		webClient.post("/tasks/" + nodeID, params);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	String getResult(String result){

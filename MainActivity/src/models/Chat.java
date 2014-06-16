@@ -1,6 +1,7 @@
 package models;
 
 import java.util.HashMap;
+
 import models.nodes.FireNode;
 
 public class Chat extends FireNode {

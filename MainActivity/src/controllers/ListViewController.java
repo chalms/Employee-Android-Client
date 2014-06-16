@@ -3,8 +3,8 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import main.metrics.R;
 import main.metrics.MainActivity;
+import main.metrics.R;
 import models.nodes.FireNode;
 import views.ListItem;
 import views.ListItemContent;

@@ -2,11 +2,12 @@ package models.nodes;
 
 import java.util.Date;
 
-import com.loopj.android.http.RequestParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.location.Location;
 import util.WebClient;
 import views.ListItemContent;
+import android.location.Location;
 
 public class Equipment extends FireNode {
 	private String testResult; // used below for json
@@ -36,15 +37,21 @@ public class Equipment extends FireNode {
 	}
 	
 	public void upload (WebClient webClient) {
-		RequestParams params = new RequestParams(); 
-		if (id == null) { return ; } else  params.add("id", id);
-		if (part_name != null) params.add("part_name", part_name);
-		if (reportIndex != null) params.add("report_index", reportIndex);
-		if (reportId != null) params.add("report_id", reportId);
-		if (scanned_at != null) params.add("scanned_at", scanned_at.toString());
-		if (description != null) params.add("description", description);
-		if (testNote != null) params.add("note", testNote );
-		webClient.post("/equipment/" + nodeID, params);
+		JSONObject params = new JSONObject(); 
+		
+		try {
+				if (id == null) { return ; } else	params.put("id", id);
+				if (part_name != null) params.put("part_name", part_name);
+				if (reportIndex != null) params.put("report_index", reportIndex);
+				if (reportId != null) params.put("report_id", reportId);
+				if (scanned_at != null) params.put("scanned_at", scanned_at.toString());
+				if (description != null) params.put("description", description);
+				if (testNote != null) params.put("note", testNote );
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		webClient.post(new String("/equipment/" + nodeID), params);
 	}
 
 	String getResult(String result){

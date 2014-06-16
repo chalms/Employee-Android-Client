@@ -9,14 +9,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import main.metrics.MainActivity;
+import models.nodes.Report;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import Factories.EquipmentFactory;
 import Factories.TaskFactory;
-import main.metrics.MainActivity;
-import models.nodes.Report;
 
 public class Model {
 	private Report report = null; 

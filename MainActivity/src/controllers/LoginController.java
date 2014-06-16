@@ -29,22 +29,6 @@ public class LoginController {
 		}
 	};
 
-	private Dialog.OnKeyListener keyListener = new Dialog.OnKeyListener() {
-		@Override
-		public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent arg2) {
-			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				String x = getPassword().getText().toString();
-				if (x != null) {
-					if (x.length() > 0) {
-						x = x.substring(0, x.length() - 1);
-						getPassword().setText(x);
-					}
-				}
-			}
-		return true;
-		}
-	};
-
 	public LoginController(MainActivity c) {
 		this.context = c;
 		this.dialog = new Dialog(this.context);
@@ -52,7 +36,6 @@ public class LoginController {
 		this.dialog.setTitle("Login");
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(loginListener);
-		dialog.setOnKeyListener(keyListener);
 		System.out.println("Showing Login Controller");
 		showDialog();
 	}

@@ -1,7 +1,9 @@
 package Factories;
 
 import java.util.Date;
+
 import models.nodes.Equipment;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -3,10 +3,12 @@ package models.nodes;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.loopj.android.http.RequestParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import util.WebClient;
 import models.Manager;
+import util.WebClient;
+
 
 public class Report extends FireNode {
 	private String description = null;
@@ -24,14 +26,17 @@ public class Report extends FireNode {
 		for (int i = 0; i < childList().size(); i++) {
 			childList().get(i).upload(webClient);
 		}
-		RequestParams params = new RequestParams();
+		JSONObject params = new JSONObject(); 
+		try { 
 		if (nodeID == null) return ; else params.put("id", nodeID);
 		if (description != null) params.put("description", description);
 		if (reportDate != null) params.put("report_date", reportDate);
 		if (checkin != null) params.put("checkin", checkin.toString());
 		if (checkout != null) params.put("checkout", checkout.toString());
-		
 		webClient.post("/report/" + nodeID, params);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private boolean valStr(String str) {

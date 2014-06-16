@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-import views.ListItemContent;
 import models.nodes.FireNode;
 import models.nodes.Task;
+import views.ListItemContent;
 import android.content.Context;
 
 public class NodeController {
