@@ -26,40 +26,38 @@ public class Model {
 	private HashMap<String, Report> reports; 
 	private HashMap<String, Manager> managers; 
 	private boolean saved = false; 
-	
+
 	private String createID() {
 		String nug = globalId.toString();
 		globalId = globalId + 1;
 		return nug;
 	}
-	
+
 	public Model(MainActivity c){
 		this.errors = new ArrayList <String> (); 
 	}
-	
+
 	public void addEquipment(JSONArray equipment) {
 		for (int i = 0; i < equipment.length(); i++) {
 			try {
 				this.report.add(EquipmentFactory.build((JSONObject) equipment.get(i), createID()));
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	public void addTask(JSONArray task) {
 		if (task == null) return; 
 		for (int i = 0; i < task.length(); i++) {
 			try {
 				report.add(TaskFactory.build((JSONObject) task.get(i), createID()));
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 		}
 	}
-	
+
 	public void addManager(JSONObject managerJSON) throws JSONException {
 		if (managerJSON == null) return; 
 		if (this.report.manager == null) {
@@ -78,11 +76,9 @@ public class Model {
 			}
 		}
 	}
-	
-	public void saveChanges() {
-		
-	}
-	
+
+	public void saveChanges() {}
+
 	public void setReportDate(Report tempReport, JSONObject jObject) {
 		Date reportDate;
 		String dateString = jObject.optString("report_date");
@@ -93,7 +89,7 @@ public class Model {
 			}
 		}
 	}
-	
+
 	public void setOrUpdateReport(JSONObject jObject) throws JSONException {
 		if (this.reports == null) {
 			this.reports = new HashMap <String, Report> (); 
@@ -104,82 +100,95 @@ public class Model {
 		if (checkinString != null) {
 			tempReport.setCheckin(stringToDate(checkinString));
 		}
-		
 		String checkoutString = jObject.optString("checkout");
 		if (checkoutString != null) {
 			tempReport.setCheckout(stringToDate(checkoutString));
 		}
-		
+
 		addManager(jObject.optJSONObject("manager"));
 		setReportDate(tempReport, jObject);
-		
 		Calendar reportDate = Calendar.getInstance();
 		reportDate.setTime(tempReport.getReportDate());
-		
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(new Date());
-		
+
 		String description = jObject.optString("description");
-		
+
 		if (description != null) {
 			tempReport.setDescription(description);
 		}
-		
+
 		addEquipment(jObject.optJSONArray("equipment"));
 		addTask(jObject.optJSONArray("task")); 
-		
+
 		if (cal.get(Calendar.DATE) == reportDate.get(Calendar.DATE)) {
 			this.report = tempReport; 
 		} 
-		
 		this.reports.put(tempReport.hashString(), tempReport); 
 	}
-	
-	
+
 	public void setOrUpdateChat(JSONObject jObject) throws JSONException {
-		if (this.chats == null) {
+		if (this.chats == null) { 
 			this.chats = new HashMap <String, Chat>(); 
 		}
 		
 		if (jObject == null) return ; 
 		Chat chat = new Chat(); 
+		JSONObject manager = jObject.optJSONObject("manager");
 		
-		String str = jObject.optJSONObject("manager");
-
-		if (str != null) chat.setManager(str);
+		if (manager == null) { 
+			addError("A manager must be included in chat!");
+			return; 
+		}
 		
-		if (str != null) chat.setWorkerId(str);
+		addManager(manager);
+		chat.setManager(this.managers.get(manager.optString("email")));
+		JSONArray messages = jObject.optJSONArray("messages");
 		
-		str = jObject.optString("email");
-		if (str != null) manager.setEmail(str);
+		if (messages == null) { 
+			addError("No messages found!"); return ; 
+		}
 		
-		str = jObject.optString("id");
-		if (str != null) manager.setId(str);
-		
-		managers.put(, manager);
+		int i = 0; 
+		while (i < messages.length()) {
+			addMessage(messages.getJSONObject(i), chat);
+		}
+		this.chats.put(chat.getManager().getEmail(), chat);
 	}
-	
+
+	private void addMessage(JSONObject jsonObject, Chat chat) {
+		// TODO Auto-generated method stub
+		Message message = new Message (); 
+		message.setChat(chat);
+		String messageBody = jsonObject.optString("messageBody");
+		if (messageBody != null) {
+			message.setMessageBody(messageBody);
+			if (message != null) {
+				chat.addMessage( message);
+			}
+		}
+	}
+
 	public void setOrUpdateManager(JSONObject jObject) {
-		
 		if (this.managers == null) {
 			this.managers = new HashMap <String, Manager> (); 
 		}
-		
+
 		if (jObject == null) return ; 
 		Manager manager = new Manager(); 
-		
+
 		String str = jObject.optString("firstName");
 		if (str != null) manager.setFirstName(str);
-		
+
 		str = jObject.optString("lastName");
 		if (str != null) manager.setLastName(str);
-		
+
 		str = jObject.optString("email");
 		if (str != null) manager.setEmail(str);
-		
+
 		str = jObject.optString("id");
 		if (str != null) manager.setId(str);
-		
+
 		managers.put(manager.getEmail(), manager);
 	}
 
@@ -197,16 +206,24 @@ public class Model {
 			return null; 
 		}
 	}; 
-	
+
 	public Report getReport() {
 		return this.report; 
 	}
-	
+
 	public void addError(String error) {
 		this.errors.add(error);
 	}
 
 	public boolean saved() {
 		return false;
+	}
+
+	public boolean isSaved() {
+		return saved;
+	}
+
+	public void setSaved(boolean saved) {
+		this.saved = saved;
 	}
 }

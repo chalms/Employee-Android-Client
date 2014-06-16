@@ -29,9 +29,9 @@ public class ListViewController {
 	private Context context;
 	boolean topHeaderAdded;
 	boolean secondHeaderAdded;
-	Button sendButton;
-	Button viewXmlButton;
-	Button searchXmlButton;
+	Button signOut;
+	Button messageBox;
+	Button searchButton;
 	SettingsView settingsView; 
 
 	public ListViewController(Context con, NodeController nodeController){
@@ -41,7 +41,7 @@ public class ListViewController {
 		this.jumpDownList = new Stack<FireNode>();
 		this.nodeController = nodeController; 
 		this.topHeaderAdded = false;
-		this.sendButton = null;
+		this.signOut = null;
 	}
 
 	public void renderListView() {			
@@ -66,23 +66,18 @@ public class ListViewController {
 	}
 
 	public void deleteHeaders(int amount) {
-		if (amount > (headerList.size())) {
-			amount = headerList.size();
-		}
+		if (amount > (headerList.size())) amount = headerList.size();
 		for (int j = 0; j < amount; j++) {
 			deletedStack.push(headerList.remove(headerList.size() - 1));
 			dontAddHeader = true;
 		}
-		if (amount == 0){
-			dontAddHeader = true;
-		}
+		if (amount == 0) dontAddHeader = true;
 	}
-	
+
 	public void goToEquipment(String input){
 		boolean clearNodeData = false; 
 		goToRoot(clearNodeData);
 		setJumpDownList(input);
-		
 		if (!jumpDownList.empty()){
 			System.out.println(jumpDownList.peek().getID());
 			jumpDownList.pop();
@@ -131,6 +126,10 @@ public class ListViewController {
 		Toast.makeText(context, name + " complete!", Toast.LENGTH_LONG).show();
 	}
 
+	public void makeToast(String butter) {
+		Toast.makeText(context, butter, Toast.LENGTH_LONG).show();
+		return;	
+	}
 
 	/*						     Private Methods							*
 	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
@@ -139,58 +138,51 @@ public class ListViewController {
 	private NodeController nodeController() {
 		return ((MainActivity) context).getNodeController();
 	}
-	public void makeToast(String butter) {
-		Toast.makeText(context, butter, Toast.LENGTH_LONG).show();
-		return;	
-	}
-	
+
 	@SuppressLint("ShowToast")
 	private void createHeader(LayoutInflater inflater, ListView listViewItems){
-
 		ViewGroup header = null;
 		if (!topHeaderAdded) {
 			header = (ViewGroup) inflater.inflate(R.layout.top_list_header, (ViewGroup) listViewItems.getParent(), false);
 			TextView tv = (TextView) header.findViewById(main.firealertapp.R.id.headerViewItem); 
 			setTextView(tv);
 			SettingsOnTextViewClick(tv);
-			
+
 			topHeaderAdded = true;
-			sendButton = (Button) header.findViewById(main.firealertapp.R.id.sendXmlButton);
-			viewXmlButton = (Button) header.findViewById(main.firealertapp.R.id.viewXmlButton);
-			searchXmlButton = (Button) header.findViewById(main.firealertapp.R.id.searchButton);
-			
-			sendButton.setOnClickListener(new OnClickListener() {
+			signOut = (Button) header.findViewById(main.firealertapp.R.id.sendXmlButton); //sendXmlButton
+			messageBox = (Button) header.findViewById(main.firealertapp.R.id.viewXmlButton); //viewXmlButton
+			searchButton = (Button) header.findViewById(main.firealertapp.R.id.searchButton); 
+
+			signOut.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					System.out.println("Send button clicked");
 					if (nodeController.root.checkCompleted(true)){
 						try {
-							((MainActivity) context).getSendController().showSendDialog();
+				//TODO: 			((MainActivity) context).getMainController().checkout(); 
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
-							Toast.makeText(context, "There was an error in the sending process. Check your computer info.", 5);
 						}
 					} else {
-						makeToast("Sorry, you must complete all inspection items before sync.");
+						((MainActivity) context).getMainController().areYouSure(); 
 					}
 				}
 			});
 
-			viewXmlButton.setOnClickListener(new OnClickListener() {
+			messageBox.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					System.out.println("Send button clicked");
-					((Object) context).displayViewDocumentController();
+				//TODO:	((MainActivity) context).getMessageBoxController().open(); 
 				}
 			});
 
-			searchXmlButton.setOnClickListener(new OnClickListener() {
+			searchButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					System.out.println("Send button clicked");
 					((MainActivity) context).getSearchController().showSearchDialog();
 				}
 			});
+
 		} else { 
 			header = (ViewGroup) inflater.inflate(R.layout.list_header, (ViewGroup) listViewItems.getParent(), false);
 			setTextView(((TextView) header.findViewById(main.firealertapp.R.id.headerViewItem)));
@@ -259,5 +251,4 @@ public class ListViewController {
 			}
 		});
 	}
-
 }

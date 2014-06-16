@@ -22,6 +22,6 @@ Re-format UI (change xml buttons and what not)
 
 Checkin -> Upload to server 
 
-Add upload of Model and other models 
+Add upload of Model and other models (getModel().saved() && getModel.saveChanges())
 
 Test server integration 

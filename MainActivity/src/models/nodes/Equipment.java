@@ -7,7 +7,6 @@ public class Equipment extends FireNode {
 	private String testNote;
 
 	public Equipment(String name, String id, String nodeID, String tag, String testResult, String testNote) {
-
 		super(name, id, nodeID, tag);
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
@@ -94,4 +93,5 @@ public class Equipment extends FireNode {
 		item.setChecked(getNumericalResult());
 		return item;
 	}
-}
+}		
+

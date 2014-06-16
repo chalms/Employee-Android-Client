@@ -29,6 +29,14 @@ public class MainController {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void logout() {
+		
+	}
+	
+	public void areYouSure() {
+		
+	}
 
 	public Model getModel() {
 		return model;

@@ -1,19 +1,13 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-import util.WebClient;
 import main.metrics.MainActivity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 public class LoginController {
@@ -28,14 +22,13 @@ public class LoginController {
 			if (authenticated(getPassword(), getUserName())) {
 				makeToast("Welcome to the Mobile Dashboard");
 				dismissDialog();
-				((MainActivity) context).getListViewController()
-						.renderListView();
+				((MainActivity) context).getListViewController().renderListView();
 			} else {
 				makeToast("Password Unsuccessful!");
 			}
 		}
 	};
-	
+
 	private Dialog.OnKeyListener keyListener = new Dialog.OnKeyListener() {
 		@Override
 		public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent arg2) {
@@ -83,25 +76,25 @@ public class LoginController {
 		return;
 	}
 
-	public String getUserName() {
-		return (String) this.dialog.findViewById(main.firealertapp.R.id.editTextUserNameToLogin);
+	public EditText getUserName() {
+		return (EditText) this.dialog.findViewById(main.firealertapp.R.id.editTextUserNameToLogin);
 	}
 
 	public EditText getPassword() {
 		return (EditText) this.dialog.findViewById(main.firealertapp.R.id.editTextPasswordToLogin);
 	}
 
-	public boolean authenticated(final EditText password, final String username) {
+	public boolean authenticated(final EditText password, final EditText username) {
 		boolean passwordValid = false;
 		try {
-			this.context.getMainController().login(username, password.getText().toString());
+			this.context.getMainController().login(username.getText().toString(), password.getText().toString());
 			passwordValid = true;
 		} catch (Exception e) {
 			makeToast(e.getMessage());
 		}
 
 		if (passwordValid) {
-			((MainActivity) context).setCurrentUserName(getUserName());
+			((MainActivity) context).setCurrentUserName(getUserName().getText().toString());
 
 		}
 		return (passwordValid);

@@ -253,6 +253,15 @@ public class MainActivity extends Activity {
 		}
 		return this.tasksController; 
 	}
+	
+	public MainController getMainController() {
+		if (this.mainController == null) {
+			this.mainController = new MainController(this); 
+		}
+		return this.mainController; 
+	}
+	
+	
 
 	// MODELS -----> 
 
