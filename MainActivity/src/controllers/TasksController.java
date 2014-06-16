@@ -17,7 +17,6 @@ public class TasksController {
 	}
 
 	public void showTasks(String itemId) {
-
 		Task theElement = getIE(itemId);
 		final Dialog dialog = getDialog(theElement);
 		final EditText editPassOrFail = getPassOrFailEditText(dialog, theElement);
@@ -27,7 +26,6 @@ public class TasksController {
 	}
 
 	public void showTasks(String itemId, String type) {
-		
 		Task theElement = getIE(itemId);
 		final Dialog dialog = getDialog(theElement);
 		final EditText editPassOrFail = getPassOrFailEditText(dialog, theElement);

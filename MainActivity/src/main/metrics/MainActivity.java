@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 	//For Toast ---> 
 	AlertDialog alertDialogStores;
 	AlertDialog alertDialogDescription;
-	
+
 	//Logical Vars && Data structures ---> 
 	public boolean login = true;
 	boolean lockPopUp = false;
@@ -47,12 +47,12 @@ public class MainActivity extends Activity {
 	Stack<FireNode> jumpDownList;
 	boolean popUp = false; 
 	boolean loggedOut = false; 
-	
+
 	// For SCANNER -----> 
 	private String ACTION_CONTENT_NOTIFY = "android.intent.action.CONTENT_NOTIFY";
 	private DataReceiver dataScanner = new DataReceiver();
 	private TextView tv_getdata_from_edittext;
-	
+
 	// Controllers -----> 
 	public NodeController nodeController = null; 
 	public MainController mainController = null; 
@@ -60,18 +60,18 @@ public class MainActivity extends Activity {
 	public SearchController searchController = null;
 	public TasksController tasksController = null;
 	public LoginController loginController = null; 
-	
+
 	SettingsView settingsView = null; // <-- for logout
 	private EditText editText; //<--- login input
-	
+
 	//Models ----> 
 	FireNode root;
 	private Model model = null;
-	
+
 	//Utilities ----> 
 	private WebClient webClient = null;
 
-	
+
 	//Initial settings --> 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +93,15 @@ public class MainActivity extends Activity {
 			this.getListViewController().renderListView();
 		}		
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(main.firealertapp.R.menu.main, menu);
 		return true;
 	}
-	
+
 	//Methods to help maneuvering through main UI List --> 
-	
+
 	public void moveContextNodeUp(String headerId){
 		int numberOfRemovals = getNodeController().goToParentNode(headerId, this);
 		getListViewController().deleteHeaders(numberOfRemovals);
@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-	
+
 	public boolean getLockPopUp() {
 		return lockPopUp;
 	}
@@ -127,9 +127,9 @@ public class MainActivity extends Activity {
 	public void setPopUpPresent(boolean p) {
 		popUp = p; 
 	}
-	
+
 	//Login and setting user ---> 
-	
+
 	public void setCurrentUserName(String u) {
 		this.userName = new String(u);
 	}
@@ -141,13 +141,13 @@ public class MainActivity extends Activity {
 	public void getLoginController() {
 		this.loginController = new LoginController(MainActivity.this);
 	}
-	
+
 	public void launchSettingsView() {
 		this.settingsView = new SettingsView(this); 
 	}
-	
+
 	//Asynchonous logout for saving data --->
-	
+
 	private class LogoutTask extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog d;
 		@Override
@@ -188,18 +188,18 @@ public class MainActivity extends Activity {
 			(MainActivity.this).finish();
 		}
 	}
-	
+
 	public void Logout() {
 		loggedOut = true; 
 		new LogoutTask().execute();
 	}
-	
+
 	//Start and stop settings ---> 
-	
+
 	public void CloseUp() {
 		this.finish();
 	}
-	
+
 	@Override
 	public void onStop()
 	{
@@ -212,13 +212,13 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		unregisterReceiver();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		loggedOut = false; 
 	}
-	
+
 	//Global Controllers -----> 
 
 	public ListViewController getListViewController() {
@@ -253,7 +253,7 @@ public class MainActivity extends Activity {
 		}
 		return this.tasksController; 
 	}
-	
+
 	// MODELS -----> 
 
 	public FireNode getRootNode(){
@@ -269,7 +269,7 @@ public class MainActivity extends Activity {
 		}
 		return this.model;
 	}
-	
+
 	// WEB UTILITIES ----> 
 
 	public WebClient getWebClient() {
@@ -278,9 +278,9 @@ public class MainActivity extends Activity {
 		}
 		return this.webClient;
 	}
-	
-	 // SCANNER METHODS ------------> 
-	 
+
+	// SCANNER METHODS ------------> 
+
 	private void registerScanner() {
 		dataScanner = new DataReceiver();
 		IntentFilter intentFilter = new IntentFilter();
@@ -331,9 +331,9 @@ public class MainActivity extends Activity {
 		}
 		return c.substring(0, c.length()-1);
 	}
-	
+
 	//Error Notifications ----> 
-	
+
 	public void makeToast(String butter) {
 		Toast.makeText(this, butter, Toast.LENGTH_LONG).show();
 		return;	

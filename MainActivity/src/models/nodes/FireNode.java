@@ -150,7 +150,6 @@ public class FireNode{
 				}
 			}
 		} 
-
 		return (new Stack <FireNode> ());
 	}
 

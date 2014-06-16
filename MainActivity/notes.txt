@@ -1,0 +1,27 @@
+TODO: 
+
+Remove Send button clicked in list view controller 
+
+Chats parsing
+
+Message getters and setters and parsing 
+
+Proper instantiation of Equipment/Tasks
+
+Add editTextUserNameToLogin view to login 
+
+Remove send document / display document controllers from list view
+
+Add location services 
+
+Add asynchronous java load 
+
+Connect main activity and main controller 
+
+Re-format UI (change xml buttons and what not) 
+
+Checkin -> Upload to server 
+
+Add upload of Model and other models 
+
+Test server integration 

@@ -107,7 +107,6 @@ public class Model {
 		
 		String checkoutString = jObject.optString("checkout");
 		if (checkoutString != null) {
-			
 			tempReport.setCheckout(stringToDate(checkoutString));
 		}
 		
