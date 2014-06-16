@@ -48,7 +48,7 @@ public class LoginController {
 	public LoginController(MainActivity c) {
 		this.context = c;
 		this.dialog = new Dialog(this.context);
-		this.dialog.setContentView(main.firealertapp.R.layout.login);
+		this.dialog.setContentView(main.metrics.R.layout.login);
 		this.dialog.setTitle("Login");
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(loginListener);
@@ -64,7 +64,7 @@ public class LoginController {
 	}
 
 	private Button getSignInButton() {
-		return (Button) this.dialog.findViewById(main.firealertapp.R.id.buttonSignIn);
+		return (Button) this.dialog.findViewById(main.metrics.R.id.buttonSignIn);
 	}
 
 	public void makeToast(String butter) {
@@ -83,11 +83,11 @@ public class LoginController {
 	}
 
 	public EditText getUserName() {
-		return (EditText) this.dialog.findViewById(main.firealertapp.R.id.editTextUserNameToLogin);
+		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextUserNameToLogin);
 	}
 
 	public EditText getPassword() {
-		return (EditText) this.dialog.findViewById(main.firealertapp.R.id.editTextPasswordToLogin);
+		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextPasswordToLogin);
 	}
 
 	public void authenticated(final EditText password, final EditText username) {

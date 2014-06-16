@@ -1,7 +1,7 @@
 package views;
 
 import main.metrics.MainActivity;
-import main.firealertapp.R;
+import main.metrics.R;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -174,7 +174,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
 				|| listItem.getDisplay().equals("Nozzle Condition")) {
 			LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
 			convertView = inflater.inflate(
-					R.layout.list_view_row_triplebuttons, parent, false);
+					main.metrics.R.layout.list_view_row_triplebuttons, parent, false);
 			System.out.println("Changed view");
 		}
 		return convertView;

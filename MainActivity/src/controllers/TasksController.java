@@ -19,7 +19,7 @@ public class TasksController {
 		Task theElement = getIE(itemId);
 		final Dialog dialog = getDialog(theElement);
 		final EditText editPassOrFail = getPassOrFailEditText(dialog, theElement);
-		final Button btnSubmit = (Button) dialog.findViewById(main.firealertapp.R.id.descriptionSubmitButton);
+		final Button btnSubmit = (Button) dialog.findViewById(main.metrics.R.id.descriptionSubmitButton);
 		setTestItemSubmissionOnClickListener(btnSubmit, dialog, theElement, editPassOrFail, "Fail");
 		dialog.show();
 	}
@@ -28,7 +28,7 @@ public class TasksController {
 		Task theElement = getIE(itemId);
 		final Dialog dialog = getDialog(theElement);
 		final EditText editPassOrFail = getPassOrFailEditText(dialog, theElement);
-		final Button btnSubmit = (Button) dialog.findViewById(main.firealertapp.R.id.descriptionSubmitButton);
+		final Button btnSubmit = (Button) dialog.findViewById(main.metrics.R.id.descriptionSubmitButton);
 		setTestItemSubmissionOnClickListener(btnSubmit, dialog, theElement, editPassOrFail, type);
 		dialog.show();
 	}
@@ -53,14 +53,14 @@ public class TasksController {
 	}
 
 	private EditText getPassOrFailEditText(Dialog dialog, Task theElement) {
-		EditText editPassOrFail = (EditText) dialog.findViewById(main.firealertapp.R.id.editText1);
+		EditText editPassOrFail = (EditText) dialog.findViewById(main.metrics.R.id.editText1);
 		editPassOrFail.setText(theElement.getTestNote());
 		return editPassOrFail;
 	}
 
 	private Dialog getDialog(Task theElement) {
 		Dialog dialog = new Dialog(window);
-		dialog.setContentView(main.firealertapp.R.layout.fail_description_dialouge);
+		dialog.setContentView(main.metrics.R.layout.fail_description_dialouge);
 		dialog.setTitle(theElement.getDisplay());
 		return dialog;
 	}

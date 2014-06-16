@@ -24,7 +24,7 @@ public class SettingsView {
 	public SettingsView(Context c) {
 		this.window = c;
 		this.dialog = new Dialog(this.window);
-		this.dialog.setContentView(main.firealertapp.R.layout.settings);
+		this.dialog.setContentView(main.metrics.R.layout.settings);
 		this.dialog.setTitle("User Settings");
 
 		Button logoutButton = this.SetLogoutButton();
@@ -34,6 +34,6 @@ public class SettingsView {
 	}
 
 	private Button SetLogoutButton() {
-		return (Button) this.dialog.findViewById(main.firealertapp.R.id.settingsLogout);
+		return (Button) this.dialog.findViewById(main.metrics.R.id.settingsLogout);
 	}
 }

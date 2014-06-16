@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package main.firealertapp;
+package main.metrics;
 
 public final class R {
     public static final class attr {

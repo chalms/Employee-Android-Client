@@ -3,7 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import main.firealertapp.R;
+import main.metrics.R;
 import main.metrics.MainActivity;
 import models.nodes.FireNode;
 import views.ListItem;
@@ -144,14 +144,14 @@ public class ListViewController {
 		ViewGroup header = null;
 		if (!topHeaderAdded) {
 			header = (ViewGroup) inflater.inflate(R.layout.top_list_header, (ViewGroup) listViewItems.getParent(), false);
-			TextView tv = (TextView) header.findViewById(main.firealertapp.R.id.headerViewItem); 
+			TextView tv = (TextView) header.findViewById(main.metrics.R.id.headerViewItem); 
 			setTextView(tv);
 			SettingsOnTextViewClick(tv);
 
 			topHeaderAdded = true;
-			signOut = (Button) header.findViewById(main.firealertapp.R.id.sendXmlButton); //sendXmlButton
-			messageBox = (Button) header.findViewById(main.firealertapp.R.id.viewXmlButton); //viewXmlButton
-			searchButton = (Button) header.findViewById(main.firealertapp.R.id.searchButton); 
+			signOut = (Button) header.findViewById(main.metrics.R.id.sendXmlButton); //sendXmlButton
+			messageBox = (Button) header.findViewById(main.metrics.R.id.viewXmlButton); //viewXmlButton
+			searchButton = (Button) header.findViewById(main.metrics.R.id.searchButton); 
 
 			signOut.setOnClickListener(new OnClickListener() {
 				@Override
@@ -185,7 +185,7 @@ public class ListViewController {
 
 		} else { 
 			header = (ViewGroup) inflater.inflate(R.layout.list_header, (ViewGroup) listViewItems.getParent(), false);
-			setTextView(((TextView) header.findViewById(main.firealertapp.R.id.headerViewItem)));
+			setTextView(((TextView) header.findViewById(main.metrics.R.id.headerViewItem)));
 			System.out.println("lower header created");
 		}	
 		addHeader(header);
@@ -236,10 +236,10 @@ public class ListViewController {
 
 	private ListItem setListItemAdapter(ListItemContent[] rowContent) {
 		if (rowContent[0].getTag().equals("InspectionElement")) {
-			return new ListItem(context, main.firealertapp.R.layout.list_view_row_buttons, rowContent);
+			return new ListItem(context, main.metrics.R.layout.list_view_row_buttons, rowContent);
 		}
 		else {
-			return new ListItem(context, main.firealertapp.R.layout.list_view_row_item, rowContent);
+			return new ListItem(context, main.metrics.R.layout.list_view_row_item, rowContent);
 		}
 	}
 

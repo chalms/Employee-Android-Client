@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="main.firealertapp"
+    package="main.metrics"
     android:versionCode="1"
     android:versionName="1.0" >
 	
@@ -15,7 +15,7 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" android:permission="android.permission.ACCESS_COARSE_LOCATION">
         <activity
             android:name="main.metrics.MainActivity"
             android:label="@string/app_name" >

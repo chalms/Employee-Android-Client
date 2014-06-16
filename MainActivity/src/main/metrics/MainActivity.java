@@ -2,7 +2,7 @@ package main.metrics;
 
 import java.util.Stack;
 
-import main.firealertapp.R;
+import main.metrics.R;
 import models.Model;
 import models.nodes.FireNode;
 import util.WebClient;
@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
 		numberHeaders = 0;
 		dontAddHeader = false;
 		numberOfHeadersLeft = 0;
-		setContentView(main.firealertapp.R.layout.activity_main);
+		setContentView(main.metrics.R.layout.activity_main);
 		initialComponent();
 		registerScanner();
 		loggedOut = false; 
@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(main.firealertapp.R.menu.main, menu);
+		getMenuInflater().inflate(main.metrics.R.menu.main, menu);
 		return true;
 	}
 
@@ -177,7 +177,7 @@ public class MainActivity extends Activity {
 				numberOfHeadersLeft = 0;
 				try {
 					nodeController = MainActivity.this.getNodeController();
-					setContentView(main.firealertapp.R.layout.activity_main);
+					setContentView(main.metrics.R.layout.activity_main);
 					userName = null;
 				} catch (Exception e) {
 					System.out.println(e.getMessage());

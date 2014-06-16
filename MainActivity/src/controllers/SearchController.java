@@ -18,9 +18,9 @@ public class SearchController {
 		// TODO Auto-generated method stub
 		final Dialog descriptionDialog = createDescriptionDialog();
 		final EditText failDescription = (EditText) descriptionDialog
-				.findViewById(main.firealertapp.R.id.search_layout_id);
+				.findViewById(main.metrics.R.id.search_layout_id);
 		final Button submitBtn = (Button) descriptionDialog
-				.findViewById(main.firealertapp.R.id.button_search);
+				.findViewById(main.metrics.R.id.button_search);
 		setButtonOnClickListener(submitBtn, failDescription, descriptionDialog);
 		((MainActivity) context).setPopUpPresent(true); 
 		descriptionDialog.show();
@@ -30,9 +30,9 @@ public class SearchController {
 		// TODO Auto-generated method stub
 		final Dialog descriptionDialog = createDescriptionDialog();
 		final EditText failDescription = (EditText) descriptionDialog
-				.findViewById(main.firealertapp.R.id.search_layout_id);
+				.findViewById(main.metrics.R.id.search_layout_id);
 		final Button submitBtn = (Button) descriptionDialog
-				.findViewById(main.firealertapp.R.id.button_search);
+				.findViewById(main.metrics.R.id.button_search);
 		failDescription.setText(input);
 		setButtonOnClickListener(submitBtn, failDescription, descriptionDialog);
 		((MainActivity) context).setPopUpPresent(true); 
@@ -61,7 +61,7 @@ public class SearchController {
 	
 	private Dialog createDescriptionDialog(){
 		Dialog descriptionDialog = new Dialog(context);
-		descriptionDialog.setContentView(main.firealertapp.R.layout.search_layout);
+		descriptionDialog.setContentView(main.metrics.R.layout.search_layout);
 		descriptionDialog.setTitle("Equipment Search");
 		return descriptionDialog; 
 	}

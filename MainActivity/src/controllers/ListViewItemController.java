@@ -9,34 +9,38 @@ import android.widget.TextView;
 
 public class ListViewItemController implements OnItemClickListener {
 
-	public Context window; 
-	public ListViewItemController(Context con){
-		window = con; 
+	public Context window;
+
+	public ListViewItemController(Context con) {
+		window = con;
 	}
 
-	public void headerClicked(String headerId){
+	public void headerClicked(String headerId) {
 		if (headerId.equals("1")) {
 
 		} else {
 			((MainActivity) window).moveContextNodeUp(headerId);
 		}
-		return; 
+		return;
 	}
 
-	public void rowClicked(TextView textViewItem){
+	public void rowClicked(TextView textViewItem) {
 		String rowContentTag = textViewItem.getTag().toString();
-		((MainActivity) window).getNodeController().goToNodeItemInList(rowContentTag);	
+		((MainActivity) window).getNodeController().goToNodeItemInList(
+				rowContentTag);
 		((MainActivity) window).getListViewController().renderListView();
-	} 
-	
+	}
+
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		TextView headerViewItem = ((TextView) view.findViewById(main.firealertapp.R.id.headerViewItem));
-		if (headerViewItem != null)
-		{
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		TextView headerViewItem = ((TextView) view
+				.findViewById(main.metrics.R.id.headerViewItem));
+		if (headerViewItem != null) {
 			headerClicked(headerViewItem.getTag().toString());
 		} else {
-			TextView textViewItem = ((TextView) view.findViewById(main.firealertapp.R.id.textViewItem));
+			TextView textViewItem = ((TextView) view
+					.findViewById(main.metrics.R.id.textViewItem));
 			if (!(textViewItem.getTag().equals("InspectionElement"))) {
 				rowClicked(textViewItem);
 			}
