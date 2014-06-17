@@ -16,8 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import Factories.EquipmentFactory;
-import Factories.TaskFactory;
+import factories.EquipmentFactory;
+import factories.TaskFactory;
 
 public class Model {
 	private Report report = null; 

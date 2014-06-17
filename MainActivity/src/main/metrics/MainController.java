@@ -1,8 +1,8 @@
 package main.metrics;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.UnsupportedEncodingException;
 
+import org.json.JSONException;
 import models.Model;
 import util.WebClient;
 
@@ -18,31 +18,27 @@ public class MainController {
 	}
 	
 	public void login(String username, String password) {
-		JSONObject params = new JSONObject(); 
-		JSONObject params_2 = new JSONObject(); 
-		try { 
-			
-		
-		params_2.put("email", username);
-		params_2.put("password", password);
-		params.put("user", params_2);
-		
+		try {
+			webClient.login(username, password);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		webClient.post("/users/sign_in", params);
 		
-		if (model.getReport().isValid()) {
-			context.root = model.getReport();
-			if (context.root != null) {
-				context.getLoginController().login();
-			}
+		if (WebClient.loggedIn) {
+			getReport(); 
+		} else {
+			context.getLoginController().makeToast("Username or password incorrect. Try again!");
 		}
+	}
+	
+	public void getReport() {
+		//will return the users daily report once logged in 
 	}
 
 	public static void requestError(String errorString) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void logout() {
