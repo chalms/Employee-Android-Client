@@ -46,22 +46,23 @@ public class TokenHandler {
 		}
 		
 		void waitAndTryAgain () {
-			new Timer().schedule( 
-			        new TimerTask() {
-			            @Override
-			            public void run() {
-			        		if (credentials.isValid()) { 
-			        			try {
-									new TokenTimer();
-								} catch (UnsupportedEncodingException e) {
-									e.printStackTrace();
-								} catch (JSONException e) {
-									e.printStackTrace();
-								} 
-			        		} 
-			            }
-			        }, 5000 
-			);
+			System.out.println("Not gonna try again cause we testing");
+//			new Timer().schedule( 
+//			        new TimerTask() {
+//			            @Override
+//			            public void run() {
+//			        		if (credentials.isValid()) { 
+//			        			try {
+//									new TokenTimer();
+//								} catch (UnsupportedEncodingException e) {
+//									e.printStackTrace();
+//								} catch (JSONException e) {
+//									e.printStackTrace();
+//								} 
+//			        		} 
+//			            }
+//			        }, 5000 
+//			);
 		}
 	};
 	

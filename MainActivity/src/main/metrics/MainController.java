@@ -34,7 +34,7 @@ public class MainController {
 	}
 	
 	public void getReport() {
-		//will return the users daily report once logged in 
+		
 	}
 
 	public static void requestError(String errorString) {
