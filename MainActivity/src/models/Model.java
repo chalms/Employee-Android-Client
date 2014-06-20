@@ -16,7 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import factories.EquipmentFactory;
+import factories.PartFactory;
 import factories.TaskFactory;
 
 public class Model {
@@ -51,10 +51,10 @@ public class Model {
 		context = c; 
 	}
 
-	public void addEquipment(JSONArray equipment) {
-		for (int i = 0; i < equipment.length(); i++) {
+	public void addPart(JSONArray parts) {
+		for (int i = 0; i < parts.length(); i++) {
 			try {
-				this.report.add(EquipmentFactory.build((JSONObject) equipment.get(i), createID()));
+				this.report.add(PartFactory.build((JSONObject) parts.get(i), createID()));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -135,7 +135,7 @@ public class Model {
 			tempReport.setDescription(description);
 		}
 		
-		addEquipment(jObject.optJSONArray("equipment"));
+		addPart(jObject.optJSONArray("parts"));
 		addTask(jObject.optJSONArray("task")); 
 
 		if (cal.get(Calendar.DATE) == reportDate.get(Calendar.DATE)) {

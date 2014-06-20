@@ -18,8 +18,8 @@ public class TaskFactory {
 			Date completed_at = (Date) object.get("completed_at"); // <--- might fail there 
 			String geolocation_id = object.getString("geolocation_id");  
 			String name = actualID + report_id; 
-			String completed = object.getString("completed");
-			Task t = new Task(name, createID, actualID, description, completed_at, report_id, report_index, geolocation_id, completed);
+			Boolean completed = object.getBoolean("completed");
+			Task t = new Task(name, createID, actualID, completed_at, description, report_id, report_index, geolocation_id, completed);
 			return t; 
 		} catch (JSONException e) {
 			e.printStackTrace();

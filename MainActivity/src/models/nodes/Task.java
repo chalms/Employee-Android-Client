@@ -19,11 +19,11 @@ public class Task extends FireNode {
 	private Location geoLocation; //  geo_locations_id:
 	private static String tag = "Leaf";
 
-	public Task(String name, String id, String nodeID, String desc, Date scan, String repId, String repIndex, String geo, String pn) {
+	public Task(String name, String id, String nodeID, Date timeCompleted, String desc, String repId, String repIndex, String geo, Boolean completed) {
 		super(name, id, nodeID, tag);
-		setCompleted(Boolean.valueOf(pn));
+		setCompleted(Boolean.valueOf(completed));
 		setDescription(desc); 
-		setCompleted_at(scan); 
+		setCompleted_at(timeCompleted); 
 		setReportId(repId); 
 		setReportIndex(repIndex);
 		setGeoLocation(geo); 
