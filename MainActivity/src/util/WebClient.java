@@ -1,20 +1,17 @@
 package util;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-
 import main.metrics.InvalidParametersException;
 import main.metrics.MainActivity;
-
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import util.Token;
 import android.content.Context;
-
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class WebClient {
@@ -30,18 +27,9 @@ public class WebClient {
 	private Token token = null; 
 	private MainActivity main; 
 	
-	JsonHttpResponseHandler handler2 = new JsonHttpResponseHandler () {
-		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-			main.getMainController().setEmployeesFromResponse(response);
-		}
-		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
-			printValues(new String("success"), statusCode, headers, null, errorResponse);
-			main.getMainController().stateMessageError();
-		};
-	};
 		
 	JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
-		
+	
 		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 			printValues(new String("success"), statusCode, headers, null, response);
 			jsonReader.read(response);
@@ -69,10 +57,43 @@ public class WebClient {
 		main = c; 
 		context = c.getApplicationContext();
 		jsonReader = new JsonReader(c.getModel());
+	
+		
 	}
 	
 	public void setEmployees(String url) {
-		client.get(getAbsoluteUrl(url), handler2);
+		client.get(getAbsoluteUrl(url), new AsyncHttpResponseHandler() {
+
+		    @Override
+		    public void onStart() {
+		        // called before request is started
+		    }
+
+		    @Override
+		    public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+		        // called when response HTTP status is "200 OK"
+		    	System.out.println("SUCCESS");
+		    	String data = new String(response); 
+		    	System.out.println(data);
+		    	try {
+					JSONArray arr = new JSONArray(data);
+					main.getMainController().setEmployeesFromResponse(arr);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					main.getMainController().cancelasync(); 
+					e.printStackTrace();
+				}
+		    	
+		    	
+		    }
+
+		    @Override
+		    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+		        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+		    	System.out.println("FAILURE");
+		    }
+
+		});
 	}
 	
 	public void setToken(Token t) {

@@ -42,7 +42,7 @@ public class SignupController extends ActiveController {
 					getUserName().setTextColor(context.getResources().getColor(R.color.green));
 					if (context.getMainController().emailIsSetup(currentEmail)) {
 						getDialog().dismiss(); 
-						context.getMainController().setActiveController(context.getSignupController());
+						context.getMainController().setActiveController(context.getLoginController());
 						context.getLoginController().getUserName().setText(currentEmail);
 						context.getLoginController().showDialog();
 					}
@@ -56,8 +56,8 @@ public class SignupController extends ActiveController {
 	public SignupController(MainActivity c) {
 		this.context = c;
 		setDialog(new Dialog(this.context));
-		getDialog().setContentView(main.metrics.R.layout.login);
-		getDialog().setTitle("Login");
+		getDialog().setContentView(main.metrics.R.layout.signup);
+		getDialog().setTitle("Signup");
 		getUserName().setOnFocusChangeListener(focusChanged);
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(signupListener);
@@ -110,6 +110,7 @@ public class SignupController extends ActiveController {
 		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextEmployeeNameToSignup);
 	}
 	private JSONObject serialize() {
+		System.out.println("Attempting to serialize!");
 		JSONObject params = new JSONObject();
 		try {
 			params.put("password", getPassword().getText().toString());

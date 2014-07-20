@@ -2,17 +2,13 @@ package main.metrics;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-
+import java.util.concurrent.CountDownLatch;
 import models.Model;
-
-import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import util.WebClient;
 import views.LoadingBar;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class MainController {
 	private MainActivity context; 
@@ -23,7 +19,7 @@ public class MainController {
 	private HashMap <String, Boolean> companyEmployees =  new HashMap <String, Boolean> (); 
 	private int companyId = 1; 
 	private ActiveController controller = null; 
-
+	private CountDownLatch doneSignal = new CountDownLatch(1);
 
 	public MainController(MainActivity c) {
 		webClient = c.getWebClient();
@@ -39,16 +35,25 @@ public class MainController {
 		return controller; 
 	}
 	
-	public void setEmployeesFromResponse(JSONObject response){
+	public void setEmployeesFromResponse(JSONArray response){
 		System.out.println("BIG SUCCESS");
 		System.out.println(response.toString());
-		for (int i = 0; i < response.names().length(); i++) {
+		for (int i = 0; i < response.length(); i++) {
 			try {
-				companyEmployees.put(response.names().getJSONObject(i).getString("email"), response.names().getJSONObject(i).getBoolean("setup"));
+				System.out.println(response.getJSONObject(i).getString("email"));
+				System.out.println(response.getJSONObject(i).getString("setup"));
+				companyEmployees.put(response.getJSONObject(i).getString("email"), response.getJSONObject(i).getBoolean("setup"));
 			} catch (JSONException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			} 
+		}
+		System.out.println("CALLING COUNTDOWN");
+		try {
+			doneSignal.await();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -64,27 +69,50 @@ public class MainController {
 			context.getLoginController().makeToast("Sorry! You could not be logged in");
 		} 
 	}
-	private HashMap<String, Boolean> getCompanyEmployees() {
+	
+	private HashMap<String, Boolean> getCompanyEmployees() throws InterruptedException {
 		if (companyEmployees.isEmpty()) {
 			webClient.setEmployees(new String("/companies/" + String.valueOf(companyId) + "/employees.json"));	
+			System.out.println("Calling await!");
+		
+			doneSignal.countDown();
 		}
 		return companyEmployees;
 	}
 	
 	public void signup(JSONObject params) throws InvalidParametersException, JSONException, UnsupportedEncodingException {
-		if (params.getString("password") != params.getString("password_confirmation")) {
+		System.out.println(params.getString("password")); 
+		System.out.println(params.getString("password_confirmation")); 
+		
+		if (!params.getString("password").equals(params.getString("password_confirmation"))) {
 			throw new InvalidParametersException("Password and Password Confirmation do not match");
 		}
 		
 		webClient.signIn(params, "/signups.json"); 
 	}
 	
+	public void cancelasync() {
+		doneSignal.countDown();
+	}
+	
 	public boolean companyHasEmployee(String email) {
-		return getCompanyEmployees().containsKey(email);
+		try {
+			return getCompanyEmployees().containsKey(email);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public boolean emailIsSetup(String email) {
-		return getCompanyEmployees().get(email);
+		try {
+			return getCompanyEmployees().get(email);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public void getReport() {
