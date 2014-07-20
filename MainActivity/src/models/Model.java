@@ -109,19 +109,22 @@ public class Model {
 		}
 	}
 
-	public void setOrUpdateReport(JSONObject jObject) throws JSONException {
+	public void setOrUpdateReports(JSONObject jObject) throws JSONException {
 		if (this.reports == null) {
 			this.reports = new HashMap <String, Report> (); 
 		}
 		Report tempReport = new Report(context.getWebClient());
 		String checkinString = jObject.optString("checkin");
+		
 		if (checkinString != null) {
 			tempReport.setCheckin(stringToDate(checkinString));
 		}
+		
 		String checkoutString = jObject.optString("checkout");
 		if (checkoutString != null) {
 			tempReport.setCheckout(stringToDate(checkoutString));
 		}
+		
 		addManager(jObject.optJSONObject("manager"));
 		
 		setReportDate(tempReport, jObject);

@@ -25,6 +25,7 @@ import controllers.ListViewController;
 import controllers.LoginController;
 import controllers.NodeController;
 import controllers.SearchController;
+import controllers.SignupController;
 import controllers.TasksController;
 
 public class MainActivity extends Activity {
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
 	public SearchController searchController = null;
 	public TasksController tasksController = null;
 	public LoginController loginController = null; 
+	public SignupController signupController = null; 
 
 	SettingsView settingsView = null; // <-- for logout
 	private EditText editText; //<--- login input
@@ -336,6 +338,13 @@ public class MainActivity extends Activity {
 				getListViewController().goToEquipment(fixContent(content));
 			}	
 		}
+	}
+	
+	public SignupController getSignupController() {
+		if (signupController == null) {
+			signupController = new SignupController(this);
+		}
+		return signupController; 
 	}
 
 	public String fixContent(String c) {

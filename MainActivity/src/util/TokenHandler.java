@@ -17,14 +17,15 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class TokenHandler {
 
 	private AsyncHttpClient client = new AsyncHttpClient();
-	private String SESSION_START = "http://10.0.2.2:3000/api/sessions";
+	private String PREFIX = "http://10.0.2.2:3000/";
 	private UserAccount credentials;
 	private Token token = null;
 	private Context context;
 	private WebClient webClient; 
 	
-	TokenHandler(WebClient w) {
+	TokenHandler(WebClient w, UserAccount c) {
 		setWebClient(w); 
+		credentials = c; 
 	}
 
 	JsonHttpResponseHandler tokenHandler = new JsonHttpResponseHandler() {
@@ -34,64 +35,41 @@ public class TokenHandler {
 			WebClient.printValues(new String("success"), statusCode, headers,
 					null, response);
 			setAuthentication(response);
-			
 		}
 
 		public void onFailure(int statusCode, Header[] headers, Throwable e,
 				JSONObject errorResponse) {
 			WebClient.printValues(new String("success"), statusCode, headers,
 					null, errorResponse);
-			waitAndTryAgain();
 		}
 
-		void setAuthentication(JSONObject response) {
-			try {
-				token = new Token(response);
-				System.out.println("token was created!");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (token != null) {
-				System.out.println("setting authentication header!");
-				webClient.setToken(token);
-			}
-		}
-
-		void waitAndTryAgain() {
-			System.out.println("Not gonna try again cause we testing");
-			// new Timer().schedule(
-			// new TimerTask() {
-			// @Override
-			// public void run() {
-			// if (credentials.isValid()) {
-			// try {
-			// new TokenTimer();
-			// } catch (UnsupportedEncodingException e) {
-			// e.printStackTrace();
-			// } catch (JSONException e) {
-			// e.printStackTrace();
-			// }
-			// }
-			// }
-			// }, 5000
-			// );
-		}
 	};
-
+	
+	public void setAuthentication(JSONObject response) {
+		try {
+			token = new Token(response);
+			System.out.println("token was created!");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		if (token != null) {
+			System.out.println("setting authentication header!");
+			webClient.setToken(token);
+		}
+	}
 	private void getNewToken() throws JSONException,
 			UnsupportedEncodingException {
-		client.post(context, SESSION_START, credentials.asStringEntity(),
+		client.post(context, PREFIX + credentials.getUrl(), credentials.asStringEntity(),
 				"application/json", tokenHandler);
 	}
 
-	public TokenHandler(Context c, String email, String password, WebClient w)
+	public TokenHandler(Context c, JSONObject params, String url, WebClient w)
 			throws UnsupportedEncodingException, JSONException {
 		webClient = w;
 		context = c;
-		credentials = new UserAccount(email, password);
+		credentials = new UserAccount(params, url);
 		if (credentials.isValid()) {
-			new TokenTimer();
+			
 		}
 	}
 
@@ -125,44 +103,5 @@ public class TokenHandler {
 				getNewToken();
 			}
 		}
-	}
-
-	class UserAccount {
-		private String email = null;
-		private String password = null;
-
-		UserAccount(String email, String password) {
-			setEmail(email);
-			setPassword(password);
-		}
-
-		StringEntity asStringEntity() throws JSONException,
-				UnsupportedEncodingException {
-			JSONObject params = new JSONObject();
-			params.put("email", email);
-			params.put("password", password);
-			return new StringEntity(params.toString());
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public void setEmail(String email) {
-			this.email = email;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
-
-		public boolean isValid() {
-			return ((email != null) && (password != null));
-		}
-
 	}
 }

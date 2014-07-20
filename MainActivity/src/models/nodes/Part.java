@@ -15,8 +15,7 @@ public class Part extends Task {
 	private String taskID; 
 
 						// the params below need to be filtered first for nil
-						//id+report_id, createID, id, description, scanned_at, report_id, report_index, geolocation
-
+						//id+report_id, createID, id, description, scanned_at, report_id, report_index, geolocatio
 	
 	public Part(String name, String id, String nodeID, String desc, Date completedAt, Date scan, String repId, String repIndex, String geo, Boolean completed, String pn, String bCode) {
 		

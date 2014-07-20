@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+      <EditText
+        android:id="@+id/editTextUserNameToSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Username: "
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextPasswordToSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
+    
+    <EditText
+        android:id="@+id/editTextPasswordConfirmationToSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password Confirmation"
+        android:inputType="textPassword" />
+    
+    <EditText
+        android:id="@+id/editTextEmployeeNumberToSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Company Employee Number"
+        android:inputType="text" />
+    
+   <EditText
+        android:id="@+id/editTextEmployeeNameToSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Your Name"
+        android:inputType="text" />
+        
+    <Button
+        android:id="@+id/buttonSignUp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up" />
+
+</LinearLayout>

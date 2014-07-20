@@ -17,6 +17,7 @@ public class JsonReader {
 
 	public void read(JSONObject response){
 		try {
+			System.out.println("Reading response: " + response.toString());
 			JSONArray names = response.names();
 			int i = 0; 
 			while (i < names.length()) {
@@ -44,7 +45,7 @@ public class JsonReader {
 		try {
 			int i = 0;
 			while (i < reports.length()) {
-				model.setOrUpdateReport(reports.optJSONObject(i));
+				model.setOrUpdateReports(reports.optJSONObject(i));
 			}
 		} catch (Exception e) {
 			String errorString = e.getMessage();

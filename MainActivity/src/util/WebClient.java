@@ -18,7 +18,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class WebClient {
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
-	private static String DOMAIN = "http://10.0.2.2:3000/api";
+	private static String DOMAIN = "http://10.0.2.2:3000/";
 	private static TokenHandler tokenHandler = null; 
 	private JsonReader jsonReader;
 	JSONObject jsonParams = new JSONObject();
@@ -73,6 +73,10 @@ public class WebClient {
 	
 	public void login(String email, String password) throws UnsupportedEncodingException, JSONException {
 		setTokenHandler(new TokenHandler(context, email, password, this )); 
+	}
+	
+	public void get(String url, JsonHttpResponseHandler handler) {
+		client.get(getAbsoluteUrl(url), handler);
 	}
 
 	public void get(String url) {

@@ -74,39 +74,45 @@ public final class R {
         public static final int NACheckBox=0x7f090014;
         public static final int PassCheckBox=0x7f090012;
         public static final int PoorCheckBox=0x7f090013;
-        public static final int action_settings=0x7f090025;
+        public static final int action_settings=0x7f09002b;
         public static final int buttonAdminCreateAccount=0x7f090004;
         public static final int buttonCreateAccount=0x7f090009;
         public static final int buttonDelete=0x7f09000c;
         public static final int buttonDeleteAccount=0x7f090005;
         public static final int buttonSignIn=0x7f090018;
+        public static final int buttonSignUp=0x7f090024;
         public static final int button_search=0x7f09001d;
         public static final int connectData=0x7f09001b;
         public static final int descriptionSubmitButton=0x7f09000e;
         public static final int editText=0x7f090002;
         public static final int editText1=0x7f09000d;
         public static final int editTextConfirmPassword=0x7f090008;
+        public static final int editTextEmployeeNameToSignup=0x7f090023;
+        public static final int editTextEmployeeNumberToSignup=0x7f090022;
         public static final int editTextNewPassword=0x7f090007;
         public static final int editTextNewUsername=0x7f090006;
+        public static final int editTextPasswordConfirmationToSignup=0x7f090021;
         public static final int editTextPasswordToDelete=0x7f09000b;
         public static final int editTextPasswordToLogin=0x7f090017;
+        public static final int editTextPasswordToSignup=0x7f090020;
         public static final int editTextUserNameToLogin=0x7f090016;
+        public static final int editTextUserNameToSignup=0x7f09001f;
         public static final int enterIP=0x7f090019;
         public static final int enterPort=0x7f09001a;
-        public static final int goBackFromDocument=0x7f090022;
+        public static final int goBackFromDocument=0x7f090028;
         public static final int headerViewItem=0x7f09000f;
         public static final int listView1=0x7f090000;
-        public static final int scrollView1=0x7f090023;
-        public static final int searchButton=0x7f090021;
+        public static final int scrollView1=0x7f090029;
+        public static final int searchButton=0x7f090027;
         public static final int search_layout_id=0x7f09001c;
-        public static final int sendXmlButton=0x7f09001f;
+        public static final int sendXmlButton=0x7f090025;
         public static final int settingsLogout=0x7f09001e;
         public static final int spinner1=0x7f09000a;
         public static final int textViewItem=0x7f090010;
         public static final int tv_getdata_from_edittext=0x7f090001;
         public static final int tv_getdata_from_scanner=0x7f090003;
-        public static final int viewXmlButton=0x7f090020;
-        public static final int xml_doc_text=0x7f090024;
+        public static final int viewXmlButton=0x7f090026;
+        public static final int xml_doc_text=0x7f09002a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -122,8 +128,9 @@ public final class R {
         public static final int main=0x7f03000a;
         public static final int search_layout=0x7f03000b;
         public static final int settings=0x7f03000c;
-        public static final int top_list_header=0x7f03000d;
-        public static final int xml_doc_popup=0x7f03000e;
+        public static final int signup=0x7f03000d;
+        public static final int top_list_header=0x7f03000e;
+        public static final int xml_doc_popup=0x7f03000f;
     }
     public static final class menu {
         public static final int main=0x7f080000;
