@@ -1,7 +1,9 @@
 package util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
+import main.metrics.InvalidParametersException;
 import main.metrics.MainActivity;
 
 import org.apache.http.Header;
@@ -18,7 +20,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class WebClient {
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
-	private static String DOMAIN = "http://10.0.2.2:3000/";
+	private static String DOMAIN = "http://10.0.2.2:3000";
 	private static TokenHandler tokenHandler = null; 
 	private JsonReader jsonReader;
 	JSONObject jsonParams = new JSONObject();
@@ -28,7 +30,16 @@ public class WebClient {
 	private Token token = null; 
 	private MainActivity main; 
 	
-	
+	JsonHttpResponseHandler handler2 = new JsonHttpResponseHandler () {
+		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+			main.getMainController().setEmployeesFromResponse(response);
+		}
+		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
+			printValues(new String("success"), statusCode, headers, null, errorResponse);
+			main.getMainController().stateMessageError();
+		};
+	};
+		
 	JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 		
 		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -60,19 +71,22 @@ public class WebClient {
 		jsonReader = new JsonReader(c.getModel());
 	}
 	
+	public void setEmployees(String url) {
+		client.get(getAbsoluteUrl(url), handler2);
+	}
+	
 	public void setToken(Token t) {
 		this.token = t; 
 		this.setAuthenticationHeader(token);
 		sendLoginNotification();
-	//	client.get("http://localhost:3000/api/users/index.json",params,rHandler  );
 	}
 	
 	public void sendLoginNotification() {
 		this.main.getMainController().loggedIn();
 	}
 	
-	public void login(String email, String password) throws UnsupportedEncodingException, JSONException {
-		setTokenHandler(new TokenHandler(context, email, password, this )); 
+	public void signIn(JSONObject params, String url) throws UnsupportedEncodingException, JSONException, InvalidParametersException {
+		setTokenHandler(new TokenHandler(context, params, url, this )); 
 	}
 	
 	public void get(String url, JsonHttpResponseHandler handler) {

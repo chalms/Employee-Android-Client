@@ -1,16 +1,9 @@
 package controllers;
 
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-
+import main.metrics.ActiveController;
 import main.metrics.MainActivity;
 import main.metrics.R;
 import android.app.Dialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -18,11 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginController {
-
-	public MainActivity context;
-	private final Dialog dialog;
-
+public class LoginController extends ActiveController {
 
 	private OnClickListener loginListener = new OnClickListener() {
 		@Override
@@ -46,6 +35,7 @@ public class LoginController {
 				if (context.getMainController().companyHasEmployee(currentEmail)) {
 					getUserName().setTextColor(context.getResources().getColor(R.color.green));
 					if (!context.getMainController().emailIsSetup(currentEmail)) {
+						context.getMainController().setActiveController(context.getSignupController());
 						dismissDialog(); 
 						context.getSignupController().getUserName().setText(currentEmail);
 						context.getSignupController().showDialog();
@@ -59,9 +49,9 @@ public class LoginController {
 
 	public LoginController(MainActivity c) {
 		this.context = c;
-		this.dialog = new Dialog(this.context);
-		this.dialog.setContentView(main.metrics.R.layout.login);
-		this.dialog.setTitle("Login");
+		setDialog(new Dialog(this.context));
+		getDialog().setContentView(main.metrics.R.layout.login);
+		getDialog().setTitle("Login");
 		getUserName().setOnFocusChangeListener(focusChanged);
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(loginListener);
@@ -76,7 +66,7 @@ public class LoginController {
 	}
 
 	private Button getSignInButton() {
-		return (Button) this.dialog.findViewById(main.metrics.R.id.buttonSignIn);
+		return (Button) getDialog().findViewById(main.metrics.R.id.buttonSignIn);
 	}
 
 	public void makeToast(String butter) {
@@ -85,21 +75,21 @@ public class LoginController {
 	}
 
 	public void dismissDialog() {
-		this.dialog.dismiss();
+		getDialog().dismiss();
 		return;
 	}
 
 	public void showDialog() {
-		this.dialog.show();
+		getDialog().show();
 		return;
 	}
 
 	public EditText getUserName() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextUserNameToLogin);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextUserNameToLogin);
 	}
 
 	public EditText getPassword() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextPasswordToLogin);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextPasswordToLogin);
 	}
 
 	public void authenticated(final EditText password, final EditText username) {

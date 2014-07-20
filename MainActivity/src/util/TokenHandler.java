@@ -3,21 +3,18 @@ package util;
 import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import main.metrics.InvalidParametersException;
 import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.content.Context;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class TokenHandler {
 
 	private AsyncHttpClient client = new AsyncHttpClient();
-	private String PREFIX = "http://10.0.2.2:3000/";
+	private String PREFIX = "http://10.0.2.2:3000";
 	private UserAccount credentials;
 	private Token token = null;
 	private Context context;
@@ -31,7 +28,6 @@ public class TokenHandler {
 	JsonHttpResponseHandler tokenHandler = new JsonHttpResponseHandler() {
 		public void onSuccess(int statusCode, Header[] headers,
 				JSONObject response) {
-			credentials.password = null; 
 			WebClient.printValues(new String("success"), statusCode, headers,
 					null, response);
 			setAuthentication(response);
@@ -60,16 +56,16 @@ public class TokenHandler {
 	private void getNewToken() throws JSONException,
 			UnsupportedEncodingException {
 		client.post(context, PREFIX + credentials.getUrl(), credentials.asStringEntity(),
-				"application/json", tokenHandler);
+				"json", tokenHandler);
 	}
 
 	public TokenHandler(Context c, JSONObject params, String url, WebClient w)
-			throws UnsupportedEncodingException, JSONException {
+			throws UnsupportedEncodingException, JSONException, InvalidParametersException {
 		webClient = w;
 		context = c;
 		credentials = new UserAccount(params, url);
 		if (credentials.isValid()) {
-			
+			getNewToken(); 
 		}
 	}
 

@@ -1,13 +1,15 @@
 package controllers;
 
-import org.apache.http.Header;
+import java.io.UnsupportedEncodingException;
+
+import main.metrics.ActiveController;
+import main.metrics.InvalidParametersException;
+import main.metrics.MainActivity;
+import main.metrics.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import main.metrics.MainActivity;
-import main.metrics.R;
 import android.app.Dialog;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,19 +18,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class SignupController {
-
-	public MainActivity context;
-	private final Dialog dialog;
-	private int companyId = 1; 
-
+public class SignupController extends ActiveController {
 
 	private OnClickListener signupListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			try {
-				authenticated(send());
+				send();
 			} catch (Exception e) {
 				System.out.println(e.getCause().getMessage());
 				makeToast("Invalid! Try again");
@@ -44,7 +41,8 @@ public class SignupController {
 				if (context.getMainController().companyHasEmployee(currentEmail)) {
 					getUserName().setTextColor(context.getResources().getColor(R.color.green));
 					if (context.getMainController().emailIsSetup(currentEmail)) {
-						dialog.dismiss(); 
+						getDialog().dismiss(); 
+						context.getMainController().setActiveController(context.getSignupController());
 						context.getLoginController().getUserName().setText(currentEmail);
 						context.getLoginController().showDialog();
 					}
@@ -57,9 +55,9 @@ public class SignupController {
     
 	public SignupController(MainActivity c) {
 		this.context = c;
-		this.dialog = new Dialog(this.context);
-		this.dialog.setContentView(main.metrics.R.layout.login);
-		this.dialog.setTitle("Login");
+		setDialog(new Dialog(this.context));
+		getDialog().setContentView(main.metrics.R.layout.login);
+		getDialog().setTitle("Login");
 		getUserName().setOnFocusChangeListener(focusChanged);
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(signupListener);
@@ -73,7 +71,7 @@ public class SignupController {
 	}
 
 	private Button getSignInButton() {
-		return (Button) this.dialog.findViewById(main.metrics.R.id.buttonSignUp);
+		return (Button) getDialog().findViewById(main.metrics.R.id.buttonSignUp);
 	}
 
 	public void makeToast(String butter) {
@@ -82,34 +80,34 @@ public class SignupController {
 	}
 
 	public void dismissDialog() {
-		this.dialog.dismiss();
+		getDialog().dismiss();
 		return;
 	}
 
 	public void showDialog() {
-		this.dialog.show();
+		getDialog().show();
 		return;
 	}
 	
 
 	public EditText getUserName() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextUserNameToSignup);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextUserNameToSignup);
 	}
 	
 	public EditText getPassword() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextPasswordToSignup);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextPasswordToSignup);
 	}
 	
 	public EditText getPasswordConfirmation() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextPasswordConfirmationToSignup);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextPasswordConfirmationToSignup);
 	}
 
 	public EditText getEmployeeNumber() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextEmployeeNumberToSignup);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextEmployeeNumberToSignup);
 	}
 	
 	public EditText getName() {
-		return (EditText) this.dialog.findViewById(main.metrics.R.id.editTextEmployeeNameToSignup);
+		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextEmployeeNameToSignup);
 	}
 	private JSONObject serialize() {
 		JSONObject params = new JSONObject();
@@ -121,23 +119,28 @@ public class SignupController {
 			params.put("employee_number", getEmployeeNumber().getText().toString());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			Toast.makeText(context, "Invalid Login!", Toast.LENGTH_SHORT);
+			makeToast("Invalid Login!");
 			params = null; 
 			e.printStackTrace();
 		}
 		return params; 
 	}
 	
-	public boolean send() {
+
+	public void send() {
 		JSONObject params = this.serialize(); 
-		context.getMainController().signup(params);
-	}
-	
-	public void authenticated(final EditText password, final EditText username) {
 		try {
-			this.context.getMainController().login(username.getText().toString(), password.getText().toString());
-		} catch (Exception e) {
+			context.getMainController().signup(params);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			makeToast("Invalid signup!");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			makeToast("Invalid signup!");
+		} catch (InvalidParametersException e) {
+			e.printStackTrace();
 			makeToast(e.getMessage());
 		}
 	}
+
 }

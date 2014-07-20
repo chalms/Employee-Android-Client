@@ -12,8 +12,10 @@ public class UserAccount {
 		private String email = null;
 		private String password = null;
 		private JSONObject params = null; 
+		private String url = null; 
 
-		UserAccount(JSONObject p) throws JSONException, InvalidParametersException {
+		UserAccount(JSONObject p, String u) throws JSONException, InvalidParametersException {
+			url = u; 
 			params = p; 
 			setEmail(params.getString("email"));
 			setPassword(params.getString("password"));
@@ -34,6 +36,10 @@ public class UserAccount {
 
 		public String getPassword() {
 			return password;
+		}
+		
+		public String getUrl() {
+			return url; 
 		}
 
 		public void setPassword(String password) {
