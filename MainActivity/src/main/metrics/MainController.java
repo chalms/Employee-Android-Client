@@ -1,14 +1,20 @@
 package main.metrics;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
+
 import models.Model;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import util.WebClient;
+
+import errors.InvalidParametersException;
 import views.LoadingBar;
+import web.WebClient;
 
 public class MainController {
 	private MainActivity context; 
@@ -78,6 +84,13 @@ public class MainController {
 			doneSignal.countDown();
 		}
 		return companyEmployees;
+	}
+	
+	public ArrayList <String> getCompanyList() {
+		BlockingQueue<Result> blockingQueue = new ArrayBlockingQueue<Result>(1);
+		
+		return null;
+		
 	}
 	
 	public void signup(JSONObject params) throws InvalidParametersException, JSONException, UnsupportedEncodingException {

@@ -1,10 +1,10 @@
-package util;
+package models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-class Token {
+public class Token {
 	private String token = null;
 	public double ttl = 0;
 	private Integer userId = null;

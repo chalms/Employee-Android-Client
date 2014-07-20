@@ -1,4 +1,4 @@
-package main.metrics;
+package errors;
 
 public class InvalidParametersException extends Exception {
 	/**

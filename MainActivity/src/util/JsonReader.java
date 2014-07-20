@@ -7,10 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class JsonReader {
+public abstract class JsonReader {
 
 	private Model model;
-
+	
+	public JsonReader() {} 
 	public JsonReader(Model m) {
 		this.model = m;
 	}

@@ -5,8 +5,8 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import util.WebClient;
 import views.ListItemContent;
+import web.WebClient;
 import android.location.Location;
 
 public class Task extends FireNode {

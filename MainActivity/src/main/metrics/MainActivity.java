@@ -4,8 +4,9 @@ import java.util.Stack;
 
 import models.Model;
 import models.nodes.FireNode;
-import util.WebClient;
 import views.SettingsView;
+import web.Router;
+import web.WebClient;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.BoringLayout.Metrics;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -27,6 +29,7 @@ import controllers.NodeController;
 import controllers.SearchController;
 import controllers.SignupController;
 import controllers.TasksController;
+import controllers.TokenController;
 
 public class MainActivity extends Activity {
 
@@ -61,7 +64,8 @@ public class MainActivity extends Activity {
 	public TasksController tasksController = null;
 	public LoginController loginController = null; 
 	public SignupController signupController = null; 
-
+	public TokenController tokenController = null; 
+	
 	SettingsView settingsView = null; // <-- for logout
 	private EditText editText; //<--- login input
 
@@ -71,6 +75,7 @@ public class MainActivity extends Activity {
 
 	//Utilities ----> 
 	private WebClient webClient = null;
+	private Router router; 
 
 
 	//Initial settings --> 
@@ -94,7 +99,18 @@ public class MainActivity extends Activity {
 			this.getListViewController().renderListView();
 		}		
 	}
-
+	
+	public Router getRouter() {
+		if (router == null) {
+			router = new Router(this);
+		}
+		return router;
+	}
+	
+	public String getServerName() {
+		return this.getString(main.metrics.R.string.server); 
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(main.metrics.R.menu.main, menu);
@@ -265,6 +281,13 @@ public class MainActivity extends Activity {
 			this.mainController = new MainController(this); 
 		}
 		return this.mainController; 
+	}
+	
+	public TokenController getTokenController() {
+		if (this.tokenController == null) {
+			this.tokenController = new TokenController(this); 
+		}
+		return this.tokenController; 
 	}
 	
 	

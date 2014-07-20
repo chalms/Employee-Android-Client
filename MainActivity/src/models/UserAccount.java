@@ -1,12 +1,12 @@
-package util;
+package models;
 
 import java.io.UnsupportedEncodingException;
-
-import main.metrics.InvalidParametersException;
 
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import errors.InvalidParametersException;
 
 public class UserAccount {
 		private String email = null;
@@ -14,14 +14,14 @@ public class UserAccount {
 		private JSONObject params = null; 
 		private String url = null; 
 
-		UserAccount(JSONObject p, String u) throws JSONException, InvalidParametersException {
+		public UserAccount(JSONObject p, String u) throws JSONException, InvalidParametersException {
 			url = u; 
 			params = p; 
 			setEmail(params.getString("email"));
 			setPassword(params.getString("password"));
 		}
 
-		StringEntity asStringEntity() throws JSONException,
+		public StringEntity asStringEntity() throws JSONException,
 				UnsupportedEncodingException {
 			return new StringEntity(params.toString());
 		}

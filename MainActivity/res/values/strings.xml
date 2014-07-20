@@ -15,4 +15,5 @@
     <string name="list_view_title">Items</string>
     <string name="str_data"></string>
     <string name="str_wait_data"></string>
+    <string name="server">http://10.0.2.2:3000</string>
 </resources>

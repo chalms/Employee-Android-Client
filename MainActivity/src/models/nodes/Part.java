@@ -5,7 +5,7 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import util.WebClient;
+import web.WebClient;
 
 public class Part extends Task {
 
