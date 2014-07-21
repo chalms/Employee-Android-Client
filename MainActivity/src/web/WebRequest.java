@@ -1,26 +1,43 @@
 package web;
-
-
-
 import util.JsonReader;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class WebRequest {
 	private String url; 
 	private AsyncHttpResponseHandler handler; 
 	private JsonReader reader; 
-	
-	private ProgressDisplay progressDisplay = null; 
+	public CallbackWrapper callbackWrapper; 
+	public RequestWrapper requestWrapper; 
+	private ProgressDisplay progressDisplay = null;
 	
 	public WebRequest(String u, AsyncHttpResponseHandler h) {
-			setUrl(u); setHandler(h); 
+		setUrl(u); setHandler(h); 
+		this.setRequestWrapper();
 	}
-	public WebRequest(String u, AsyncHttpResponseHandler h, ProgressDisplay p) {
-		setUrl(u); setHandler(h); setProgressDisplay(p); 
+
+	public WebRequest(String u, AsyncHttpResponseHandler h, CallbackWrapper c) {
+		setUrl(u);
+		setHandler(h);
+		callbackWrapper = c; 
 	}
-	public WebRequest(String u, AsyncHttpResponseHandler h, JsonReader j) {
-		setUrl(u); setHandler(h); setReader(j); 
+	
+	void setRequestWrapper() {
+		requestWrapper = new RequestWrapper() {
+			@Override
+			public int executeRequest() {
+				WebClient.get(url, handler);
+				return 0;
+			}
+		};
+		if (callbackWrapper == null) {
+			callbackWrapper = new CallbackWrapper() {
+				@Override
+				public void render() {
+					return; 
+					// TODO Auto-generated method stub
+				}
+			};
+		}
 	}
 	
 	public String getUrl() {
@@ -54,8 +71,7 @@ public class WebRequest {
 //	}
 //	
 //	public void sendLoginNotification() {
-//		this.main.getMainController().loggedIn();
-//		sendLoginNotification();
+//		
 //	}
 //	
 //	public void signIn(JSONObject params, String url) throws UnsupportedEncodingException, JSONException, InvalidParametersException {

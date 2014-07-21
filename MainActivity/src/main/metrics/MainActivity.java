@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.getWebClient();
+		this.getRouter();
 		this.getNodeController();
 		globalID = 0;
 		numberHeaders = 0;

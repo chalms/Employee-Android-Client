@@ -40,110 +40,43 @@ public class SignupController extends ActiveController {
 			
 		}
 	};
-	
-	private SpinnerAdapter adaptor = new SpinnerAdapter() {
 
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getItemViewType(int arg0) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public View getView(int arg0, View arg1, ViewGroup arg2) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public int getViewTypeCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public boolean hasStableIds() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void registerDataSetObserver(DataSetObserver arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void unregisterDataSetObserver(DataSetObserver arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public View getDropDownView(int arg0, View arg1, ViewGroup arg2) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-	};
 	private OnFocusChangeListener focusChanged = new OnFocusChangeListener () {
 		@Override
 		public void onFocusChange(View arg0, boolean arg1) {
 			if (!arg1) {
-				String currentEmail = ((EditText) arg0).getText().toString(); 
-				if (context.getMainController().companyHasEmployee(currentEmail)) {
-					getUserName().setTextColor(context.getResources().getColor(R.color.green));
-					if (context.getMainController().emailIsSetup(currentEmail)) {
-						getDialog().dismiss(); 
-						context.getMainController().setActiveController(context.getLoginController());
-						context.getLoginController().getUserName().setText(currentEmail);
-						context.getLoginController().showDialog();
-					}
-				} else {
-					getUserName().setTextColor(context.getResources().getColor(R.color.red));
+				 try {
+					context.getMainController().getCompanyEmployees();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
 	};
     
+	
+	public String controllerName() {
+		return "signup";
+	}
+	
 	public SignupController(MainActivity c) {
 		this.context = c;
 		setDialog(new Dialog(this.context));
 		getDialog().setContentView(main.metrics.R.layout.signup);
 		getDialog().setTitle("Signup");
-		
-		List<String> spinnerArray = context.getMainController().getCompaniesList(); 
-	    ArrayAdapter <String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
-	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		getSpinner().setAdapter(adaptor);
+		setSpinnerAdapter();
 		getUserName().setOnFocusChangeListener(focusChanged);
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(signupListener);
 		showDialog();
+	}
+	
+	public void setSpinnerAdapter(){
+		List<String> spinnerArray = context.getMainController().getCompaniesList(); 
+	    ArrayAdapter <String> adapter = new ArrayAdapter<String> (context, android.R.layout.simple_spinner_item, spinnerArray);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		getSpinner().setAdapter(adapter);
 	}
 	
 	 public void login() {

@@ -1,10 +1,15 @@
 package util;
 
+import models.Model;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DefaultReader extends JsonReader {
+	public DefaultReader(Model m) {
+		super(m);
+	}
 
 	@Override
 	public void read(JSONObject response) {

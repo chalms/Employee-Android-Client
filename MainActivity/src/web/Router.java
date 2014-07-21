@@ -1,28 +1,14 @@
 package web;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import main.metrics.MainActivity;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import util.DefaultReader;
-import web.TokenHandler.TokenTimer;
-import android.content.Context;
-
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
-import errors.InvalidParametersException;
-import main.metrics.MainActivity;
-import models.Token;
-import models.UserAccount;
 
 
 public class Router extends WebObject {
@@ -31,17 +17,18 @@ public class Router extends WebObject {
 	public Router(MainActivity c) {
 		super(c);
 	}
+	
 	public void addRoute(String url) {
-		WebRequest request = new WebRequest(url, new DefaultJsonResponseHandler(), new DefaultReader());
+		WebRequest request = new WebRequest(url, new DefaultJsonResponseHandler());
 		routes.put(request.getUrl(), request);
 	}
 	public void addRoute(String url, AsyncHttpResponseHandler h) {
-		WebRequest request = new WebRequest(url, h, new DefaultReader());
+		WebRequest request = new WebRequest(url, h);
 		routes.put(request.getUrl(), request);
 	}
 	
-	public void addRoute(String url, AsyncHttpResponseHandler h, JsonReader reader) {
-		WebRequest request = new WebRequest(url, h, reader);
+	public void addRoute(String url, AsyncHttpResponseHandler h, CallbackWrapper callback) {
+		WebRequest request = new WebRequest(url, h, callback);
 		routes.put(request.getUrl(), request);
 	}
 	
@@ -50,14 +37,52 @@ public class Router extends WebObject {
 		addRoute("/chats", new DefaultJsonResponseHandler()); 
 		addRoute("/clients", new DefaultJsonResponseHandler()); 
 		addRoute("/companies",  new CompaniesResponseHandler());
+		addRoute("/logins", new LoginsResponseHandler(), new LoginsCallbackWrapper());
+		addRoute("/signups", new SignupsResponseHandler(), new SignupsCallbackWrapper());
 	}
 	
-	public void issueRequest(String url, JSONObject params) {
+	public void post(String url, JSONObject params) {
+		WebRequest request = routes.get(url);
+		request.setRequestWrapper();
+		new Synchronizer(request.callbackWrapper, request.requestWrapper);
+	}
+	
+	public void get(String url) {
+		WebRequest request = routes.get(url);
+		request.setRequestWrapper();
+		new Synchronizer(request.callbackWrapper, request.requestWrapper);
+	}
+	
+	class SignupsCallbackWrapper extends CallbackWrapper {
+		SignupsCallbackWrapper() {
+			super();
+		}
+		public void render() {
+			getMainContext().getSignupController().dismissDialog();
+			getMainController().loggedIn();
+		}
+	}
+	
+	class LoginsCallbackWrapper extends CallbackWrapper {
+		LoginsCallbackWrapper() {
+			super(); 
+		}
+		public void render() {
+			getMainContext().getLoginController().dismissDialog();
+			getMainController().loggedIn();
+		}
+	}
+	
+	class LoginsResponseHandler extends AsyncHttpResponseHandler {
+		public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+		}
+		public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+	    	System.out.println("FAILURE");
+	    }
+	}
+	
+	class SignupsResponseHandler extends  AsyncHttpResponseHandler {
 		
-	}
-	
-	public WebRequest getRoute(String url) {
-		return routes.get(url);
 	}
 	
 	class CompaniesResponseHandler extends AsyncHttpResponseHandler {
@@ -79,7 +104,7 @@ public class Router extends WebObject {
 	class DefaultJsonResponseHandler extends JsonHttpResponseHandler {
 		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 			WebClient.printValues(new String("success"), statusCode, headers, null, response);
-			getWebClient().getJsonReader().read(response);
+			new DefaultReader(getModel()).read(response);
 		}
 		
 		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {

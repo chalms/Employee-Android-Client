@@ -8,12 +8,18 @@ import java.util.concurrent.CountDownLatch;
 
 import models.Model;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.widget.EditText;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import errors.InvalidParametersException;
 import views.LoadingBar;
+import web.CallbackWrapper;
 import web.WebClient;
 
 public class MainController {
@@ -41,25 +47,26 @@ public class MainController {
 		return controller; 
 	}
 	
+	public void printParams(JSONArray response, int i) {
+		try {
+			System.out.println(response.getJSONObject(i).getString("email"));
+			System.out.println(response.getJSONObject(i).getString("setup"));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void setEmployeesFromResponse(JSONArray response){
-		System.out.println("BIG SUCCESS");
 		System.out.println(response.toString());
 		for (int i = 0; i < response.length(); i++) {
 			try {
-				System.out.println(response.getJSONObject(i).getString("email"));
-				System.out.println(response.getJSONObject(i).getString("setup"));
+				printParams(response, i);
 				companyEmployees.put(response.getJSONObject(i).getString("email"), response.getJSONObject(i).getBoolean("setup"));
 			} catch (JSONException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			} 
-		}
-		System.out.println("CALLING COUNTDOWN");
-		try {
-			doneSignal.await();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
@@ -67,7 +74,7 @@ public class MainController {
 		JSONObject params = new JSONObject(); 
 		params.put("email", username);
 		params.put("password", password);
-		webClient.signIn(params, "/logins.json");
+		context.getRouter().post("/signups", params);
 	}
 	
 	public void stateMessageError() {
@@ -76,41 +83,79 @@ public class MainController {
 		} 
 	}
 	
-	private HashMap<String, Boolean> getCompanyEmployees() throws InterruptedException {
-		if (companyEmployees.isEmpty()) {
-			webClient.setEmployees(new String("/companies/" + String.valueOf(companyId) + "/employees.json"));	
-			System.out.println("Calling await!");
-		
-			doneSignal.countDown();
+	private void respondToValidity() {
+		if (this.getActiveController() == null) return; 
+		EditText t = this.getActiveController().getUserName();
+		String str = t.getText().toString();
+		if (companyEmployees.containsKey(str)) {
+			if (this.getActiveController().controllerName().equals("login")) {
+				t.setTextColor(context.getResources().getColor(main.metrics.R.color.green));
+				return ; 
+			} else {
+				context.getLoginController().dismissDialog();
+				this.setActiveController(context.getSignupController());
+				context.getSignupController().showDialog();
+				t = this.getActiveController().getUserName();
+				t.setTextColor(context.getResources().getColor(main.metrics.R.color.green));
+			}
+		} else {
+			if  (this.getActiveController().controllerName().equals("signup")) {
+					t.setTextColor(context.getResources().getColor(main.metrics.R.color.red));
+					return ; 
+			} else {
+				context.getSignupController().dismissDialog();
+				this.setActiveController(context.getLoginController());
+				context.getLoginController().showDialog();
+				t = this.getActiveController().getUserName();
+				t.setTextColor(context.getResources().getColor(main.metrics.R.color.red));
+			}
 		}
-		return companyEmployees;
 	}
 	
-	public ArrayList <String> getCompanyList() {
-		BlockingQueue<Result> blockingQueue = new ArrayBlockingQueue<Result>(1);
-		
-		return null;
+	public void getCompanyEmployees() throws InterruptedException {
+		if (companyEmployees.isEmpty()) {
+			context.getRouter().addRoute("/employees", 
+				(new AsyncHttpResponseHandler() {
+					public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+						String str = new String(response);
+						JSONArray employees;
+						try {
+							employees = new JSONArray(str);
+						} catch (JSONException e) {
+							System.out.println("The string could not be parsed!");
+							return; 
+						}
+						setEmployeesFromResponse(employees);
+					}
+					public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+				    	System.out.println("FAILURE");
+				    }
+				}), (new CallbackWrapper () {
+					public void render() {
+						respondToValidity();
+					};
+				})
+			);
+			context.getRouter().get("/employees");
+		} else {
+			respondToValidity(); 
+		}
 		
 	}
 	
 	public void signup(JSONObject params) throws InvalidParametersException, JSONException, UnsupportedEncodingException {
-		System.out.println(params.getString("password")); 
-		System.out.println(params.getString("password_confirmation")); 
-		
 		if (!params.getString("password").equals(params.getString("password_confirmation"))) {
 			throw new InvalidParametersException("Password and Password Confirmation do not match");
 		}
-		
-		webClient.signIn(params, "/signups.json"); 
+		context.getRouter().get("/signups");
 	}
 	
-	public void cancelasync() {
-		doneSignal.countDown();
-	}
 	
 	public boolean companyHasEmployee(String email) {
 		try {
-			return getCompanyEmployees().containsKey(email);
+			if (companyEmployees.containsKey(email)) {
+				
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

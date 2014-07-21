@@ -1,68 +1,63 @@
 package web;
 
 import java.io.UnsupportedEncodingException;
+
 import main.metrics.MainActivity;
 import models.Token;
+
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
-import org.json.JSONException;
 import org.json.JSONObject;
-import util.JsonReader;
+
 import android.content.Context;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class WebClient {
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
-	private static TokenHandler tokenHandler = null; 
-	private JsonReader jsonReader;
-	JSONObject jsonParams = new JSONObject();
-	Context context;
+	static Context context;
 	int count = 0;
 	public static boolean loggedIn = false; 
 	private Token token = null; 
-	private MainActivity main; 
+	private static MainActivity main; 
+	private static String url;
 	
-	public WebClient(MainActivity c) {
+	static public void build(MainActivity c) {
 		setMain(c); 
+		setUrl(main.getServerName());
 		context = c.getApplicationContext();
-		setJsonReader(new JsonReader(c.getModel()));
 	}
 	
-	public AsyncHttpClient getClient() {
+	static public AsyncHttpClient getClient() {
 		return client; 
 	}
 	
-	
-	public void get(String url, AsyncHttpResponseHandler handler) {
-		client.get(url, handler);
+	static public String getAbsoluteUrl(String u) {
+		return new String(url + u);
 	}
-
 	
-	public void post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
-		System.out.println(params.toString());
+	static public void get(String url, AsyncHttpResponseHandler handler) {
+		client.get(getAbsoluteUrl(url) + ".json", handler);
+	}
+	
+	static public StringEntity getStringEntity(JSONObject params) {
 		StringEntity entity = null;
 		try {
 			entity = new StringEntity(params.toString());
 			System.out.println("Entity is:" + entity.toString());
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			return ; 
 		}
-        client.post(context, url, entity, "application/json", responseHandler);
-	}
-
-	public void addParams(String key, String value) {
-		try {
-			jsonParams.put(key , value);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return entity; 
 	}
 	
-	static void printValues(String type, int statusCode, Header[] headers, Throwable e, JSONObject response) {
+	static public void post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
+        client.post(context, getAbsoluteUrl(url), getStringEntity(params) , "application/json", responseHandler);
+	}
+	
+	public static void printValues(String type, int statusCode, Header[] headers, Throwable e, JSONObject response) {
 		System.out.println(type + " request with status code: " + String.valueOf(statusCode));
 		if (response != null) {
 			System.out.println("JSON -> " + response.toString());
@@ -76,24 +71,17 @@ public class WebClient {
 		}	
 	}
 
-	public void setAuthenticationHeader(Token token2) {
+	static public void setAuthenticationHeader(Token token2) {
 		client.addHeader("AUTHORIZATION", token2.toString());
 	}
 
-	public JsonReader getJsonReader() {
-		return jsonReader;
-	}
-
-	public void setJsonReader(JsonReader jsonReader) {
-		this.jsonReader = jsonReader;
-	}
 
 	public MainActivity getMain() {
 		return main;
 	}
 
-	public void setMain(MainActivity main) {
-		this.main = main;
+	public static void setMain(MainActivity m) {
+		main = m;
 	}
 
 	public Token getToken() {
@@ -103,4 +91,13 @@ public class WebClient {
 	public void setToken(Token token) {
 		this.token = token;
 	}
+
+	public static String getUrl() {
+		return url;
+	}
+
+	public static void setUrl(String url) {
+		WebClient.url = url;
+	}
+
 }

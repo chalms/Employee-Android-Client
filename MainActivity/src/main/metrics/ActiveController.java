@@ -1,6 +1,7 @@
 package main.metrics;
 
 import android.app.Dialog;
+import android.widget.EditText;
 
 public abstract class ActiveController {
 	
@@ -16,5 +17,10 @@ public abstract class ActiveController {
 	}
 	public MainActivity context;
 	private Dialog dialog;
-	
+	public EditText getUserName() {
+		return null;
+	}
+	public String controllerName() {
+		return null;
+	}
 }

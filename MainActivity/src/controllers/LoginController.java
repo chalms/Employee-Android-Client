@@ -2,7 +2,6 @@ package controllers;
 
 import main.metrics.ActiveController;
 import main.metrics.MainActivity;
-import main.metrics.R;
 import android.app.Dialog;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,27 +25,21 @@ public class LoginController extends ActiveController {
 			
 		}
 	};
-
+	
 	private OnFocusChangeListener focusChanged = new OnFocusChangeListener () {
 		@Override
 		public void onFocusChange(View arg0, boolean arg1) {
 			if (!arg1) {
-				String currentEmail = ((EditText) arg0).getText().toString(); 
-				if (context.getMainController().companyHasEmployee(currentEmail)) {
-					getUserName().setTextColor(context.getResources().getColor(R.color.green));
-					if (!context.getMainController().emailIsSetup(currentEmail)) {
-						context.getMainController().setActiveController(context.getSignupController());
-						dismissDialog(); 
-						context.getSignupController().getUserName().setText(currentEmail);
-						context.getSignupController().showDialog();
-					}
-				} else {
-					getUserName().setTextColor(context.getResources().getColor(R.color.red));
+				 try {
+					context.getMainController().getCompanyEmployees();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
 	};
-
+	
 	public LoginController(MainActivity c) {
 		this.context = c;
 		setDialog(new Dialog(this.context));
@@ -57,6 +50,10 @@ public class LoginController extends ActiveController {
 		btnSignIn.setOnClickListener(loginListener);
 		System.out.println("Showing Login Controller");
 		showDialog();
+	}
+	
+	public String controllerName() {
+		return "login";
 	}
 	
 	 public void login() {

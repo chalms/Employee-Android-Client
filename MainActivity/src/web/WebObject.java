@@ -12,12 +12,11 @@ public class WebObject {
 	public String domain;
 	
 	public WebObject(MainActivity c) {
-		setMainContext(c); 
+		setMainContext(c);  
 		setMainController(getMainContext().getMainController());
-		setModel(mainController.getModel());
+		setModel(getMainController().getModel());
 		setWebClient(getMainContext().getWebClient());
-		domain = getMainContext().getString(main.metrics.R.string.server);
-		
+		domain = getMainContext().getServerName();
 	}
 	
 	public void setMainController(MainController m) {
@@ -43,13 +42,13 @@ public class WebObject {
 	public void setModel(Model model) {
 		this.model = model;
 	}
-
+	
+	public void setMainContext(MainActivity c){
+		context = c;
+	}
+	
 	public MainActivity getMainContext() {
 		return context;
-	}
-
-	public void setMainContext(MainActivity context) {
-		this.context = context;
 	}
 	
 }
