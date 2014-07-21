@@ -3,7 +3,11 @@ package models.nodes;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import views.ListItemContent;
+import web.Router;
 //import java.util.Map;
 import web.WebClient;
 
@@ -16,6 +20,8 @@ public class FireNode{
 	public boolean completed; //set to true if all children nodes are completed
 	protected ArrayList <FireNode> childList;  //an array list of the elements children nodes 
 	public int checked = 0; 
+	public boolean changed; 
+	protected Router router; 
 
 	public FireNode () { 
 		this.name = null;
@@ -24,6 +30,7 @@ public class FireNode{
 		this.tag = null;
 		this.childList = null;
 		this.completed = false; 
+		router = WebClient.getMain().getRouter();
 	}
 
 	protected FireNode(String name, String id, String nodeID, String tag) {
@@ -65,6 +72,14 @@ public class FireNode{
 
 	public void setChecked(int check) {
 		this.checked = check;
+	}
+	
+	public void setChanged() {
+		this.changed = true; 
+	}
+	
+	public boolean getChanged() {
+		return this.changed; 
 	}
 
 	public int getChecked() {
@@ -161,5 +176,6 @@ public class FireNode{
 		}
 	}
 
-	public void upload(WebClient webClient) { }
+	public JSONObject upload() throws JSONException {
+		return null; }
 }

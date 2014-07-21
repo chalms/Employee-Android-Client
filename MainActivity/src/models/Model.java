@@ -30,12 +30,8 @@ public class Model {
 	private MainActivity context; 
 	
 	public boolean upload() {
-// <----- below is the untest method call for chats
-//		for (String key : chats.keySet()) {
-//			chats.get(key).upload(); 
-//		}
 		for (String key : reports.keySet()) {
-			reports.get(key).upload(); 
+			reports.get(key).update(); 
 		}
 		return true; 
 	}
@@ -48,7 +44,7 @@ public class Model {
 
 	public Model(MainActivity c){
 		this.errors = new ArrayList <String> (); 
-		context = c; 
+		setContext(c); 
 	}
 
 	public void addPart(JSONArray parts) {
@@ -113,7 +109,8 @@ public class Model {
 		if (this.reports == null) {
 			this.reports = new HashMap <String, Report> (); 
 		}
-		Report tempReport = new Report(context.getWebClient());
+		
+		Report tempReport = new Report();
 		String checkinString = jObject.optString("checkin");
 		
 		if (checkinString != null) {
@@ -251,5 +248,13 @@ public class Model {
 
 	public void setSaved(boolean saved) {
 		this.saved = saved;
+	}
+
+	public MainActivity getContext() {
+		return context;
+	}
+
+	public void setContext(MainActivity context) {
+		this.context = context;
 	}
 }

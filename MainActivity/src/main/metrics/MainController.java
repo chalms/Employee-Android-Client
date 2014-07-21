@@ -3,23 +3,18 @@ package main.metrics;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
+import java.util.List;
 
 import models.Model;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
 import errors.InvalidParametersException;
 import views.LoadingBar;
-import web.CallbackWrapper;
 import web.WebClient;
 
 public class MainController {
@@ -29,12 +24,11 @@ public class MainController {
 	private int state = 0;
 	private LoadingBar loadingBar;
 	private HashMap <String, Boolean> companyEmployees =  new HashMap <String, Boolean> (); 
-	private int companyId = 1; 
 	private ActiveController controller = null; 
-	private CountDownLatch doneSignal = new CountDownLatch(1);
-
+	private List <String> companies = new ArrayList <String> (); 
+	
 	public MainController(MainActivity c) {
-		webClient = c.getWebClient();
+		setWebClient(c.getWebClient());
 		setModel(c.getModel());
 		context = c; 
 	}
@@ -74,7 +68,7 @@ public class MainController {
 		JSONObject params = new JSONObject(); 
 		params.put("email", username);
 		params.put("password", password);
-		context.getRouter().post("/signups", params);
+		context.getRouter().post("/logins", params);
 	}
 	
 	public void stateMessageError() {
@@ -83,7 +77,7 @@ public class MainController {
 		} 
 	}
 	
-	private void respondToValidity() {
+	public void respondToValidity() {
 		if (this.getActiveController() == null) return; 
 		EditText t = this.getActiveController().getUserName();
 		String str = t.getText().toString();
@@ -114,28 +108,6 @@ public class MainController {
 	
 	public void getCompanyEmployees() throws InterruptedException {
 		if (companyEmployees.isEmpty()) {
-			context.getRouter().addRoute("/employees", 
-				(new AsyncHttpResponseHandler() {
-					public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-						String str = new String(response);
-						JSONArray employees;
-						try {
-							employees = new JSONArray(str);
-						} catch (JSONException e) {
-							System.out.println("The string could not be parsed!");
-							return; 
-						}
-						setEmployeesFromResponse(employees);
-					}
-					public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-				    	System.out.println("FAILURE");
-				    }
-				}), (new CallbackWrapper () {
-					public void render() {
-						respondToValidity();
-					};
-				})
-			);
 			context.getRouter().get("/employees");
 		} else {
 			respondToValidity(); 
@@ -147,36 +119,9 @@ public class MainController {
 		if (!params.getString("password").equals(params.getString("password_confirmation"))) {
 			throw new InvalidParametersException("Password and Password Confirmation do not match");
 		}
-		context.getRouter().get("/signups");
+		context.getRouter().post("/signups", params);
 	}
 	
-	
-	public boolean companyHasEmployee(String email) {
-		try {
-			if (companyEmployees.containsKey(email)) {
-				
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
-	public boolean emailIsSetup(String email) {
-		try {
-			return getCompanyEmployees().get(email);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
-	public void getReport() {
-		webClient.get("/todays_reports.json");
-	}
-
 	public static void requestError(String errorString) {
 		// TODO Auto-generated method stub
 	}
@@ -209,5 +154,38 @@ public class MainController {
 		getActiveController().getDialog().dismiss();
 		this.loadingBar = new LoadingBar(context, "Updating...", "Grabbing your daily activities");
 //		webClient.get("/users");
+	}
+
+	public WebClient getWebClient() {
+		return webClient;
+	}
+
+	public void setWebClient(WebClient webClient) {
+		this.webClient = webClient;
+	}
+
+	public void setCompaniesList(JSONArray arr) {
+		for (int i = 0; i < arr.length(); i++) {
+			try {
+				companies.add(arr.getString(i));
+			} catch (JSONException e) {
+				try {
+					System.out.println("Problem adding: " + arr.getString(i) + " to companies");
+				} catch (JSONException e1) {
+					System.out.println("JSONArray arr(" + String.valueOf(i) + ") is not a string");
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			} 
+		}
+	}
+
+	public void displayCompaniesSelector() {
+		if (companies.size() > 0) {
+			List<String> spinnerArray = context.getMainController().companies;
+		    ArrayAdapter <String> adapter = new ArrayAdapter<String> (context, android.R.layout.simple_spinner_item, spinnerArray);
+		    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			context.getSignupController().getSpinner().setAdapter(adapter);
+		}
 	}
 }

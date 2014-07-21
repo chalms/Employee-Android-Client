@@ -2,46 +2,38 @@ package models.nodes;
 
 import java.util.Date;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import web.WebClient;
-
 public class Part extends Task {
 
 	private Date scanned_at; //datestamp for the completion method --> completed: 
 	private String part_name; 
 	private String barcode;
-	private String taskID; 
+	@SuppressWarnings("unused")
+	private String partID; 
 
-						// the params below need to be filtered first for nil
-						//id+report_id, createID, id, description, scanned_at, report_id, report_index, geolocatio
-	
 	public Part(String name, String id, String nodeID, String desc, Date completedAt, Date scan, String repId, String repIndex, String geo, Boolean completed, String pn, String bCode) {
-		
 		super(name, id, nodeID, completedAt, desc, repId, repIndex, geo, completed);  
-		scanned_at = scan; 
+		setScanned_at(scan); 
 		part_name = pn; 
-		barcode = bCode; 
-		taskID = nodeID; 
-		
+		setBarcode(bCode); 
+		partID = nodeID; 
 	}
 	
-	public void upload (WebClient webClient) {
-		JSONObject params = new JSONObject(); 
-		
-		try {
-				if (id == null) { return ; } else	params.put("id", id);
-				if (part_name != null) params.put("part_name", part_name);
-				if (scanned_at != null) params.put("scanned_at", scanned_at.toString());
-				if (barcode != null) params.put("barcode", barcode);
-				
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		webClient.post(new String( "/tasks/"+taskID+ "/parts/" + nodeID), params);
-	}
+//	public void changed() {
+//		
+//	}
+//	
+//	public void upload (Router r) {
+//		JSONObject params = new JSONObject(); 
+//		try {
+//				if (id == null) { return ; } else	params.put("id", id);
+//				if (part_name != null) params.put("part_name", part_name);
+//				if (scanned_at != null) params.put("scanned_at", scanned_at.toString());
+//				if (barcode != null) params.put("barcode", barcode);
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//		
+//	}
 
 	String getResult(String result){
 		if (result == null){
@@ -58,6 +50,22 @@ public class Part extends Task {
 
 	public void setPart_name(String part_name) {
 		this.part_name = part_name;
+	}
+
+	public Date getScanned_at() {
+		return scanned_at;
+	}
+
+	public void setScanned_at(Date scanned_at) {
+		this.scanned_at = scanned_at;
+	}
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 }		
 

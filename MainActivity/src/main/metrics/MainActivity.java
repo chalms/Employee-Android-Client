@@ -1,6 +1,10 @@
 package main.metrics;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Stack;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import models.Model;
 import models.nodes.FireNode;
@@ -16,7 +20,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.BoringLayout.Metrics;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -82,6 +85,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		WebClient.build(this);
 		this.getWebClient();
 		this.getRouter();
 		this.getNodeController();
@@ -284,14 +288,12 @@ public class MainActivity extends Activity {
 		return this.mainController; 
 	}
 	
-	public TokenController getTokenController() {
+	public TokenController getTokenController(JSONObject tokk, String tok) throws UnsupportedEncodingException, JSONException {
 		if (this.tokenController == null) {
-			this.tokenController = new TokenController(this); 
+			this.tokenController = new TokenController(this, tokk, tok); 
 		}
 		return this.tokenController; 
 	}
-	
-	
 
 	// MODELS -----> 
 
@@ -313,7 +315,7 @@ public class MainActivity extends Activity {
 
 	public WebClient getWebClient() {
 		if (this.webClient == null) {
-			this.webClient = new WebClient(this);
+			this.webClient = new WebClient();
 		}
 		return this.webClient;
 	}

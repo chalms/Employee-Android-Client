@@ -3,12 +3,11 @@ package models.nodes;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import models.Manager;
-import web.WebClient;
-
 
 public class Report extends FireNode {
 	private String description = null;
@@ -17,32 +16,50 @@ public class Report extends FireNode {
 	private Date checkout = null;
 	public Manager manager = null;
 	private String nodeID = null;
-	private WebClient webClient; 
 
-	public Report(WebClient wc) {
-		webClient = wc; 
+	public Report() {
+		super(); 
 	}
-	public void upload() {
-		for (int i = 0; i < childList().size(); i++) {
-			childList().get(i).upload(webClient);
-		}
-		JSONObject params = new JSONObject(); 
-		try { 
-		if (nodeID == null) return ; else params.put("id", nodeID);
-		if (description != null) params.put("description", description);
-		if (reportDate != null) params.put("report_date", reportDate);
-		if (checkin != null) params.put("checkin", checkin.toString());
-		if (checkout != null) params.put("checkout", checkout.toString());
-		webClient.post("/report/" + nodeID, params);
+	public void update() {
+		try {
+			router.post("/reports", upload());
 		} catch (JSONException e) {
+			System.out.println("Upating report failed");
 			e.printStackTrace();
-		}
+		} 
 	}
-	
+
+	public JSONObject upload() throws JSONException {
+		JSONObject params = new JSONObject(); 
+		params.put("tasks", new JSONArray()); 
+
+		for (FireNode node : this.childList()) {
+			if (node.getChanged()) {
+				JSONObject n = node.upload();
+				if (n != null) params.getJSONArray("tasks").put(n);
+			}
+		}
+
+		if (getChanged()) {
+			try { 
+				if (nodeID == null) return null; else params.put("id", nodeID);
+				if (description != null) params.put("description", description);
+				if (reportDate != null) params.put("report_date", reportDate);
+				if (checkin != null) params.put("checkin", checkin.toString());
+				if (checkout != null) params.put("checkout", checkout.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return params; 
+	}
+
+
 	private boolean valStr(String str) {
 		return (!str.isEmpty() && !str.equals("nil"));
 	}
-	
+
 	public boolean isValid() {
 		return valStr(nodeID) && valStr(description) && (reportDate != null) && (manager != null); 
 	}
@@ -116,5 +133,9 @@ public class Report extends FireNode {
 
 	public Date getReportDate() {
 		return reportDate; 
+	}
+
+	public void setChanged(Boolean changed) {
+		this.changed = changed;
 	}
 }

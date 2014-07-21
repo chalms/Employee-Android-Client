@@ -23,8 +23,4 @@ public class Chat extends FireNode {
 		return this.manager;
 	}
 
-	public void upload() {
-		// TODO Auto-generated method stub
-		
-	}
 }

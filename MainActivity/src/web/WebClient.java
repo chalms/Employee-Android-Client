@@ -76,7 +76,7 @@ public class WebClient {
 	}
 
 
-	public MainActivity getMain() {
+	public static MainActivity getMain() {
 		return main;
 	}
 

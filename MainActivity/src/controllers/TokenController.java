@@ -12,15 +12,16 @@ import models.UserAccount;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import errors.InvalidParametersException;
 
 public class TokenController {
 	Token token = null;
 	MainActivity context; 
 	UserAccount credentials; 
+	JSONObject params; 
 	
-	TokenController(MainActivity c, JSONObject params, String url) throws UnsupportedEncodingException, JSONException{
+	public TokenController(MainActivity c, JSONObject p, String url) throws UnsupportedEncodingException, JSONException{
+		params = p; 
 		context = c; 
 		try {
 			credentials = new UserAccount(params, url);
@@ -46,13 +47,9 @@ public class TokenController {
 	}
 	
 	private void getNewToken() throws JSONException,UnsupportedEncodingException {
-		try {
-			print(); 
-			context.getRouter().issue("/signups");
-			return; 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		print(); 
+		context.getRouter().post("/signups", params);
+		return; 
 	}
 
 	boolean tokenValid() {

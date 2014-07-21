@@ -1,29 +1,22 @@
 package controllers;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import main.metrics.ActiveController;
 import main.metrics.MainActivity;
-import main.metrics.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import errors.InvalidParametersException;
 import android.app.Dialog;
-import android.database.DataSetObserver;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
+import errors.InvalidParametersException;
 
 public class SignupController extends ActiveController {
 
@@ -65,19 +58,13 @@ public class SignupController extends ActiveController {
 		setDialog(new Dialog(this.context));
 		getDialog().setContentView(main.metrics.R.layout.signup);
 		getDialog().setTitle("Signup");
-		setSpinnerAdapter();
+		this.context.getRouter().get("/companies");
 		getUserName().setOnFocusChangeListener(focusChanged);
 		Button btnSignIn = this.getSignInButton();
 		btnSignIn.setOnClickListener(signupListener);
 		showDialog();
 	}
 	
-	public void setSpinnerAdapter(){
-		List<String> spinnerArray = context.getMainController().getCompaniesList(); 
-	    ArrayAdapter <String> adapter = new ArrayAdapter<String> (context, android.R.layout.simple_spinner_item, spinnerArray);
-	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		getSpinner().setAdapter(adapter);
-	}
 	
 	 public void login() {
 		makeToast("Welcome to the Mobile Dashboard");

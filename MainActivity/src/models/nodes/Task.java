@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import views.ListItemContent;
-import web.WebClient;
 import android.location.Location;
 
 public class Task extends FireNode {
@@ -25,26 +24,25 @@ public class Task extends FireNode {
 		setDescription(desc); 
 		setCompleted_at(timeCompleted); 
 		setReportId(repId); 
-		setReportIndex(repIndex);
 		setGeoLocation(geo); 
 		
 		this.testResult = getResult(testResult); 
 		this.testNote = getResult(testNote);
 	}
 	
-	public void upload (WebClient webClient) {
+	public JSONObject upload () {
 		JSONObject params = new JSONObject(); 
 		try { 
-		if (id == null) { return ; } else  params.put("id", id);
-		if (reportIndex != null) params.put("report_index", reportIndex);
-		if (reportId != null) params.put("report_id", reportId);
-		if (completed_at != null) params.put("completed_at", completed_at.toString());
-		if (description != null) params.put("description", description);
-		if (testNote != null) params.put("note", testNote);
-		webClient.post("/tasks/" + nodeID, params);
+			if (id == null) { return null; } else  params.put("id", id);
+			if (reportIndex != null) params.put("report_index", reportIndex);
+			if (reportId != null) params.put("report_id", reportId);
+			if (completed_at != null) params.put("completed_at", completed_at.toString());
+			if (description != null) params.put("description", description);
+			if (testNote != null) params.put("note", testNote);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return params;
 	}
 
 	String getResult(String result){
