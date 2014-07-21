@@ -60,7 +60,7 @@ public class WebClient {
 	
 	static public int post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
 		try {
-			client.post(context, getAbsoluteUrl(url), getStringEntity(params) , "application/json", responseHandler);
+			client.post(context, getAbsoluteUrl(url) + ".json", getStringEntity(params) , "application/json", responseHandler);
 			return 1;
 		} catch (Exception e){
 			return 0; 

@@ -25,7 +25,7 @@ public class SignupController extends ActiveController {
 			try {
 				send();
 			} catch (Exception e) {
-				System.out.println(e.getCause().getMessage());
+				e.printStackTrace();
 				makeToast("Invalid! Try again");
 			}
 			
@@ -62,7 +62,6 @@ public class SignupController extends ActiveController {
 		btnSignIn.setOnClickListener(signupListener);
 		showDialog();
 	}
-	
 	
 	 public void login() {
 		makeToast("Welcome to the Mobile Dashboard");
@@ -120,7 +119,7 @@ public class SignupController extends ActiveController {
 			params.put("email", getUserName().getText().toString());
 			params.put("name", getName().getText().toString());
 			params.put("employee_number", getEmployeeNumber().getText().toString());
-			params.put("company_id", getSpinner().getItemAtPosition(0));
+			params.put("company_id", context.getMainController().getCompanies().get(getSpinner().getItemAtPosition(0)));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			makeToast("Invalid Login!");

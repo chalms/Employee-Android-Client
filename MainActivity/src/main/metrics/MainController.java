@@ -41,6 +41,10 @@ public class MainController {
 		return controller; 
 	}
 	
+	public HashMap <String, String> getCompanies() {
+		return companies; 
+	}
+	
 	public void printParams(JSONArray response, int i) {
 		try {
 			System.out.println(response.getJSONObject(i).getString("email"));

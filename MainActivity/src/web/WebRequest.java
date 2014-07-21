@@ -12,17 +12,17 @@ public class WebRequest {
 	
 	public WebRequest(String u, AsyncHttpResponseHandler h) {
 		setUrl(u); setHandler(h); 
-		this.setRequestWrapper();
+		this.createRequestWrapper();
 	}
 
 	public WebRequest(String u, AsyncHttpResponseHandler h, CallbackWrapper c) {
 		setUrl(u);
 		setHandler(h);
 		callbackWrapper = c; 
-		this.setRequestWrapper();
+		createRequestWrapper();
 	}
 	
-	void setRequestWrapper() {
+	void createRequestWrapper() {
 		if (callbackWrapper == null) {
 			callbackWrapper = new CallbackWrapper() {
 				@Override
@@ -43,6 +43,10 @@ public class WebRequest {
 				}
 			}
 		};
+	}
+	
+	public void setRequestWrapper(RequestWrapper k) {
+		requestWrapper = k; 
 	}
 	
 	public String getUrl() {

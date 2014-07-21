@@ -32,9 +32,10 @@ public class Router extends WebObject {
 		if (url.equals("logins")){
 			loginParams = params; 
 		} else {
+			if (loginParams == null) loginParams = new JSONObject(); 
 			try {
-				loginParams.put("email", params.get("email"));
-				loginParams.put("password", params.get("password"));
+				loginParams.put("email", params.getString("email"));
+				loginParams.put("password", params.getString("password"));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -45,8 +46,7 @@ public class Router extends WebObject {
 	//~~~~~~~~~~~~~~~POST OR GET ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public void post(String url, JSONObject params) {
 		addCredentials(url, params);
-		WebRequest request = routes.get(url);
-		sync.execute((request.requestWrapper));
+		sync.execute(createPostRequestWrapper(url, new TokenHandler(), params));
 	}
 	
 	public void get(String url) {
@@ -77,10 +77,32 @@ public class Router extends WebObject {
 		addRoute("/clients", new DefaultJsonResponseHandler()); 
 		addRoute("/companies",  new CompaniesResponseHandler(), new CompaniesCallbackWrapper());
 		addRoute("/logins", new TokenHandler(), new LoginsCallbackWrapper());
-		addRoute("/signups", new TokenHandler(), new SignupsCallbackWrapper());
+		addRoute("/signups", new TokenHandler(), null);
 		addRoute("/special_index", new EmployeesEmailResponseHandler(), new EmployeesEmailCallbackWrapper());
 	}
 	
+	
+	//~~~~~~~~~~~~~~~~~~~~POST REQUEST WRAPPER~~~~~~~~~~~~~~~~~~~~~
+	public RequestWrapper createPostRequestWrapper(final String url, final AsyncHttpResponseHandler handler, final JSONObject parameters) {
+		CallbackWrapper callbackWrapper = new CallbackWrapper() {
+			@Override
+			public void render() {
+				System.out.println("Ran default callback wrapper");
+				return; 
+			}
+		};
+		
+		return (new RequestWrapper(callbackWrapper) {
+			public CallbackWrapper executeRequest() {
+				int x = WebClient.post(url, parameters, handler);
+				if (x == 1) {
+					return callback;
+				} else {
+					return null;
+				}
+			}
+		});
+	}
 
    //~~~~~~~~~~~~~~~~~~~~~LOGIN/SIGNUP CALLBACK HANDLERS~~~~~~~~~~~~~~~~~~
 	class SignupsCallbackWrapper extends CallbackWrapper {
@@ -178,6 +200,8 @@ public class Router extends WebObject {
 					null, response);
 			try {
 				getMainContext().getTokenController(loginParams, "/logins").setAuthentication(response);
+				SignupsCallbackWrapper signups = new SignupsCallbackWrapper();
+				signups.render();
 			} catch (UnsupportedEncodingException e) {
 				System.out.println("Token Controller could not be created");
 				e.printStackTrace();
@@ -191,6 +215,7 @@ public class Router extends WebObject {
 				JSONObject errorResponse) {
 			WebClient.printValues(new String("success"), statusCode, headers,
 					null, errorResponse);
+			getMainContext().makeToast("Sorry, there was error with your sign in. Please try again.");
 		}
 	}
 }
