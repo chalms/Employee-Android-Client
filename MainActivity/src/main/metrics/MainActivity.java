@@ -149,6 +149,10 @@ public class MainActivity extends Activity {
 	public void setPopUpPresent(boolean p) {
 		popUp = p; 
 	}
+	
+	public TokenController getTokenController() {
+		return tokenController; 
+	}
 
 	//Login and setting user ---> 
 

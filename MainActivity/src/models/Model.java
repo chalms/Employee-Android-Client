@@ -1,12 +1,11 @@
 package models;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import main.metrics.MainActivity;
@@ -16,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import util.Formatter;
+import errors.InvalidParametersException;
 import factories.PartFactory;
 import factories.TaskFactory;
 
@@ -23,11 +24,10 @@ public class Model {
 	private Report report = null; 
 	private ArrayList <String> errors; 
 	private Integer globalId = 0;
-	private HashMap<String, Chat> chats;
 	private HashMap<String, Report> reports; 
-	private HashMap<String, Manager> managers; 
 	private boolean saved = true; 
 	private MainActivity context; 
+	private UsersChats chats; 
 	
 	public boolean upload() {
 		for (String key : reports.keySet()) {
@@ -68,37 +68,11 @@ public class Model {
 		}
 	}
 
-	public void addManager(JSONObject managerJSON) throws JSONException {
-		if (managerJSON == null) return; 
-		if (this.report.manager == null) {
-			this.report.manager = new Manager();
-		}
-		while (managerJSON.keys().hasNext()) {
-			String key = (String) managerJSON.keys().next(); 
-			if (key.equals("first_name") && (managerJSON.optString(key) != null)) {
-				this.report.manager.setFirstName(managerJSON.getString(key));
-			}
-			if (key.equals("last_name") && (managerJSON.optString(key) != null)) {
-				this.report.manager.setLastName(managerJSON.getString(key));
-			}
-			if (key.equals("email") && (managerJSON.optString(key) != null)) {
-				this.report.manager.setEmail(managerJSON.getString(key));
-			}
-			if (key.equals("id") && (managerJSON.optString(key) != null)) {
-				this.report.manager.setId(managerJSON.getString(key));
-			}
-			
-			if (key.equals("company_name") && (managerJSON.optString(key) != null)) {
-				this.report.manager.setCompany_name(managerJSON.getString(key));
-			}
-		}
-	}
-
 	public void setReportDate(Report tempReport, JSONObject jObject) {
 		Date reportDate;
 		String dateString = jObject.optString("report_date");
 		if (dateString != null) {
-			reportDate = stringToDate(dateString);
+			reportDate = Formatter.getDateFromString(dateString);
 			if (Date.class.isInstance(reportDate)) {
 				tempReport.setDate(reportDate);
 			}
@@ -110,7 +84,6 @@ public class Model {
 			this.reports = new HashMap <String, Report> (); 
 		}
 		
-		Report tempReport = new Report();
 		String checkinString = jObject.optString("checkin");
 		
 		if (checkinString != null) {
@@ -121,8 +94,6 @@ public class Model {
 		if (checkoutString != null) {
 			tempReport.setCheckout(stringToDate(checkoutString));
 		}
-		
-		addManager(jObject.optJSONObject("manager"));
 		
 		setReportDate(tempReport, jObject);
 		Calendar reportDate = Calendar.getInstance();
@@ -144,86 +115,6 @@ public class Model {
 		this.reports.put(tempReport.hashString(), tempReport); 
 		
 	}
-
-	public void setOrUpdateChat(JSONObject jObject) throws JSONException {
-		if (this.chats == null) { 
-			this.chats = new HashMap <String, Chat>(); 
-		}
-		
-		if (jObject == null) return ; 
-		Chat chat = new Chat(); 
-		JSONObject manager = jObject.optJSONObject("manager");
-		
-		if (manager == null) { 
-			addError("A manager must be included in chat!");
-			return; 
-		}
-		
-		addManager(manager);
-		chat.setManager(this.managers.get(manager.optString("email")));
-		JSONArray messages = jObject.optJSONArray("messages");
-		
-		if (messages == null) { 
-			addError("No messages found!"); return ; 
-		}
-		
-		int i = 0; 
-		while (i < messages.length()) {
-			addMessage(messages.getJSONObject(i), chat);
-		}
-		this.chats.put(chat.getManager().getEmail(), chat);
-	}
-
-	private void addMessage(JSONObject jsonObject, Chat chat) {
-		// TODO Auto-generated method stub
-		Message message = new Message (); 
-		message.setChat(chat);
-		String messageBody = jsonObject.optString("messageBody");
-		if (messageBody != null) {
-			message.setMessageBody(messageBody);
-			if (message != null) {
-				chat.addMessage( message);
-			}
-		}
-	}
-
-	public void setOrUpdateManager(JSONObject jObject) {
-		if (this.managers == null) {
-			this.managers = new HashMap <String, Manager> (); 
-		}
-
-		if (jObject == null) return ; 
-		Manager manager = new Manager(); 
-
-		String str = jObject.optString("firstName");
-		if (str != null) manager.setFirstName(str);
-
-		str = jObject.optString("lastName");
-		if (str != null) manager.setLastName(str);
-
-		str = jObject.optString("email");
-		if (str != null) manager.setEmail(str);
-
-		str = jObject.optString("id");
-		if (str != null) manager.setId(str);
-
-		managers.put(manager.getEmail(), manager);
-	}
-
-	public Date stringToDate(String token){
-		try {
-			DateFormat formatter = null;
-			if (token.contains("-")) {
-				formatter = new SimpleDateFormat("dd-MMM-yy", Locale.CANADA);
-			} else {
-				formatter = new SimpleDateFormat("HH:mm", Locale.CANADA);
-			}
-			Date d = (Date) formatter.parse(token);
-			return d; 
-		} catch (ParseException ex) {
-			return null; 
-		}
-	}; 
 
 	public Report getReport() {
 		return this.report; 

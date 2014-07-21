@@ -2,25 +2,33 @@ package models;
 
 import java.util.HashMap;
 
-import models.nodes.FireNode;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class Chat extends FireNode {
-	private Manager manager; 
-	private HashMap <String, Message> messages = new HashMap <String, Message> (); 
-	
-	public Chat() {}; 
-	
-	
-	public void addMessage(Message message) {
-		messages.put(message.messageCode(), message);
-	}
-	
-	public void setManager(Manager man) {
-		this.manager = man; 
-	}
-	
-	public Manager getManager(){
-		return this.manager;
-	}
+import errors.InvalidParametersException;
 
+public class Chat {
+	HashMap <Integer, Message> messages = new HashMap <Integer, Message> (); 
+	Integer id; 
+	
+	Chat (JSONObject chat) throws JSONException, InvalidParametersException {
+		setMessages(chat.getJSONArray("get_messages")); 
+		id = chat.getInt("chat_id");
+	}
+	
+	void setMessages(JSONArray messageObjects) throws JSONException, InvalidParametersException {
+		for (int i = 0; i < messageObjects.length(); i++) {
+			Message m = new Message(messageObjects.getJSONObject(i)); 
+			if (m.id != null) {
+				if (messages.containsKey(m.id)) {
+					//do some update 
+				} else {
+					// perhaps a notification
+				}
+				messages.put(m.id, m);
+			}
+		}
+	}
 }
+

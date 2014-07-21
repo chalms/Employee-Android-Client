@@ -29,7 +29,7 @@ public class TokenController {
 			e.printStackTrace();
 		}
 		if (credentials.isValid()) {
-			getNewToken(); 
+//			getNewToken();
 		}
 	};
 	
@@ -48,7 +48,7 @@ public class TokenController {
 	
 	private void getNewToken() throws JSONException,UnsupportedEncodingException {
 		print(); 
-		context.getRouter().post("/signups", params);
+//		context.getRouter().post("/signups", params);
 		return; 
 	}
 
@@ -90,5 +90,10 @@ public class TokenController {
 		System.out.print("Url is: "); 
 		System.out.println(credentials.getUrl());
 		System.out.print("Credentials as string: ");
+	}
+
+	public JSONObject getParams() {
+		// TODO Auto-generated method stub
+		return params;
 	}
 }

@@ -178,6 +178,10 @@ public class MainController {
 	public void setWebClient(WebClient webClient) {
 		this.webClient = webClient;
 	}
+	
+	public void getHome(JSONObject params) {
+		
+	}
 
 	public void setCompaniesList(JSONArray arr) {
 		for (int i = 0; i < arr.length(); i++) {

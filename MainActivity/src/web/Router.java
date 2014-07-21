@@ -45,7 +45,10 @@ public class Router extends WebObject {
 	
 	//~~~~~~~~~~~~~~~POST OR GET ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public void post(String url, JSONObject params) {
+		System.out.println("Router POST called for: " + url);
 		addCredentials(url, params);
+		System.out.println("Credentials added (ll: Router->post()");
+		System.out.println("Executing SYNC for POST -> " + url);
 		sync.execute(createPostRequestWrapper(url, new TokenHandler(), params));
 	}
 	
@@ -76,7 +79,7 @@ public class Router extends WebObject {
 		addRoute("/chats", new DefaultJsonResponseHandler()); 
 		addRoute("/clients", new DefaultJsonResponseHandler()); 
 		addRoute("/companies",  new CompaniesResponseHandler(), new CompaniesCallbackWrapper());
-		addRoute("/logins", new TokenHandler(), new LoginsCallbackWrapper());
+		addRoute("/logins", new TokenHandler(), null);
 		addRoute("/signups", new TokenHandler(), null);
 		addRoute("/special_index", new EmployeesEmailResponseHandler(), new EmployeesEmailCallbackWrapper());
 	}
@@ -193,15 +196,31 @@ public class Router extends WebObject {
 	}
 	
 	//~~~~~~ TOKEN CONTROLLER TO HANDLE SUCCESSFUL LOGIN~~~~~~~~~~
-	class TokenHandler extends JsonHttpResponseHandler {
-		public void onSuccess(int statusCode, Header[] headers,
-				JSONObject response) {
+	class TokenHandler extends AsyncHttpResponseHandler {
+		@Override
+		public void onSuccess(int statusCode, Header[] headers, byte[] r) {
+			System.out.println("Token handler success method called");
+			String str = new String(r);
+			System.out.println("Received data: " + str);
+			JSONObject response = new JSONObject();
+			
+			try { 
+				response = new JSONObject(str);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+				return; 
+			}
+			
 			WebClient.printValues(new String("success"), statusCode, headers,
 					null, response);
+			
 			try {
 				getMainContext().getTokenController(loginParams, "/logins").setAuthentication(response);
 				SignupsCallbackWrapper signups = new SignupsCallbackWrapper();
 				signups.render();
+				JSONObject params = getMainContext().getTokenController().getParams(); 
+				getMainController().getHome(params);
+				
 			} catch (UnsupportedEncodingException e) {
 				System.out.println("Token Controller could not be created");
 				e.printStackTrace();

@@ -10,16 +10,17 @@ import org.json.JSONObject;
 import models.Manager;
 
 public class Report extends FireNode {
-	private String description = null;
-	private Date reportDate = null;
-	private Date checkin = null;
-	private Date checkout = null;
-	public Manager manager = null;
-	private String nodeID = null;
+	UsersReport model; 
 
 	public Report() {
 		super(); 
 	}
+	
+	public Report(JSONObject params) {
+		super(); 
+		model = new UsersReport(params); 
+	}
+	
 	public void update() {
 		try {
 			router.post("/reports", upload());
