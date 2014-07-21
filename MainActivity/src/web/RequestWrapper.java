@@ -1,6 +1,8 @@
 package web;
 
 public abstract class RequestWrapper implements AsyncJsonRequest {
-	RequestWrapper() {
+	public CallbackWrapper callback; 
+	RequestWrapper(CallbackWrapper c) {
+		callback = c; 
 	}
 }

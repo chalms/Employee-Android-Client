@@ -19,9 +19,12 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class Router extends WebObject {
 	private HashMap <String, WebRequest> routes = new HashMap <String, WebRequest> ();
 	private JSONObject loginParams; 
+	Synchronizer sync; 
 	
 	public Router(MainActivity c) {
 		super(c);
+		sync = new Synchronizer();
+		build();
 	}
 	
 	//~~~~~~~~~CREDENTIALS FOR CALL TO TOKEN CONTROLLER~~~~~~~~~
@@ -43,15 +46,14 @@ public class Router extends WebObject {
 	public void post(String url, JSONObject params) {
 		addCredentials(url, params);
 		WebRequest request = routes.get(url);
-		request.setRequestWrapper();
-		new Synchronizer(request.callbackWrapper, request.requestWrapper);
+		sync.execute((request.requestWrapper));
 	}
 	
 	public void get(String url) {
 		WebRequest request = routes.get(url);
-		request.setRequestWrapper();
-		new Synchronizer(request.callbackWrapper, request.requestWrapper);
+		sync.execute((request.requestWrapper)); 
 	}
+	
 	
 	//~~~~~~~~~~~~~~~~~~~WITH DEFAULTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public void addRoute(String url) {
@@ -76,7 +78,7 @@ public class Router extends WebObject {
 		addRoute("/companies",  new CompaniesResponseHandler(), new CompaniesCallbackWrapper());
 		addRoute("/logins", new TokenHandler(), new LoginsCallbackWrapper());
 		addRoute("/signups", new TokenHandler(), new SignupsCallbackWrapper());
-		addRoute("/employees", new EmployeesEmailResponseHandler(), new EmployeesEmailCallbackWrapper());
+		addRoute("/special_index", new EmployeesEmailResponseHandler(), new EmployeesEmailCallbackWrapper());
 	}
 	
 
@@ -103,6 +105,7 @@ public class Router extends WebObject {
 	
 	//~~~~~~~~~~~~~SETS LOGIN/SIGNUP BASED ON IF EMAIL IS SETUP~~~~~~~~~~
 	class EmployeesEmailResponseHandler extends AsyncHttpResponseHandler {
+		
 		public void onSuccess(int statusCode, Header[] headers, byte[] response) {
 				String str = new String(response);
 				JSONArray employees;
@@ -112,16 +115,20 @@ public class Router extends WebObject {
 					System.out.println("The string could not be parsed!");
 					return; 
 				}
+				System.out.println("Setting employees from response");
 				getMainController().setEmployeesFromResponse(employees);
+				 
 			}
+		
 			public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
 		    	System.out.println("FAILURE");
 		    }
+			
 	};
 	
 	class EmployeesEmailCallbackWrapper extends CallbackWrapper {
 		public void render() {
-		getMainController().respondToValidity();
+			System.out.println("Telling main controller to respond: ");
 		};
 	}
 	
@@ -133,6 +140,7 @@ public class Router extends WebObject {
 	    	try {
 				JSONArray arr = new JSONArray(data);
 				getMainController().setCompaniesList(arr); //~~> set companies list
+				getMainController().displayCompaniesSelector(); 
 				return ; //~~~~~> now call callback wrapper
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -145,7 +153,7 @@ public class Router extends WebObject {
 	
 	class CompaniesCallbackWrapper extends CallbackWrapper {
 		public void render() {
-			getMainController().displayCompaniesSelector(); 
+		
 		};
 	}
 	

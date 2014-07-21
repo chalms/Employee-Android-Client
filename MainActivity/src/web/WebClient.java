@@ -38,8 +38,13 @@ public class WebClient {
 		return new String(url + u);
 	}
 	
-	static public void get(String url, AsyncHttpResponseHandler handler) {
-		client.get(getAbsoluteUrl(url) + ".json", handler);
+	static public int get(String url, AsyncHttpResponseHandler handler) {
+		try {
+			client.get(getAbsoluteUrl(url) + ".json", handler);
+			return 1; 
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 	
 	static public StringEntity getStringEntity(JSONObject params) {
@@ -53,8 +58,13 @@ public class WebClient {
 		return entity; 
 	}
 	
-	static public void post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
-        client.post(context, getAbsoluteUrl(url), getStringEntity(params) , "application/json", responseHandler);
+	static public int post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
+		try {
+			client.post(context, getAbsoluteUrl(url), getStringEntity(params) , "application/json", responseHandler);
+			return 1;
+		} catch (Exception e){
+			return 0; 
+		}
 	}
 	
 	public static void printValues(String type, int statusCode, Header[] headers, Throwable e, JSONObject response) {

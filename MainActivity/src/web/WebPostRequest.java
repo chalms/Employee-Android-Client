@@ -21,13 +21,6 @@ public class WebPostRequest extends WebRequest {
 	}
 	
 	void setRequestWrapper() {
-		requestWrapper = new RequestWrapper() {
-			@Override
-			public int executeRequest() {
-				WebClient.post(getUrl(), getParams(), getHandler());
-				return 0;
-			}
-		};
 		if (callbackWrapper == null) {
 			callbackWrapper = new CallbackWrapper() {
 				@Override
@@ -37,5 +30,16 @@ public class WebPostRequest extends WebRequest {
 				}
 			};
 		}
+		requestWrapper = new RequestWrapper(callbackWrapper) {
+			@Override
+			public CallbackWrapper executeRequest() {
+				int x = WebClient.post(getUrl(), getParams(), getHandler());
+				if (x == 1) {
+					return callback;
+				} else {
+					return null;
+				}
+			}
+		};
 	}
 }

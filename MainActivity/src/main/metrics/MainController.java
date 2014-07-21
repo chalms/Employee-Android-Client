@@ -23,9 +23,9 @@ public class MainController {
 	private Model model; 
 	private int state = 0;
 	private LoadingBar loadingBar;
-	private HashMap <String, Boolean> companyEmployees =  new HashMap <String, Boolean> (); 
+	private HashMap <String, JSONObject> companyEmployees =  new HashMap <String, JSONObject> (); 
 	private ActiveController controller = null; 
-	private List <String> companies = new ArrayList <String> (); 
+	private HashMap <String, String> companies = new HashMap<String, String> (); 
 	
 	public MainController(MainActivity c) {
 		setWebClient(c.getWebClient());
@@ -56,18 +56,23 @@ public class MainController {
 		for (int i = 0; i < response.length(); i++) {
 			try {
 				printParams(response, i);
-				companyEmployees.put(response.getJSONObject(i).getString("email"), response.getJSONObject(i).getBoolean("setup"));
+				companyEmployees.put(response.getJSONObject(i).getString("email"), response.getJSONObject(i));
 			} catch (JSONException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			} 
 		}
+		respondToValidity(); 
 	}
 	
 	public void login(String username, String password) throws JSONException, UnsupportedEncodingException, InvalidParametersException {
+		System.out.println("Logging in with: ");
+		System.out.println("Email: |" + username.toString() + "|");
+		System.out.println("Password: |" + password.toString() + "|");
 		JSONObject params = new JSONObject(); 
 		params.put("email", username);
 		params.put("password", password);
+		System.out.println("Posting with params: |" + params.toString() + "|");
 		context.getRouter().post("/logins", params);
 	}
 	
@@ -81,34 +86,40 @@ public class MainController {
 		if (this.getActiveController() == null) return; 
 		EditText t = this.getActiveController().getUserName();
 		String str = t.getText().toString();
-		if (companyEmployees.containsKey(str)) {
-			if (this.getActiveController().controllerName().equals("login")) {
+		System.out.println("Matching: " + str);
+		try {
+			if (companyEmployees.containsKey(str)) {
+				System.out.println("contains key");
+				JSONObject employee = companyEmployees.get(str);
+				if (employee.getBoolean("setup")) {
+					if (this.getActiveController().controllerName().equals("signup")) {
+							System.out.println("signup controller");
+							context.getSignupController().dismissDialog();
+							this.setActiveController(context.getLoginController());
+							context.getLoginController().showDialog();
+							t = this.getActiveController().getUserName();
+							t.setText(str);
+					}
+				} else if (this.getActiveController().controllerName().equals("login")) {
+						System.out.println("login controller");
+						context.getLoginController().dismissDialog();
+						this.setActiveController(context.getSignupController());
+						context.getSignupController().showDialog();
+						t = this.getActiveController().getUserName();
+						t.setText(str);
+				}
 				t.setTextColor(context.getResources().getColor(main.metrics.R.color.green));
-				return ; 
 			} else {
-				context.getLoginController().dismissDialog();
-				this.setActiveController(context.getSignupController());
-				context.getSignupController().showDialog();
-				t = this.getActiveController().getUserName();
-				t.setTextColor(context.getResources().getColor(main.metrics.R.color.green));
-			}
-		} else {
-			if  (this.getActiveController().controllerName().equals("signup")) {
-					t.setTextColor(context.getResources().getColor(main.metrics.R.color.red));
-					return ; 
-			} else {
-				context.getSignupController().dismissDialog();
-				this.setActiveController(context.getLoginController());
-				context.getLoginController().showDialog();
-				t = this.getActiveController().getUserName();
 				t.setTextColor(context.getResources().getColor(main.metrics.R.color.red));
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public void getCompanyEmployees() throws InterruptedException {
 		if (companyEmployees.isEmpty()) {
-			context.getRouter().get("/employees");
+			context.getRouter().get("/special_index");
 		} else {
 			respondToValidity(); 
 		}
@@ -167,7 +178,7 @@ public class MainController {
 	public void setCompaniesList(JSONArray arr) {
 		for (int i = 0; i < arr.length(); i++) {
 			try {
-				companies.add(arr.getString(i));
+				companies.put(arr.getJSONObject(i).getString("name"),arr.getJSONObject(i).getString("id"));
 			} catch (JSONException e) {
 				try {
 					System.out.println("Problem adding: " + arr.getString(i) + " to companies");
@@ -182,7 +193,7 @@ public class MainController {
 
 	public void displayCompaniesSelector() {
 		if (companies.size() > 0) {
-			List<String> spinnerArray = context.getMainController().companies;
+			List<String> spinnerArray = new ArrayList <String> (companies.keySet());
 		    ArrayAdapter <String> adapter = new ArrayAdapter<String> (context, android.R.layout.simple_spinner_item, spinnerArray);
 		    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			context.getSignupController().getSpinner().setAdapter(adapter);

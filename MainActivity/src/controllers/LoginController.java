@@ -1,5 +1,10 @@
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+
+import org.json.JSONException;
+
+import errors.InvalidParametersException;
 import main.metrics.ActiveController;
 import main.metrics.MainActivity;
 import android.app.Dialog;
@@ -19,7 +24,7 @@ public class LoginController extends ActiveController {
 			try {
 				authenticated(getPassword(), getUserName());
 			} catch (Exception e) {
-				System.out.println(e.getCause().getMessage());
+				e.printStackTrace();
 				makeToast("Invalid! Try again");
 			}
 			
@@ -63,6 +68,7 @@ public class LoginController extends ActiveController {
 	}
 
 	private Button getSignInButton() {
+		System.out.println("Getting signin button ");
 		return (Button) getDialog().findViewById(main.metrics.R.id.buttonSignIn);
 	}
 
@@ -90,11 +96,15 @@ public class LoginController extends ActiveController {
 	}
 
 	public void authenticated(final EditText password, final EditText username) {
-		try {
-			this.context.getMainController().login(username.getText().toString(), password.getText().toString());
-		} catch (Exception e) {
-			makeToast(e.getMessage());
-		}
+			try {
+				this.context.getMainController().login(username.getText().toString(), password.getText().toString());
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (InvalidParametersException e) {
+				e.printStackTrace();
+			}
 	}
 
 }

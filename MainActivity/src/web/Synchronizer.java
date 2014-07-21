@@ -1,45 +1,34 @@
 package web;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.AsyncTask;
 
 
 public class Synchronizer extends Activity {
-	CallbackWrapper callback; 
-	RequestWrapper request; 
+	static ArrayList <Async> AsyncTasks = new ArrayList <Async> (); 
+	static int count; 
 	
-	public Synchronizer(CallbackWrapper c, RequestWrapper r) { 
-		callback = c; 
-		request = r; 
-		new Async().execute();
+	void execute(RequestWrapper r){
+		System.out.println("Launching request wrapper with activity: " + r);
+		System.out.println(r.toString());
+		AsyncTasks.add((Async) new Async().execute(r));
 	}
-
-	class Async extends AsyncTask <String, String, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-          
-        }
-
-		@Override
-		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			int result = request.executeRequest();
-			System.out.println(result);
-			return null;
+	
+//~~~~~~~~~~~~~~~~ Async executor~~~~~~~~~~~
+	class Async extends AsyncTask <RequestWrapper, Void, CallbackWrapper>{
+	
+		protected CallbackWrapper doInBackground(RequestWrapper... arg0) {
+			System.out.println("Executing the request");
+			return arg0[0].executeRequest();
 		}
 		
-        protected void onProgressUpdate(String... progress) {
-            System.out.println("ANDRO_ASYNC"); 
-            System.out.println(progress[0]);
-
-        }
-
-        @Override
-        protected void onPostExecute(String unused) {
-	       callback.render(); 
-        }
-
-    } 
+		protected void onPostExecute(CallbackWrapper c) {
+			System.out.println("Post execute called");
+			c.render(); 
+			AsyncTasks.remove(this);
+			return; 
+		}
+	}
 }

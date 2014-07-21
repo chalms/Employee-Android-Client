@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
 		loggedOut = false; 
 		this.userName = null; 
 		if (this.userName == null) {
-			getLoginController();
+			getMainController().setActiveController(getLoginController());
 		} else {
 			this.getListViewController().renderListView();
 		}		

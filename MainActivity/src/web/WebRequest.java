@@ -19,25 +19,30 @@ public class WebRequest {
 		setUrl(u);
 		setHandler(h);
 		callbackWrapper = c; 
+		this.setRequestWrapper();
 	}
 	
 	void setRequestWrapper() {
-		requestWrapper = new RequestWrapper() {
-			@Override
-			public int executeRequest() {
-				WebClient.get(url, handler);
-				return 0;
-			}
-		};
 		if (callbackWrapper == null) {
 			callbackWrapper = new CallbackWrapper() {
 				@Override
 				public void render() {
+					System.out.println("Ran default callback wrapper");
 					return; 
-					// TODO Auto-generated method stub
 				}
 			};
 		}
+		requestWrapper = new RequestWrapper(callbackWrapper) {
+			@Override
+			public CallbackWrapper executeRequest() {
+				int x = WebClient.get(url, handler);
+				if (x == 1) {
+					return callback;
+				} else {
+					return null;
+				}
+			}
+		};
 	}
 	
 	public String getUrl() {

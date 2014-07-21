@@ -4,10 +4,8 @@ import java.io.UnsupportedEncodingException;
 
 import main.metrics.ActiveController;
 import main.metrics.MainActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Dialog;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -122,11 +120,11 @@ public class SignupController extends ActiveController {
 			params.put("email", getUserName().getText().toString());
 			params.put("name", getName().getText().toString());
 			params.put("employee_number", getEmployeeNumber().getText().toString());
+			params.put("company_id", getSpinner().getItemAtPosition(0));
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
 			makeToast("Invalid Login!");
 			params = null; 
-			e.printStackTrace();
 		}
 		return params; 
 	}
@@ -134,6 +132,7 @@ public class SignupController extends ActiveController {
 
 	public void send() {
 		JSONObject params = this.serialize(); 
+		System.out.println("Signup controller sending params: " + params.toString());
 		try {
 			context.getMainController().signup(params);
 		} catch (JSONException e) {
