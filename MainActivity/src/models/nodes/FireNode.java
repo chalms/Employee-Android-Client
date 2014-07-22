@@ -21,6 +21,7 @@ public class FireNode{
 	protected ArrayList <FireNode> childList;  //an array list of the elements children nodes 
 	public int checked = 0; 
 	public boolean changed; 
+	public boolean saved; 
 	protected Router router; 
 
 	public FireNode () { 
@@ -100,6 +101,18 @@ public class FireNode{
 
 	public void add(FireNode newNode) {
 		childList.add(newNode);
+	}
+	public boolean isSaved() {
+		return saved;
+	}
+
+	public void saveChanges() {
+		saved = false; 
+		
+	}
+
+	public void setSaved(boolean saved) {
+		this.saved = saved;
 	}
 
 	//RECURSIVE ALGORITHMS -----> 

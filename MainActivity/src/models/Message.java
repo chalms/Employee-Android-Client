@@ -1,8 +1,10 @@
 package models;
 
 import java.util.Date;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import util.Formatter;
 
 public class Message {
@@ -17,4 +19,6 @@ public class Message {
 			id = object.getInt("id") ;
 		}
 	}
+
+	
 }

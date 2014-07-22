@@ -2,72 +2,30 @@ package models.nodes;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import models.Manager;
+import java.util.Iterator;
 
 public class Report extends FireNode {
-	UsersReport model; 
-
-	public Report() {
-		super(); 
+	UsersReport model;
+	
+	public Report(String name, String id, String nodeID, String tag) {
+		super(name, id, nodeID, tag);
 	}
 	
-	public Report(JSONObject params) {
-		super(); 
-		model = new UsersReport(params); 
-	}
-	
-	public void update() {
-		try {
-			router.post("/reports", upload());
-		} catch (JSONException e) {
-			System.out.println("Upating report failed");
-			e.printStackTrace();
-		} 
-	}
-
-	public JSONObject upload() throws JSONException {
-		JSONObject params = new JSONObject(); 
-		params.put("tasks", new JSONArray()); 
-
-		for (FireNode node : this.childList()) {
-			if (node.getChanged()) {
-				JSONObject n = node.upload();
-				if (n != null) params.getJSONArray("tasks").put(n);
-			}
-		}
-
-		if (getChanged()) {
-			try { 
-				if (nodeID == null) return null; else params.put("id", nodeID);
-				if (description != null) params.put("description", description);
-				if (reportDate != null) params.put("report_date", reportDate);
-				if (checkin != null) params.put("checkin", checkin.toString());
-				if (checkout != null) params.put("checkout", checkout.toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return params; 
-	}
-
-
-	private boolean valStr(String str) {
-		return (!str.isEmpty() && !str.equals("nil"));
-	}
-
-	public boolean isValid() {
-		return valStr(nodeID) && valStr(description) && (reportDate != null) && (manager != null); 
+	void build(UsersReport m) {
+		this.childList = new ArrayList<FireNode>();
+		model = m; 
+		makeChildList(); 
 	}
 
 	void makeChildList() {
 		if (this.childList == null) {
 			this.childList = new ArrayList<FireNode>() ;
+			Iterator <Integer> iter = model.reportTasks.keySet().iterator(); 
+			while(iter.hasNext()) {
+				Integer key = iter.next();
+				ReportTask reportTask = model.reportTasks.get(key);
+				this.childList.add(reportTask);
+			}
 		}
 	}
 
@@ -78,23 +36,6 @@ public class Report extends FireNode {
 		} else {
 			return false; 
 		}
-	}
-
-	public Report(String name, String id, String nodeID, String tag) {
-		super(name, id, nodeID, tag);
-		this.childList = new ArrayList<FireNode>() ;
-	}
-
-	public void setDescription(String desc) {
-		this.description = desc; 
-	}
-
-	public String getDescription() {
-		return this.description; 
-	}
-
-	public void setDate(Date date) {
-		this.reportDate = date; 
 	}
 
 	@Override
@@ -112,28 +53,20 @@ public class Report extends FireNode {
 		return childList;
 	}
 
-	public String hashString() {
-		return new String(this.reportDate.toString() + this.manager.getEmail()); 
-	}
-
 	public void setCheckin(Date c) {
-		checkin = c; 
+		model.checkin = c; 
 	}
 
 	public void setCheckout(Date c) {
-		checkout = c; 
+		model.checkout = c; 
 	}
 
 	public String getCheckin() {
-		return checkin.toString(); 
+		return model.checkin.toString(); 
 	}
 
 	public String getCheckout() {
-		return checkout.toString(); 
-	}
-
-	public Date getReportDate() {
-		return reportDate; 
+		return model.checkout.toString(); 
 	}
 
 	public void setChanged(Boolean changed) {

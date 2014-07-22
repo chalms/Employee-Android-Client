@@ -186,7 +186,7 @@ public class Router extends WebObject {
 	class DefaultJsonResponseHandler extends JsonHttpResponseHandler {
 		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 			WebClient.printValues(new String("success"), statusCode, headers, null, response);
-			new DefaultReader(getModel()).read(response);
+			new DefaultReader(getModel(), getMainContext()).read(response);
 		}
 		
 		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {

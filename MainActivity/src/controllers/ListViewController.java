@@ -164,7 +164,7 @@ public class ListViewController {
 							System.out.println(e.getMessage());
 						}
 					} else {
-						((MainActivity) context).getMainController().areYouSure(); 
+					//	((MainActivity) context).getMainController(). logout
 					}
 				}
 			});
@@ -172,7 +172,7 @@ public class ListViewController {
 			messageBox.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-				//TODO:	((MainActivity) context).getMessageBoxController().open(); 
+				//TODO:	((MainActivity) context).getChatsController().open(); 
 				}
 			});
 

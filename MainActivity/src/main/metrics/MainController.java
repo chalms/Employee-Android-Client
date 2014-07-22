@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Toast;
 import errors.InvalidParametersException;
 import views.LoadingBar;
 import web.WebClient;
@@ -21,7 +22,6 @@ public class MainController {
 	private MainActivity context; 
 	private WebClient webClient; 
 	private Model model; 
-	private int state = 0;
 	private LoadingBar loadingBar;
 	private HashMap <String, JSONObject> companyEmployees =  new HashMap <String, JSONObject> (); 
 	private ActiveController controller = null; 
@@ -45,6 +45,36 @@ public class MainController {
 		return companies; 
 	}
 	
+	public Model getModel() {
+		return model;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
+	}
+	
+	public void stateMessageError() {
+		if (!context.loggedIn) {
+			context.getLoginController().makeToast("Sorry! You could not be logged in");
+		} 
+	}
+	
+	public void loadComplete() {
+		this.loadingBar.dismiss();
+	}
+
+	public WebClient getWebClient() {
+		return webClient;
+	}
+
+	public void setWebClient(WebClient webClient) {
+		this.webClient = webClient;
+	}
+	
+	public void getHome(JSONObject params) {
+		setModel(new Model(context, params));
+	}
+
 	public void printParams(JSONArray response, int i) {
 		try {
 			System.out.println(response.getJSONObject(i).getString("email"));
@@ -69,22 +99,21 @@ public class MainController {
 		respondToValidity(); 
 	}
 	
-	public void login(String username, String password) throws JSONException, UnsupportedEncodingException, InvalidParametersException {
+	public void printLogin(String username, String password) {
 		System.out.println("Logging in with: ");
 		System.out.println("Email: |" + username.toString() + "|");
 		System.out.println("Password: |" + password.toString() + "|");
+	}
+	
+	public void login(String username, String password) throws JSONException, UnsupportedEncodingException, InvalidParametersException {
+		printLogin(username, password);
 		JSONObject params = new JSONObject(); 
 		params.put("email", username);
 		params.put("password", password);
 		System.out.println("Posting with params: |" + params.toString() + "|");
 		context.getRouter().post("/logins", params);
 	}
-	
-	public void stateMessageError() {
-		if (state == 0) {
-			context.getLoginController().makeToast("Sorry! You could not be logged in");
-		} 
-	}
+
 	
 	public void respondToValidity() {
 		if (this.getActiveController() == null) return; 
@@ -138,51 +167,16 @@ public class MainController {
 	}
 	
 	public static void requestError(String errorString) {
-		// TODO Auto-generated method stub
+		System.out.println("Request Error Occurred!: " + errorString);
 	}
+
 	
-	public void logout() {
-		
-	}
-	
-	public void areYouSure() {
-		
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public void setModel(Model model) {
-		this.model = model;
-	}
-	
-
-	public void userInformationReceived() {
-		// To dismiss the dialog
-		loadingBar.dismiss();
-	}
-
 	public void loggedIn() {
-		System.out.println("login called!");
-		state = 1; 
+		context.loggedIn = true; 
 		getActiveController().getDialog().dismiss();
 		this.loadingBar = new LoadingBar(context, "Updating...", "Grabbing your daily activities");
-//		webClient.get("/users");
-	}
-
-	public WebClient getWebClient() {
-		return webClient;
-	}
-
-	public void setWebClient(WebClient webClient) {
-		this.webClient = webClient;
 	}
 	
-	public void getHome(JSONObject params) {
-		
-	}
-
 	public void setCompaniesList(JSONArray arr) {
 		for (int i = 0; i < arr.length(); i++) {
 			try {
@@ -206,5 +200,9 @@ public class MainController {
 		    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			context.getSignupController().getSpinner().setAdapter(adapter);
 		}
+	}
+
+	public void makeToast(String string) {
+		Toast.makeText(context, string, Toast.LENGTH_LONG).show(); 
 	}
 }

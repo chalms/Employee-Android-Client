@@ -1,41 +1,36 @@
 package util;
 
+import main.metrics.MainActivity;
 import models.Model;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DefaultReader extends JsonReader {
-	public DefaultReader(Model m) {
+	private Model model; 
+	private MainActivity context; 
+	public DefaultReader(Model m, MainActivity c) {
 		super(m);
+		context = c; 
 	}
 
 	@Override
 	public void read(JSONObject response) {
-		// TODO Auto-generated method stub
-		try {
-			System.out.println("Reading response: " + response.toString());
-			JSONArray names = response.names();
-			int i = 0; 
-			while (i < names.length()) {
-				String key = names.optString(i);
-				if (key == null) key = "";
-				if (key.equals("reports")) {
-					jsonReport(response.getJSONArray("reports")); 
-				}
-				if (key.equals("chats"))  {
-					jsonChats(response.getJSONArray("chats"));
-				}
-				if (key.equals("managers")) {
-					jsonManagers(response.getJSONArray("managers"));
-				}
+		System.out.println("Reading response: " + response.toString());
+		if (model != null) {
+			Model copy = model; 
+			try {
+				
+				model.setUserReports(response.getJSONObject("users_reports_to_json"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+				System.out.println("Model could not set users reports so reverting");
+				model = copy; 
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Error thrown with message: " + e.getMessage());
-			errorMessage(e.getMessage());
+		} else {
+			model = new Model(context, response);
 		}
+			
 		return ;
 	}
 

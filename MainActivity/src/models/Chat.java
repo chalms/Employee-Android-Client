@@ -1,6 +1,7 @@
 package models;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,17 @@ public class Chat {
 				messages.put(m.id, m);
 			}
 		}
+	}
+	
+	ChalmTree getTree() {
+		ChalmTree tree = new ChalmTree("#chats");
+		Iterator<Integer> i = messages.keySet().iterator();
+		while (i.hasNext()) {
+			Integer element = i.next();
+			tree.routeElements.put("#messages",element);
+			i.remove();
+		}
+		return tree;
 	}
 }
 

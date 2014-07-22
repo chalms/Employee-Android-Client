@@ -2,25 +2,156 @@ package models.nodes;
 
 import java.util.Date;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import util.Formatter;
+import views.ListItemContent;
 
-public class ReportTask {
+public class ReportTask extends FireNode {
 	Boolean complete; 
-	Date completion_time; 
+	Date completionTime; 
 	Integer task_id; 
 	String note; 
 	Date updated_at; 
 	Integer users_report_id; 
+	String description; 
+	JSONObject memento; 
 	
-	public ReportTask(JSONObject params) {		
-        if (params.has("complete")) complete = params.getBoolean("complete");
-        if (params.has("completion_time")) completion_time = Formatter.getDateFromString(params.getString("completion_time")); 
-        if (params.has("id")) task_id = params.getInt("id");
-        if (params.has("note")) note = params.getString("note");
-        if (params.has("updated_at")) updated_at = Formatter.getDateFromString(params.getString("updated_at"));
-        if (params.has("users_report_id")) users_report_id = params.getInt("users_report_id");
-        if (params.has("description")) Tasks.put(task_id, params.getString("description")); 
+	private String testResult; 
+	private String testNote;
+	
+	public ReportTask(String name, String id, String nodeID, String tag) throws JSONException {		
+		super(name, id, nodeID, tag);
 	}
+	
+	public boolean sweep (JSONObject params) throws JSONException {
+		if (params.equals(memento)) return false; 
+	    if (params.has("complete")) complete = params.getBoolean("complete");
+	    if (params.has("completion_time")) completionTime = Formatter.getDateFromString(params.getString("completion_time")); 
+	    if (params.has("id")) task_id = params.getInt("id");
+	    if (params.has("note")) note = params.getString("note");
+	    if (params.has("updated_at")) updated_at = Formatter.getDateFromString(params.getString("updated_at"));
+	    if (params.has("users_report_id")) users_report_id = params.getInt("users_report_id");
+	    if (params.has("task")) {
+	    	JSONObject taskObject = params.getJSONObject("task");
+	    	description = taskObject.getString("description");
+	    }
+	    memento = params; 
+	    return true; 
+	}
+	
+	public void build(JSONObject params) {
+		try {
+			if (sweep(params)) {
+				System.out.println("Params were updated!");
+			} else {
+				System.out.println("No change to params!");
+			}
+		} catch (JSONException e) {
+			System.out.println("Error sweeping reporttask jsonobject params");
+			e.printStackTrace();
+		}
+		
+	}
+
+	String getResult(String result){
+		if (result == null){
+			return new String("");
+		} else {
+			return result; 
+		}
+	}
+
+	@Override
+	public int getChecked(){
+		return getNumericalResult();
+	}
+
+	int ensurePresent(){
+		if (this.testResult == null){
+			this.testResult = "";
+		}
+		return checked; 
+	}
+
+	public void clear(){ 
+		this.testNote = "";
+		this.testResult = "";
+		this.completed = false;
+		this.checked = 0; 
+		return; 
+	}
+
+	public int getNumericalResult() {	
+		System.out.println(this.testResult);
+		if (this.testResult.equals("Good"))
+			return 4;
+		else if (this.testResult.equals("Poor"))
+			return 3;
+		else if (this.testResult.equals("N/A"))
+			return 2;
+		else if (this.testResult.equals("Pass"))
+			return 1;
+		else if (this.testResult.equals("Fail"))
+			return -1;			
+		else
+			return ensurePresent(); 
+	}
+
+	public String getTestResult() {
+		return testResult;
+	}
+
+	public void setTestResult(String testResult) {
+		this.testResult = testResult;
+		setCompleted(true);
+	}
+
+	public String getTestNote() {
+		return testNote;
+	}
+
+	public void setTestNote(String testNote) {
+		this.testNote = testNote;
+		setCompleted(true);
+	}
+
+	public void setCompleted(boolean c) {
+		this.completed = c;
+	}
+
+	@Override
+	public boolean checkCompleted(boolean t) {
+		if (!this.testResult.equals("")) {
+			this.completed = true; 
+		} 
+		return this.completed; 
+	}
+
+	@Override
+	public ListItemContent createRowContent () {
+		ListItemContent item = new ListItemContent (this);
+		item.setChecked(getNumericalResult());
+		return item;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getCompletedTime() {
+		return completionTime; 
+	}
+
+	public void setCompletionTime(Date completed_at) {
+		this.completionTime = completed_at;
+	}
+	
+	
+	    
 }

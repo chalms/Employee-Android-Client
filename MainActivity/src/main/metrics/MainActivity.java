@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
 	Stack<FireNode> jumpDownList;
 	boolean popUp = false; 
 	boolean loggedOut = false; 
+	boolean loggedIn = false; 
 
 	// For SCANNER -----> 
 	private String ACTION_CONTENT_NOTIFY = "android.intent.action.CONTENT_NOTIFY";
@@ -79,30 +80,50 @@ public class MainActivity extends Activity {
 	//Utilities ----> 
 	private WebClient webClient = null;
 	private Router router; 
+	
 
 
 	//Initial settings --> 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		buildAPI(); 
+		setContentView(main.metrics.R.layout.activity_main);
+		initializeScanner(); 
+		selectController(); 
+	}
+	
+	public void buildAPI() {
 		WebClient.build(this);
 		this.getWebClient();
 		this.getRouter();
-		this.getNodeController();
-		globalID = 0;
-		numberHeaders = 0;
-		dontAddHeader = false;
-		numberOfHeadersLeft = 0;
-		setContentView(main.metrics.R.layout.activity_main);
-		initialComponent();
-		registerScanner();
+	}
+	
+	public void selectController() {
 		loggedOut = false; 
 		this.userName = null; 
 		if (this.userName == null) {
+			loggedIn = false; 
 			getMainController().setActiveController(getLoginController());
 		} else {
+			loggedIn = true; 
+			setHomeView(); 
+		}	
+	}
+	
+	public void setHomeView() {
+		if (this.getNodeController() != null) {
+			globalID = 0;
+			numberHeaders = 0;
+			dontAddHeader = false;
+			numberOfHeadersLeft = 0;
 			this.getListViewController().renderListView();
-		}		
+		}
+	}
+	
+	public void initializeScanner() {
+		initialComponent();
+		registerScanner();
 	}
 	
 	public Router getRouter() {
@@ -122,19 +143,20 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	//Methods to help maneuvering through main UI List --> 
-
 	public void moveContextNodeUp(String headerId){
 		int numberOfRemovals = getNodeController().goToParentNode(headerId, this);
 		getListViewController().deleteHeaders(numberOfRemovals);
 		getListViewController().renderListView();
 	}
+	
 	public void onBackPressed() {
 		System.out.println("Back Pressed");
 		if(this.userName != null) {
 			if (getListViewController() != null) {
 				getListViewController().goBack(); 
 			}
+		} else {
+			super.onBackPressed(); 
 		}
 	}
 
@@ -153,9 +175,7 @@ public class MainActivity extends Activity {
 	public TokenController getTokenController() {
 		return tokenController; 
 	}
-
-	//Login and setting user ---> 
-
+	
 	public void setCurrentUserName(String u) {
 		this.userName = new String(u);
 	}
@@ -184,13 +204,9 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 			d = ProgressDialog.show(MainActivity.this, "Saving Document", "Saving...", true); 
-			getModel().saveChanges(); 
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
+			//UPLOAD MODEL ----> 	getModel().saveChanges(); 
+			
 			while(true) {
-				if (getModel().saved()) break ;
 				try{ 
 					d.dismiss();
 				} catch (Exception e) {
@@ -204,12 +220,24 @@ public class MainActivity extends Activity {
 				try {
 					nodeController = MainActivity.this.getNodeController();
 					setContentView(main.metrics.R.layout.activity_main);
-					userName = null;
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
+				} catch (Exception e){
+					e.printStackTrace();
+					System.out.println("Exception... [Logout Task, OnPreExcecute, 2nd try]");
 				}
-			}  
+			}
+		}
 
+		@Override
+		protected Void doInBackground(Void... params) {
+			//REMEMEBER  if (getModel().saved()) // thn 
+				if (true) {
+					userName = null;
+					System.out.println("Logged out");
+				}
+//				} else {
+//					// SOME EMERGENCY SAVE
+//					
+//				}
 			return null;
 		}
 
@@ -272,7 +300,7 @@ public class MainActivity extends Activity {
 			if (root != null) {
 				this.nodeController = new NodeController(getRootNode()); 
 			} else {
-				makeToast("There is no daily schedual loaded!");
+				if (this.loggedIn) makeToast("There is no daily schedual loaded!");
 			}
 		}
 		return this.nodeController; 
@@ -300,18 +328,16 @@ public class MainActivity extends Activity {
 	}
 
 	// MODELS -----> 
+	
+	public void setRoot(FireNode r) {
+		this.root = r; 
+	}
 
 	public FireNode getRootNode(){
-		if (this.root == null) {
-			this.root = getModel().getReport(); 
-		}
 		return this.root; 
 	}
 
 	public Model getModel() {
-		if (this.model == null) {
-			this.model = new Model(this);
-		}
 		return this.model;
 	}
 
