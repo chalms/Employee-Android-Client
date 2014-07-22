@@ -2,7 +2,12 @@ package models.nodes;
 
 import java.util.Date;
 
-public class Part extends Task {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import util.Formatter;
+
+public class Part extends FireNode {
 
 	private Date scanned_at; //datestamp for the completion method --> completed: 
 	private String part_name; 
@@ -10,30 +15,30 @@ public class Part extends Task {
 	@SuppressWarnings("unused")
 	private String partID; 
 
-	public Part(String name, String id, String nodeID, String desc, Date completedAt, Date scan, String repId, String repIndex, String geo, Boolean completed, String pn, String bCode) {
-		super(name, id, nodeID, completedAt, desc, repId, repIndex, geo, completed);  
-		setScanned_at(scan); 
-		part_name = pn; 
-		setBarcode(bCode); 
-		partID = nodeID; 
+	public Part(String name, String id, String nodeID, String desc) throws JSONException {
+		super(name, id, nodeID, desc);
 	}
 	
-//	public void changed() {
-//		
-//	}
-//	
-//	public void upload (Router r) {
-//		JSONObject params = new JSONObject(); 
-//		try {
-//				if (id == null) { return ; } else	params.put("id", id);
-//				if (part_name != null) params.put("part_name", part_name);
-//				if (scanned_at != null) params.put("scanned_at", scanned_at.toString());
-//				if (barcode != null) params.put("barcode", barcode);
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//		
-//	}
+	public void build(JSONObject params) throws JSONException {
+		if (params.has("scanned")) setScanned_at(Formatter.getDateFromString(params.getString("scanned"))); 
+		if (params.has("part_name")) setPart_name(params.getString("part_name"));
+		if (params.has("barcode")) setBarcode(params.getString("barcode"));
+		if (params.has("part_id")) partID = params.getString("part_id");
+	}
+
+	public JSONObject uploadParams () {
+		JSONObject params = new JSONObject(); 
+		try {
+			if (id != null) params.put("id", id);
+			if (part_name != null) params.put("part_name", part_name);
+			if (scanned_at != null) params.put("scanned_at", scanned_at.toString());
+			if (barcode != null) params.put("barcode", barcode);
+		} catch (JSONException e) {
+			System.out.println("Error with upload parameters for part");
+			e.printStackTrace();
+		}
+		return params; 
+	}
 
 	String getResult(String result){
 		if (result == null){

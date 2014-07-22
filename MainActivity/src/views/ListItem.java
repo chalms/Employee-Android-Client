@@ -72,7 +72,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				poor_button.setChecked(false);
     	 				NA_button.setChecked(false);
     	 				listItem.setChecked(4);
-    	 				((MainActivity) context).getNodeController().getTaskById(listItem.getID()).setTestResult("Good");
+    	 				((MainActivity) context).getNodeController().getReportTaskById(listItem.getID()).setTestResult("Good");
     	 				((MainActivity) context).getNodeController().addToDictionary(listItem.getID());
     	 			}
                 }));
@@ -84,7 +84,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				poor_button.setChecked(true);
     	 				NA_button.setChecked(false);
     	 				listItem.setChecked(3);
-    	 				((MainActivity) context).getTasksController().showTasks(listItem.getID(), "Poor");
+    	 				((MainActivity) context).getTasksController().showReportTasks(listItem.getID(), "Poor");
     				}
                 }));
                 
@@ -95,7 +95,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				poor_button.setChecked(false);
     	 				NA_button.setChecked(true);
     	 				listItem.setChecked(2);
-    	 				((MainActivity) context).getTasksController().showTasks(listItem.getID(), "N/A");
+    	 				((MainActivity) context).getTasksController().showReportTasks(listItem.getID(), "N/A");
     	 			}
                 }));
                 
@@ -132,7 +132,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				checkedItems[Integer.valueOf(position)] = -1;
     	 				failCheckBoxes[Integer.valueOf(position)] = true; 
             			passCheckBoxes[Integer.valueOf(position)] = false;
-    	 				((MainActivity) context).getTasksController().showTasks(listItem.getID());
+    	 				((MainActivity) context).getTasksController().showReportTasks(listItem.getID());
     	 			}
     			}));
        
@@ -145,7 +145,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				checkedItems[Integer.valueOf(position)] = 1;
     	 				failCheckBoxes[Integer.valueOf(position)] = false; 
             			passCheckBoxes[Integer.valueOf(position)] = true;
-    	 				((MainActivity) context).getNodeController().getTaskById(listItem.getID()).setTestResult("Pass");
+    	 				((MainActivity) context).getNodeController().getReportTaskById(listItem.getID()).setTestResult("Pass");
     	 				((MainActivity) context).getNodeController().addToDictionary(listItem.getID());
     	 			}
                 }));

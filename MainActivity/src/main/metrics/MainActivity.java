@@ -29,9 +29,9 @@ import android.widget.Toast;
 import controllers.ListViewController;
 import controllers.LoginController;
 import controllers.NodeController;
+import controllers.ReportTasksController;
 import controllers.SearchController;
 import controllers.SignupController;
-import controllers.TasksController;
 import controllers.TokenController;
 
 public class MainActivity extends Activity {
@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 	public MainController mainController = null; 
 	public ListViewController listViewController = null;
 	public SearchController searchController = null;
-	public TasksController tasksController = null;
+	private ReportTasksController reportTasksController = null;
 	public LoginController loginController = null; 
 	public SignupController signupController = null; 
 	public TokenController tokenController = null; 
@@ -79,8 +79,8 @@ public class MainActivity extends Activity {
 
 	//Utilities ----> 
 	private WebClient webClient = null;
-	private Router router; 
-	
+	private Router router;
+
 
 
 	//Initial settings --> 
@@ -306,11 +306,11 @@ public class MainActivity extends Activity {
 		return this.nodeController; 
 	}
 
-	public TasksController getTasksController() {
-		if (this.tasksController == null) {
-			this.tasksController = new TasksController(this); 
+	public ReportTasksController getTasksController() {
+		if (this.reportTasksController == null) {
+			this.reportTasksController = new ReportTasksController(this); 
 		}
-		return this.tasksController; 
+		return this.reportTasksController; 
 	}
 	
 	public MainController getMainController() {

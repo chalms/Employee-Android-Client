@@ -51,8 +51,25 @@ public class ReportTask extends FireNode {
 		} catch (JSONException e) {
 			System.out.println("Error sweeping reporttask jsonobject params");
 			e.printStackTrace();
+		}	
+	}
+	
+	
+	public JSONObject upload () {
+		JSONObject params = new JSONObject(); 
+		try { 
+			if (id == null) { return null; } else  params.put("id", id);
+			if (complete != null) params.put("complete", complete);
+			if (completionTime != null) params.put("completed_timet", completionTime.toString());
+			if (description != null) params.put("description", description);
+			if (testNote != null) params.put("note", testNote);
+			if (testResult != null) params.put("test_result", testResult);
+			if (users_report_id != null) params.put("users_report_id", users_report_id);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		
+		return params;
 	}
 
 	String getResult(String result){

@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 import models.nodes.FireNode;
-import models.nodes.Task;
+import models.nodes.ReportTask;
 import views.ListItemContent;
 import android.content.Context;
 
@@ -52,7 +52,7 @@ public class NodeController {
 		System.out.println(parentNodes.peek().getNodeID());
 		System.out.println(id);
 		String equipmentID = parentNodes.peek().getNodeID();
-		Task inspectionElement = getTaskById(id);
+		ReportTask inspectionElement = getReportTaskById(id);
 		HashMap<String, String[]> secondaryMap = new HashMap<String, String[]>();
 		
 		if (myDict != null){
@@ -70,19 +70,19 @@ public class NodeController {
 		}
 	}
 
-	public void saveTaskById(Context context, String id){
-		updateAndSave(context, getTaskById(id)); 
+	public void saveReportTaskById(Context context, String id){
+		updateAndSave(context, getReportTaskById(id)); 
 	}
 
-	public Task getTaskById(String id){
+	public ReportTask getReportTaskById(String id){
 		FireNode element = getChildByID(id);
 		boolean tag = element.getTag().equals("Task");
 		if (tag) {
-			return (Task) element;
+			return (ReportTask) element;
 		} else return null; 
 	}
 
-	public void updateAndSave(Context context, Task inspectionTest){
+	public void updateAndSave(Context context, ReportTask inspectionTest){
 		if (inspectionTest != null) {			
 
 		} else { 
