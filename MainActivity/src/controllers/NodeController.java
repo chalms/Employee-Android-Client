@@ -191,14 +191,18 @@ public class NodeController {
 		System.out.println("list item created");
 		for (int i = 0; i < childNodes.size(); i++) {     
 			if (childNodes.get(i).completed) {
-				if (childNodes.get(i).getTag().equals("#report-task")){
+				System.out.println("1");
+				if (childNodes.get(i).getTag().equals("Leaf")){
+					System.out.println("2");
 					ListItemContent nug = childNodes.get(i).createRowContent();		 
 					data[i] = nug; 
 				} else {
+					System.out.println("3");
 					data[i] = childNodes.get(i).createRowContent();
 					data[i].setCompleted(true);
 				}  	 
 			} else {
+				System.out.println("4");
 				data[i]= childNodes.get(i).createRowContent();
 			}
 		}

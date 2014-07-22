@@ -47,7 +47,10 @@ public class Part extends FireNode {
 			return result; 
 		}
 	}
-
+	
+	public String getDisplay() {
+		return "Part"; 
+	}
 
 	public String getPart_name() {
 		return part_name;

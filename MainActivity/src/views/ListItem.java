@@ -39,14 +39,14 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
         textViewItem.setText(listItem.getDisplay());
         textViewItem.setTag(listItem.getID());
 
-        if (listItem.getTag().equals("Task")) {
-        	if (listItem.getDisplay().equals("Cabinet Condition") || listItem.getDisplay().equals("Nozzle Condition"))
+        if (listItem.getTag().equals("#report-task")) {
+        	if (listItem.getDisplay().equals("Part"))
         	{
         		final CheckBox good_button = (CheckBox) convertView.findViewById(R.id.GoodCheckBox);
                 final CheckBox poor_button = (CheckBox) convertView.findViewById(R.id.PoorCheckBox);
                 final CheckBox NA_button = (CheckBox) convertView.findViewById(R.id.NACheckBox);
                 
-                textViewItem.setTag("Task");
+                textViewItem.setTag("#report-part");
                 int checked = listItem.getChecked();
             	if ( checked != 0) {
             		if (checked == 4){
@@ -170,8 +170,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
 			convertView = inflater.inflate(layoutResourceId, parent, false);
 		}
 
-		if (listItem.getDisplay().equals("Cabinet Condition")
-				|| listItem.getDisplay().equals("Nozzle Condition")) {
+		if (listItem.getDisplay().equals("Leaf")) {
 			LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
 			convertView = inflater.inflate(
 					main.metrics.R.layout.list_view_row_triplebuttons, parent, false);

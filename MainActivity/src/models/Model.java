@@ -19,18 +19,30 @@ public class Model extends FireNode {
 	private UsersReport userReports;
 	
 	public Model(MainActivity c, JSONObject params){
+		
+		tryNameSetup(params);
+		
 		System.out.println("Model.new(..) {parameters must be present}");
 		setContext(c); 
+		
 		Report report = setUserReports(params);
+		
 		System.out.println("Model.new(..) -> report = setUserReports(..");
 		this.childList = new ArrayList <FireNode>(); 
 		this.childList.add(report); 
 		System.out.println("Model.new(..) -> childlist.add(report) ");
 		context.setRoot(this);
-		context.setNodeController();
-		System.out.println("Model.new(..) -> { setRoot(this), -> setNodeController() } ");
-		context.getListViewController().renderListView();
-		System.out.println("Model.new().renderListView() -> rendered");
+		context.setHomeView();
+	}
+	
+	void tryNameSetup(JSONObject params) {
+		try {
+			setName(params.getString("name"));
+		} catch (JSONException e) {
+			System.out.println("Name setup failed!");
+			e.printStackTrace();
+			setName("Chalmee");
+		}
 	}
 	
 	public Report setUserReports(JSONObject params) {
@@ -83,6 +95,13 @@ public class Model extends FireNode {
 		this.context = context;
 	}
 	
+	public void setName(String n) {
+		this.name = n; 
+	}
+	
+	public String getName() {
+		return name; 
+	}
 	
 	
 	

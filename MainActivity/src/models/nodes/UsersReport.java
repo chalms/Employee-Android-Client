@@ -32,13 +32,13 @@ public class UsersReport {
 		if(params.has("location_id")) locationId = params.getInt("location_id");
 		if(params.has("manager_id")) managerId = params.getInt("manager_id");
 		if(params.has("report_id")) reportId = params.getInt("report_id");		
-		if(params.has("reportTasks")) buildReportTasks(); 
+		if(params.has("reports_tasks")) buildReportTasks(); 
 	}
 	
 	public void buildReportTasks() throws JSONException {
-		JSONArray arr = params.getJSONArray("reportTasks");
+		JSONArray arr = params.getJSONArray("reports_tasks");
 		for (int i = 0; i < arr.length(); i++) {
-			ReportTask task = new ReportTask("#report-task", String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"),"#report-task"  );
+			ReportTask task = new ReportTask("Report Task", String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"),"Leaf"  );
 			task.build(arr.getJSONObject(i));
 			reportTasks.put(task.users_report_id, task);
 		}

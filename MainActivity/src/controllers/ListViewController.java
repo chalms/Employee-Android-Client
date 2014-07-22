@@ -45,6 +45,7 @@ public class ListViewController {
 	}
 
 	public void renderListView() {			
+		System.out.println("ListViewController() -> renderListView ");
 		ListView listViewItems = new ListView(this.context);
 		LayoutInflater inflater = (LayoutInflater)this.context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		createHeader(inflater, listViewItems);
@@ -53,6 +54,7 @@ public class ListViewController {
 	}
 
 	public void goBack() {
+		System.out.println("ListViewController() -> goBack ");
 		if (1 < nodeController().parentNodes.size()) {
 			if (1 < nodeController().parentNodes.size()){
 				nodeController().parentNodes.pop();
@@ -66,6 +68,7 @@ public class ListViewController {
 	}
 
 	public void deleteHeaders(int amount) {
+		System.out.println("ListViewController() -> deleteHeaders (amount)");
 		if (amount > (headerList.size())) amount = headerList.size();
 		for (int j = 0; j < amount; j++) {
 			deletedStack.push(headerList.remove(headerList.size() - 1));
@@ -75,6 +78,7 @@ public class ListViewController {
 	}
 
 	public void goToEquipment(String input){
+		System.out.println("ListViewController() -> goToEquipment(input) ");
 		boolean clearNodeData = false; 
 		goToRoot(clearNodeData);
 		setJumpDownList(input);
@@ -82,7 +86,6 @@ public class ListViewController {
 			System.out.println(jumpDownList.peek().getID());
 			jumpDownList.pop();
 		}
-
 		if (!jumpDownList.empty()) {
 			while (jumpDownList.size() > 0) {
 				nodeController().goToNodeItemInList(jumpDownList.pop().getID());
@@ -143,6 +146,7 @@ public class ListViewController {
 	private void createHeader(LayoutInflater inflater, ListView listViewItems){
 		ViewGroup header = null;
 		if (!topHeaderAdded) {
+			System.out.println("ListViewController() -> createHead.. -> setting header textview & settings ");
 			header = (ViewGroup) inflater.inflate(R.layout.top_list_header, (ViewGroup) listViewItems.getParent(), false);
 			TextView tv = (TextView) header.findViewById(main.metrics.R.id.headerViewItem); 
 			setTextView(tv);
@@ -153,6 +157,7 @@ public class ListViewController {
 			messageBox = (Button) header.findViewById(main.metrics.R.id.viewXmlButton); //viewXmlButton
 			searchButton = (Button) header.findViewById(main.metrics.R.id.searchButton); 
 
+			System.out.println("ListViewController() -> createHead.. -> setting button listeners.. ");
 			signOut.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -184,7 +189,9 @@ public class ListViewController {
 			});
 
 		} else { 
+			System.out.println("ListViewController() -> createHead.. -> header = (ViewGroup).. ");
 			header = (ViewGroup) inflater.inflate(R.layout.list_header, (ViewGroup) listViewItems.getParent(), false);
+			System.out.println("ListViewController() -> createHead.. -> header = (setTextView).. ");
 			setTextView(((TextView) header.findViewById(main.metrics.R.id.headerViewItem)));
 			System.out.println("lower header created");
 		}	
@@ -192,10 +199,12 @@ public class ListViewController {
 	}
 
 	private void setTextView(TextView text){
+		System.out.println("ListViewController() -> setTextVie.. -> setting text view");
 		text.setText(nodeController.getParentNodeDisplay());
 		text.setTag(nodeController.getContextNode().getID());
+		System.out.println("ListViewController() -> setTextVie.. -> setting text view for root");
 		if (text.getText().equals(this.nodeController.root.getDisplay())) {
-			text.setText(((MainActivity) context).getCurrentUserName());
+			text.setText(this.nodeController.root.getDisplay());
 		}
 	}
 
@@ -208,6 +217,7 @@ public class ListViewController {
 	}
 
 	private boolean checkHeaderCompleted(int i){
+		System.out.println("ListViewController() -> checkHead.. -> Checking if header completed ");
 		return ((MainActivity) context).getNodeController().parentNodes.get(i).checkCompleted(true);
 	}
 
@@ -218,24 +228,39 @@ public class ListViewController {
 			} else { 
 				headerList.get(i).setBackgroundResource(R.color.maroonred);
 			}
+			System.out.println("ListViewController() -> checkHead.. -> About to add header view  ");
+			
 			listViewItems.addHeaderView(headerList.get(i));
 		}
 	}
 
 	private void fillListView(ListView listViewItems) {
 		ListItemContent[] rowContent = nodeController().getRowContents();
+		System.out.println(rowContent.toString());
+		System.out.println("ListViewController() -> fillLi.. -> About to set list item adaptor: ");
 		ListItem adapter = setListItemAdapter(rowContent);
+		System.out.println("ListViewController() -> fillLi.. -> About to set background color ");
 		listViewItems.setBackgroundColor(((MainActivity) context).getTitleColor());
+		System.out.println("ListViewController() -> fillLi.. -> About to set OnItemClickLis...");
 		listViewItems.setOnItemClickListener(new ListViewItemController(this.context));
+		System.out.println("ListViewController() -> fillLi.. -> About to set Adaptor...");
 		listViewItems.setAdapter(adapter);
+		System.out.println("ListViewController() -> fillLi.. -> About to set ContentView...");
 		((MainActivity) context).setContentView(listViewItems);
+		System.out.println("ListViewController() -> fillLi.. -> recomputing and showing");
 		listViewItems.recomputeViewAttributes(listViewItems);
 		listViewItems.bringToFront();
 		listViewItems.requestLayout();
 	}
 
 	private ListItem setListItemAdapter(ListItemContent[] rowContent) {
-		if (rowContent[0].getTag().equals("#report-task")) {
+		System.out.println("Setting list item adaptor:");
+		System.out.println(rowContent.length);
+		if (rowContent.length == 0) return null; 
+		System.out.println(rowContent.toString());
+		System.out.println(rowContent[0].toString());
+		
+		if (rowContent[0].getTag().equals("Leaf")) {
 			return new ListItem(context, main.metrics.R.layout.list_view_row_buttons, rowContent);
 		}
 		else {
