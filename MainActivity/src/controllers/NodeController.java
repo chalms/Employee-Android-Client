@@ -28,14 +28,19 @@ public class NodeController {
 	
 	public NodeController(FireNode mikesList) {
 		//Create the Stack and Array list by passing this constructor the root node
+		System.out.println("Node Controller set with ---> " + mikesList.getName());
 		childNodes = mikesList.childList();
 		if (childNodes == null) {
 			return; 
 		}
+		
 		myDict = new HashMap <String, HashMap<String, String[]>>();
 		parentNodes = new Stack <FireNode> ();
 		this.root = mikesList; 
+		
+		System.out.println("Pushed Parent Node!");
 		parentNodes.push(mikesList);
+		
 	}
 
 	public void clearModificationDictionary(){
@@ -152,7 +157,7 @@ public class NodeController {
 		FireNode newParent = new FireNode();
 		newParent = getChildByID(new String(id));
 		System.out.println(newParent.getTag());
-		if (!newParent.getTag().equals("Task")) {
+		if (!newParent.getTag().equals("#report-task")) {
 			System.out.println(newParent.getID().toString());
 			parentNodes.push(newParent);
 			childNodes = parentNodes.peek().childList();
@@ -186,7 +191,7 @@ public class NodeController {
 		System.out.println("list item created");
 		for (int i = 0; i < childNodes.size(); i++) {     
 			if (childNodes.get(i).completed) {
-				if (childNodes.get(i).getTag().equals("Task")){
+				if (childNodes.get(i).getTag().equals("#report-task")){
 					ListItemContent nug = childNodes.get(i).createRowContent();		 
 					data[i] = nug; 
 				} else {

@@ -41,7 +41,7 @@ public class ListViewItemController implements OnItemClickListener {
 		} else {
 			TextView textViewItem = ((TextView) view
 					.findViewById(main.metrics.R.id.textViewItem));
-			if (!(textViewItem.getTag().equals("InspectionElement"))) {
+			if (!(textViewItem.getTag().equals("#report-task"))) {
 				rowClicked(textViewItem);
 			}
 		}

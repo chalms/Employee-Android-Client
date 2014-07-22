@@ -38,7 +38,7 @@ public class UsersReport {
 	public void buildReportTasks() throws JSONException {
 		JSONArray arr = params.getJSONArray("reportTasks");
 		for (int i = 0; i < arr.length(); i++) {
-			ReportTask task = new ReportTask("#report-task", String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"), arr.getJSONObject(i).getString("complete") );
+			ReportTask task = new ReportTask("#report-task", String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"),"#report-task"  );
 			task.build(arr.getJSONObject(i));
 			reportTasks.put(task.users_report_id, task);
 		}

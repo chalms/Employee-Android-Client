@@ -141,10 +141,10 @@ public class FireNode{
 		//Checks to see if this nodes children are completed. If all its children are completed the node sets its
 		//completed attribute to 'true'
 		
-		int size = this.childList().size();
+		int size = getChildList().size();
 		this.completed = true; 
 		for (int i=0; i < size; i++) {
-			if (!this.childList().get(i).checkCompleted(t)) this.completed = false; 
+			if (!getChildList().get(i).checkCompleted(t)) this.completed = false; 
 		}
 		return this.completed;
 	}
@@ -164,9 +164,9 @@ public class FireNode{
 			return nodeList;
 		} 
 		if (!this.getTag().equals("Leaf")) {
-			int size = this.childList().size();
+			int size = getChildList().size();
 			for (int i=0; i < size; i++) {
-				Stack <FireNode> theReturnStack = this.childList().get(i).checkForId(id);
+				Stack <FireNode> theReturnStack = getChildList().get(i).checkForId(id);
 				if (!theReturnStack.empty()) {
 					theReturnStack.push(this);
 					return theReturnStack;
@@ -175,15 +175,22 @@ public class FireNode{
 		} 
 		return (new Stack <FireNode> ());
 	}
+	
+	protected ArrayList <FireNode> getChildList () {
+		if (this.childList == null) {
+			this.childList = new ArrayList <FireNode> (); 
+		} 
+		return this.childList;
+	}
 
 	public void clear(){
-		if(this.childList().isEmpty()){
+		if(getChildList().isEmpty()){
 			this.checked = 0; 
 			this.completed = false; 
 			return ; 
 		} else {
-			for(int i = 0; i < this.childList().size(); i++) {
-				this.childList().get(i).clear();
+			for(int i = 0; i < getChildList().size(); i++) {
+				getChildList().get(i).clear();
 			}
 			return; 
 		}

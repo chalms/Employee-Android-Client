@@ -1,6 +1,9 @@
 package models;
 
+import java.util.ArrayList;
+
 import main.metrics.MainActivity;
+import models.nodes.FireNode;
 import models.nodes.Report;
 import models.nodes.UsersReport;
 
@@ -10,31 +13,43 @@ import org.json.JSONObject;
 import util.Formatter;
 import errors.InvalidParametersException;
 
-public class Model {
+public class Model extends FireNode {
 	private MainActivity context; 
 	private UsersChats userChats;
 	private UsersReport userReports;
 	
 	public Model(MainActivity c, JSONObject params){
+		System.out.println("Model.new(..) {parameters must be present}");
 		setContext(c); 
-		setUserReports(params); 
+		Report report = setUserReports(params);
+		System.out.println("Model.new(..) -> report = setUserReports(..");
+		this.childList = new ArrayList <FireNode>(); 
+		this.childList.add(report); 
+		System.out.println("Model.new(..) -> childlist.add(report) ");
+		context.setRoot(this);
+		context.setNodeController();
+		System.out.println("Model.new(..) -> { setRoot(this), -> setNodeController() } ");
+		context.getListViewController().renderListView();
+		System.out.println("Model.new().renderListView() -> rendered");
 	}
 	
-	public void setUserReports(JSONObject params) {
-		userReports = new UsersReport(params);
+	public Report setUserReports(JSONObject params) {
 		try {
+			userReports = new UsersReport(params);
 			if (userReports.build(params) ) {
 				Report report = new Report("#users_report", 
 						String.valueOf(Formatter.getGlobalId()), 
 						String.valueOf(userReports.id), 
 						String.valueOf(userReports.complete));
-				context.setRoot(report);
+				return report; 
 			} else {
 				context.getMainController().makeToast("User reports are unavailable at the moment");
+				return null;
 			}
 		} catch (JSONException e) {
 			System.out.println("User reports could not be built");
 			e.printStackTrace();
+			return null;
 		}
 	}
 	

@@ -104,6 +104,7 @@ public class MainActivity extends Activity {
 		this.userName = null; 
 		if (this.userName == null) {
 			loggedIn = false; 
+			// next try: setHomeView(); 
 			getMainController().setActiveController(getLoginController());
 		} else {
 			loggedIn = true; 
@@ -292,6 +293,10 @@ public class MainActivity extends Activity {
 			this.searchController = new SearchController(this);
 		}
 		return this.searchController;
+	}
+	
+	public void setNodeController () {
+		this.nodeController = new NodeController(getRootNode());
 	}
 
 	public NodeController getNodeController() {

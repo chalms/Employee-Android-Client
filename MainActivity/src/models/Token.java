@@ -3,7 +3,6 @@ package models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class Token {
 	private String token = null;
 	public double ttl = 0;
@@ -18,7 +17,7 @@ public class Token {
 		JSONObject apiSessionToken = theToken.getJSONObject("api_session_token");
 		token = apiSessionToken.getString("token");
 		ttl = apiSessionToken.getDouble("ttl");
-		setUserId(apiSessionToken.getInt("user_id"));
+		setUserId(theToken.getInt("id"));
 	}
 
 	public String getToken() {
@@ -36,7 +35,4 @@ public class Token {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	
-	
-
 }

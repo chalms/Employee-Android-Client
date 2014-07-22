@@ -235,7 +235,7 @@ public class ListViewController {
 	}
 
 	private ListItem setListItemAdapter(ListItemContent[] rowContent) {
-		if (rowContent[0].getTag().equals("InspectionElement")) {
+		if (rowContent[0].getTag().equals("#report-task")) {
 			return new ListItem(context, main.metrics.R.layout.list_view_row_buttons, rowContent);
 		}
 		else {
