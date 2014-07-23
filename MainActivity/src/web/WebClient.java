@@ -82,9 +82,9 @@ public class WebClient {
 	}
 
 	static public void setAuthenticationHeader(Token token2) {
-		client.addHeader("AUTHORIZATION", token2.toString());
+		System.out.println("AUTH HEADER SET!");
+		client.addHeader("AUTHORIZATION", token2.getToken());
 	}
-
 
 	public static MainActivity getMain() {
 		return main;
@@ -100,6 +100,7 @@ public class WebClient {
 
 	public void setToken(Token token) {
 		this.token = token;
+		setAuthenticationHeader(token);
 	}
 
 	public static String getUrl() {

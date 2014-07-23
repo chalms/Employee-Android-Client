@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Stack;
 
+import org.json.JSONException;
+
+import main.metrics.MainActivity;
 import models.nodes.FireNode;
 import models.nodes.ReportTask;
 import views.ListItemContent;
@@ -18,6 +21,8 @@ public class NodeController {
 	FireNode root; 
 	public String rootname; 
 	boolean set;
+	MainActivity context; 
+	
 
 	// This class controls the tree of FireNode elements and defines the users current node 
 	// in the application. All ancestor nodes from the users current node, are pushed into a Stack, 
@@ -26,13 +31,14 @@ public class NodeController {
 	// The Arraylist, 'childnodes' displays all children of the top parentNode element, and the current clickable 
 	// Items in the checklist - items in white
 	
-	public NodeController(FireNode mikesList) {
+	public NodeController(FireNode mikesList, MainActivity c) {
 		//Create the Stack and Array list by passing this constructor the root node
 		System.out.println("Node Controller set with ---> " + mikesList.getName());
 		childNodes = mikesList.childList();
 		if (childNodes == null) {
 			return; 
 		}
+		context = c; 
 		
 		myDict = new HashMap <String, HashMap<String, String[]>>();
 		parentNodes = new Stack <FireNode> ();
@@ -54,25 +60,48 @@ public class NodeController {
 	}
 
 	public void addToDictionary(String id){
-		System.out.println(parentNodes.peek().getNodeID());
+		System.out.println("User report ID: " + parentNodes.peek().getNodeID());
 		System.out.println(id);
-		String equipmentID = parentNodes.peek().getNodeID();
-		ReportTask inspectionElement = getReportTaskById(id);
+		String userReportID = parentNodes.peek().getNodeID();
+		
+		
+		ReportTask reportTask = getReportTaskById(id);
+		System.out.println("report task: " + reportTask.toString());
+		
 		HashMap<String, String[]> secondaryMap = new HashMap<String, String[]>();
 		
 		if (myDict != null){
-			if (myDict.containsKey(equipmentID)){
-				secondaryMap = myDict.get(equipmentID);
+			if (myDict.containsKey(userReportID)){
+				System.out.println("myDict already contains the userReportID");
+				secondaryMap = myDict.get(userReportID);
 			}
+		} else {
+			System.out.println("need to create new hashmap as myDict == null");
+			myDict  = new HashMap <String, HashMap<String, String[]>>();
 		}
 
-		if (inspectionElement != null){		
+		if (reportTask != null){		
 			String [] ishYaBoy = new String[2];
-			ishYaBoy[0] = new String(inspectionElement.getTestResult());
-			ishYaBoy[1] = new String(inspectionElement.getTestNote());
-			secondaryMap.put(inspectionElement.getName(),  ishYaBoy);
-			myDict.put(equipmentID, secondaryMap);
+			System.out.println("Report task test result: " + reportTask.getTestResult());
+			System.out.println("Report task test note: " + reportTask.getTestNote());
+			ishYaBoy[0] = new String(reportTask.getTestResult());
+			ishYaBoy[1] = new String(reportTask.getTestNote());
+			System.out.println("Report task test note: " + reportTask.getTestNote());
+			String reportTaskID = reportTask.getNodeID();
+			System.out.println("Report task id: " + reportTaskID); 
+			secondaryMap.put(reportTaskID,  ishYaBoy);
+			System.out.println("reportTask and string array placed in secondary map");
+			myDict.put(userReportID, secondaryMap);
+			System.out.println("user report id and secondary map placed into myDict");
+			try {
+				context.getRouter().saveDictionary(myDict);
+			} catch (JSONException e) {
+				System.out.println("Updates could not be saved...");
+				e.printStackTrace();
+			}
+
 		}
+		
 	}
 
 	public void saveReportTaskById(Context context, String id){
@@ -84,7 +113,10 @@ public class NodeController {
 		boolean tag = element.getTag().equals("Leaf");
 		if (tag) {
 			return (ReportTask) element;
-		} else return null; 
+		} else {
+			System.out.println("Repor task could not be found!");
+		}
+		return null;
 	}
 
 	public void updateAndSave(Context context, ReportTask inspectionTest){

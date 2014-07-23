@@ -299,14 +299,14 @@ public class MainActivity extends Activity {
 	}
 	
 	public void setNodeController () {
-		this.nodeController = new NodeController(getRootNode());
+		this.nodeController = new NodeController(getRootNode(), this);
 	}
 
 	public NodeController getNodeController() {
 		if (this.nodeController == null) {
 			FireNode root = getRootNode(); 
 			if (root != null) {
-				this.nodeController = new NodeController(getRootNode()); 
+				this.nodeController = new NodeController(getRootNode(), this); 
 			} else {
 				if (this.loggedIn) makeToast("There is no daily schedual loaded!");
 			}

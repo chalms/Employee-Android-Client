@@ -14,17 +14,17 @@ public class Report extends FireNode {
 	}
 	
 	public void build(UsersReport m) {
-		
 		this.childList = new ArrayList<FireNode>();
 		model = m;
+		setName(m.name);
 		makeChildList(); 
 	}
 
 	void makeChildList() {
 			this.childList = new ArrayList<FireNode>() ;
-			Iterator <Integer> iter = model.reportTasks.keySet().iterator(); 
+			Iterator <String> iter = model.reportTasks.keySet().iterator(); 
 			while(iter.hasNext()) {
-				Integer key = iter.next();
+				String key = iter.next();
 				ReportTask reportTask = model.reportTasks.get(key);
 				this.childList.add(reportTask);
 				System.out.println("Added a report task to node list");

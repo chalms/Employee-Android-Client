@@ -20,7 +20,7 @@ public class UsersReport {
 		public Integer locationId = null; 
 		public Integer managerId = null; 
 		public Integer reportId = null; 
-		public HashMap <Integer, ReportTask> reportTasks = new HashMap <Integer, ReportTask> ();
+		public HashMap <String, ReportTask> reportTasks = new HashMap <String, ReportTask> ();
 		public JSONObject memento = null;
 		public JSONObject params = null;
 		public Integer user_id = null; 
@@ -38,10 +38,10 @@ public class UsersReport {
 		if(params.has("manager_id") && !params.isNull("manager_id")) managerId = params.getInt("manager_id");	
 		if(params.has("reports_tasks") && !params.isNull("reports_tasks")) buildReportTasks(); 
 		if(params.has("user_id") && !params.isNull("user_id")) user_id = params.getInt("user_id");
+		if(params.has("id") && !params.isNull("id")) reportId = params.getInt("report_id");	
 		if(params.has("report")&& !params.isNull("report")) {
 			JSONObject reportObject = params.getJSONObject("report");
-			if(!reportObject.has("id") && !reportObject.isNull("id")) reportId = reportObject.getInt("id");	
-			if(!reportObject.has("name") && !reportObject.isNull("name")) name = reportObject.getString("name");	
+			if(reportObject.has("name") && !reportObject.isNull("name")) name = reportObject.getString("name");	
 		}
 		return (params.equals(memento));
 	}
@@ -54,12 +54,14 @@ public class UsersReport {
 			ReportTask task = new ReportTask("Report Task", String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"),"Leaf"  );
 			task.build(arr.getJSONObject(i));
 			System.out.println("Build task, name =>  " + task.getName());
-			reportTasks.put(task.getUsers_report_id(), task);
+			reportTasks.put(task.getID(), task);
 		}
 	}
 	
 	public boolean build () throws JSONException {
-			return (!sweep(params));
+			boolean returnValue = (!sweep(params));
+			memento = params; 
+			return returnValue; 
 	}
 	
 	public UsersReport(JSONObject p) {

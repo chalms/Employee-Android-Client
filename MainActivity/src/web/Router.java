@@ -1,7 +1,12 @@
 package web;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import main.metrics.MainActivity;
 
@@ -11,15 +16,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import util.DefaultReader;
+import android.annotation.SuppressLint;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 
+@SuppressLint("DefaultLocale")
 public class Router extends WebObject {
 	private HashMap <String, WebRequest> routes = new HashMap <String, WebRequest> ();
 	private JSONObject loginParams; 
 	Synchronizer sync; 
+	Integer requestCount = 0; 
 	
 	public Router(MainActivity c) {
 		super(c);
@@ -76,12 +84,54 @@ public class Router extends WebObject {
 	//~~~~~~~~~~~~~~~~~~~~~~~LIST OF PREMADE ROUTES~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public void build() {
 		addRoute("/reports"); 
+	//	addRoute("/test", new AppStartingHandler());
 		addRoute("/chats", new DefaultJsonResponseHandler()); 
 		addRoute("/clients", new DefaultJsonResponseHandler()); 
 		addRoute("/companies",  new CompaniesResponseHandler(), new CompaniesCallbackWrapper());
 		addRoute("/logins", new TokenHandler(), null);
 		addRoute("/signups", new TokenHandler(), null);
 		addRoute("/special_index", new EmployeesEmailResponseHandler(), new EmployeesEmailCallbackWrapper());
+	}
+	
+	public void saveDictionary(HashMap<String, HashMap<String, String[]>> map) throws JSONException {
+		System.out.println("Save to dictionary called!");
+		Iterator<String> mapIter = map.keySet().iterator(); 
+		while(mapIter.hasNext()) {
+			String firstKey = mapIter.next(); 
+			HashMap <String, String[]> reportTaskMap = map.get(firstKey);
+			Iterator <String> reportTaskIterator = reportTaskMap.keySet().iterator(); 
+			while(reportTaskIterator.hasNext()) {
+				String secondKey = reportTaskIterator.next(); 
+				List <String> results = new ArrayList<String> (Arrays.asList(reportTaskMap.get(secondKey))); 
+				String passOrFail = results.get(0);
+				String testNote = results.get(1);
+				buildUpdateReportsTaskRequest(firstKey, secondKey, passOrFail, testNote);
+				System.out.println("Report Task: " + secondKey + "passOrFail: " + passOrFail + " note: " + testNote);
+			}
+		}
+	}
+	
+	public void buildUpdateReportsTaskRequest(String userReportID, String reportTaskID, String testResult, String testNote) throws JSONException {
+		JSONObject params = new JSONObject(); 
+		JSONObject reportsTaskObject = new JSONObject(); 
+		if (testResult.toLowerCase().equals("pass")) {
+			reportsTaskObject.put("complete", true);
+			reportsTaskObject.put("status", 1);
+		} else if (testResult.toLowerCase().equals("fail")){
+			reportsTaskObject.put("status", -1);
+		}
+		if (testNote != null) {
+			if (!testNote.equals("")){
+				reportsTaskObject.put("note", testNote);
+			}
+		}
+		reportsTaskObject.put("completion_time", new Date());
+		params.put("reports_task", reportsTaskObject);
+		params.put("id", Integer.valueOf(reportTaskID));
+		String url = "/reports_tasks/"+reportTaskID+"/update"; 
+		requestCount++; 
+		System.out.println("Issuing post request for report data!");
+		WebClient.post(url, params,  new UpdateReportTasksEventHandler());	
 	}
 	
 	
@@ -106,6 +156,8 @@ public class Router extends WebObject {
 			}
 		});
 	}
+	
+	
 
    //~~~~~~~~~~~~~~~~~~~~~LOGIN/SIGNUP CALLBACK HANDLERS~~~~~~~~~~~~~~~~~~
 	class SignupsCallbackWrapper extends CallbackWrapper {
@@ -113,7 +165,7 @@ public class Router extends WebObject {
 			super();
 		}
 		public void render() {
-			getMainContext().getSignupController().dismissDialog();
+			getMainController().getActiveController().getDialog().dismiss();
 			getMainController().loggedIn();
 		}
 	}
@@ -127,6 +179,7 @@ public class Router extends WebObject {
 			getMainController().loggedIn();
 		}
 	}
+	
 	
 	//~~~~~~~~~~~~~SETS LOGIN/SIGNUP BASED ON IF EMAIL IS SETUP~~~~~~~~~~
 	class EmployeesEmailResponseHandler extends AsyncHttpResponseHandler {
@@ -181,6 +234,25 @@ public class Router extends WebObject {
 		
 		};
 	}
+	
+	private void decrementRequestCount(Integer n) {
+		this.requestCount = this.requestCount - n; 
+		if (this.requestCount.equals(0) && !n.equals(0)) {
+			System.out.println("Clearing modification dictionary!");
+			getMainContext().getNodeController().clearModificationDictionary();
+		}
+	}
+	
+	class UpdateReportTasksEventHandler extends AsyncHttpResponseHandler {
+		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+			decrementRequestCount(1);
+		}
+		
+		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
+			WebClient.printValues(new String("failure"), statusCode, headers, null, errorResponse);
+		}
+	}
+	
 	
 	//~~~~~ DEFAULT JSON READER THAT CHECKS FOR COMMON ROUTES~~~~~~~~~~~
 	class DefaultJsonResponseHandler extends JsonHttpResponseHandler {

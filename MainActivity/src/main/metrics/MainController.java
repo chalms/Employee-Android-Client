@@ -177,7 +177,6 @@ public class MainController {
 	public void loggedIn() {
 		context.loggedIn = true; 
 		getActiveController().getDialog().dismiss();
-		this.loadingBar = new LoadingBar(context, "Updating...", "Grabbing your daily activities");
 	}
 	
 	public void setCompaniesList(JSONArray arr) {
