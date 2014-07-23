@@ -1,6 +1,5 @@
 package controllers;
 
-import util.Formatter;
 import main.metrics.MainActivity;
 import android.content.Context;
 import android.view.View;
@@ -17,7 +16,7 @@ public class ListViewItemController implements OnItemClickListener {
 	}
 
 	public void headerClicked(String headerId) {
-		if (headerId.equals("1")) {
+		if (headerId.equals("0")) {
 			System.out.println("LVIC... headerClicked.. Header equals 1..");
 		} else {
 			System.out.println("LVIC... headerClicked.. move context node up..");
@@ -29,10 +28,8 @@ public class ListViewItemController implements OnItemClickListener {
 	public void rowClicked(TextView textViewItem) {
 		System.out.println("LVIC... rowClicked...");
 		String rowContentTag = textViewItem.getTag().toString();
-		System.out.println("LVIC... rowClicked... goto node item in list (rowcontenttag)");
 		((MainActivity) window).getNodeController().goToNodeItemInList(
 				rowContentTag);
-		System.out.println("LVIC... rowClicked... render");
 		((MainActivity) window).getListViewController().renderListView();
 	}
 	
@@ -43,16 +40,20 @@ public class ListViewItemController implements OnItemClickListener {
 		
 		if (headerViewItem != null) {
 			System.out.println("LVIC... OnItemClick... headerViewItem != null ");
+	
 			if (headerViewItem.getTag() == null) {
 				headerViewItem.setTag("1");
+			} else {
+				System.out.println("header tag" + headerViewItem.getTag().toString());
 			}
+			System.out.println("header id: " + String.valueOf(headerViewItem.getId()));
 			headerClicked(headerViewItem.getTag().toString());
 		} else {
 			System.out.println("LVIC... OnItemClick... headerViewItem == null");
 			TextView textViewItem = ((TextView) view.findViewById(main.metrics.R.id.textViewItem));
 			System.out.println("LVIC... OnItemClick... checking textviewitem.getTag()");
 			System.out.println("LVIC... OnItemClick... textviewitem.getTag() -> " + textViewItem.getTag().toString());
-			if (!textViewItem.getTag().toString().equals("#report-task")) {
+			if (!textViewItem.getTag().toString().equals("Leaf")) {
 				System.out.println("LVIC... OnItemClick... rowClicked(textviewItem)");
 				rowClicked(textViewItem);
 			}

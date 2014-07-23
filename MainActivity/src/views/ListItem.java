@@ -37,16 +37,16 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
         TextView textViewItem;
         textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
         textViewItem.setText(listItem.getDisplay());
-        textViewItem.setTag(listItem.getID());
+        textViewItem.setTag(listItem.getTag());
 
-        if (listItem.getTag().equals("#report-task")) {
+        if (listItem.getTag().equals("Leaf")) {
         	if (listItem.getDisplay().equals("Part"))
         	{
         		final CheckBox good_button = (CheckBox) convertView.findViewById(R.id.GoodCheckBox);
                 final CheckBox poor_button = (CheckBox) convertView.findViewById(R.id.PoorCheckBox);
                 final CheckBox NA_button = (CheckBox) convertView.findViewById(R.id.NACheckBox);
                 
-                textViewItem.setTag("#report-part");
+                textViewItem.setTag("Leaf");
                 int checked = listItem.getChecked();
             	if ( checked != 0) {
             		if (checked == 4){
@@ -145,6 +145,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
     	 				checkedItems[Integer.valueOf(position)] = 1;
     	 				failCheckBoxes[Integer.valueOf(position)] = false; 
             			passCheckBoxes[Integer.valueOf(position)] = true;
+            			System.out.println("Item just clicked, list item ID -> " + listItem.getID().toString());
     	 				((MainActivity) context).getNodeController().getReportTaskById(listItem.getID()).setTestResult("Pass");
     	 				((MainActivity) context).getNodeController().addToDictionary(listItem.getID());
     	 			}
@@ -156,7 +157,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
         	} else {
         		textViewItem.setText(listItem.getDisplay());
         	}
-            textViewItem.setTag(listItem.getID());
+            textViewItem.setTag(listItem.getTag());
         }
         convertView.invalidate();
         convertView.setTag(convertView.getTag());

@@ -201,7 +201,7 @@ public class ListViewController {
 	private void setTextView(TextView text){
 		System.out.println("ListViewController() -> setTextVie.. -> setting text view");
 		text.setText(nodeController.getParentNodeDisplay());
-		text.setTag(nodeController.getContextNode().getID());
+		text.setTag(nodeController.getContextNode().getTag());
 		System.out.println("ListViewController() -> setTextVie.. -> setting text view for root");
 		if (text.getText().equals(this.nodeController.root.getDisplay())) {
 			text.setText(this.nodeController.root.getDisplay());
@@ -218,7 +218,7 @@ public class ListViewController {
 
 	private boolean checkHeaderCompleted(int i){
 		System.out.println("ListViewController() -> checkHead.. -> Checking if header completed ");
-		return ((MainActivity) context).getNodeController().parentNodes.get(i).checkCompleted(true);
+		return nodeController.parentNodes.get(i).checkCompleted(true);
 	}
 
 	private void addHeaderView(ListView listViewItems) {

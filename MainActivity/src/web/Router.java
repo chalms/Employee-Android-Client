@@ -218,8 +218,7 @@ public class Router extends WebObject {
 				getMainContext().getTokenController(loginParams, "/logins").setAuthentication(response);
 				SignupsCallbackWrapper signups = new SignupsCallbackWrapper();
 				signups.render();
-				JSONObject params = getMainContext().getTokenController().getParams(); 
-				getMainController().getHome(params);
+				getMainController().getHome(response);
 				
 			} catch (UnsupportedEncodingException e) {
 				System.out.println("Token Controller could not be created");

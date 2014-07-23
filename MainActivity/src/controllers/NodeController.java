@@ -81,7 +81,7 @@ public class NodeController {
 
 	public ReportTask getReportTaskById(String id){
 		FireNode element = getChildByID(id);
-		boolean tag = element.getTag().equals("Task");
+		boolean tag = element.getTag().equals("Leaf");
 		if (tag) {
 			return (ReportTask) element;
 		} else return null; 
@@ -100,16 +100,22 @@ public class NodeController {
 		// by popping elements in the current parentNode stack, until a parent has an ID
 		// matching the String 'id'. If no parent can be found the algorithm will traverse back to the 
 		// root and return zero 
-
+		
+		System.out.println("Testing for a match with: " + id);
 		int amount = 0;
 
 		if (id.equals(parentNodes.peek().getID())) {
+			System.out.println("The ID equals parentNode.peek.getID()");
 			return 0;
 		}
-
+		
 		int size = parentNodes.size(); 
 		for(int i=0 ; i < size; i++){
-			if (parentNodes.get(i).getID().equals(id)){				
+			System.out.println("Parent Nodes, get(i): " + parentNodes.get(i));
+			System.out.println("Parent Nodes, get(i), tag: " + parentNodes.get(i).getTag());
+			System.out.println("Parent Nodes, get(i), id: " + parentNodes.get(i).getID());
+			if (parentNodes.get(i).getID().equals(id)){	
+				System.out.println("Texting for a match with: " + parentNodes.get(i).getID());
 				amount = parentNodes.size()-(i+1);
 				for (int j=0; j < amount; j++){
 					parentNodes.pop(); 
@@ -153,14 +159,17 @@ public class NodeController {
 		// Pushes the child with an 'id' matching the String 'id' to the current parent node 
 		// (top of the parentNode stack) and sets its childList() to the ArrayList childNodes 
 		// If no match can be found the function returns the first child in the list 
+		System.out.println("id we are looking for: ->" + id);
+		FireNode newParent = getChildByID(new String(id));
+		System.out.println("tryed to find new parent");
+		if (newParent != null) {
 
-		FireNode newParent = new FireNode();
-		newParent = getChildByID(new String(id));
-		System.out.println(newParent.getTag());
-		if (!newParent.getTag().equals("#report-task")) {
-			System.out.println(newParent.getID().toString());
+			System.out.println("New parent tag -> " + newParent.getID());
+			System.out.println("it does apparently not equal a leaf");
+			newParent.setTag(newParent.getID());
 			parentNodes.push(newParent);
 			childNodes = parentNodes.peek().childList();
+			
 		}
 	}
 

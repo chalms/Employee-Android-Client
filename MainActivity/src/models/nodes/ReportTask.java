@@ -14,12 +14,12 @@ public class ReportTask extends FireNode {
 	Integer task_id; 
 	String note; 
 	Date updated_at; 
-	Integer users_report_id; 
+	private Integer users_report_id; 
 	String description; 
 	JSONObject memento; 
 	
-	private String testResult; 
-	private String testNote;
+	private String testResult = ""; 
+	private String testNote = "";
 	
 	public ReportTask(String name, String id, String nodeID, String tag) throws JSONException {		
 		super(name, id, nodeID, tag);
@@ -27,15 +27,16 @@ public class ReportTask extends FireNode {
 	
 	public boolean sweep (JSONObject params) throws JSONException {
 		if (params.equals(memento)) return false; 
-	    if (params.has("complete")) complete = params.getBoolean("complete");
-	    if (params.has("completion_time")) completionTime = Formatter.getDateFromString(params.getString("completion_time")); 
-	    if (params.has("id")) task_id = params.getInt("id");
-	    if (params.has("note")) note = params.getString("note");
-	    if (params.has("updated_at")) updated_at = Formatter.getDateFromString(params.getString("updated_at"));
-	    if (params.has("users_report_id")) users_report_id = params.getInt("users_report_id");
-	    if (params.has("task")) {
+	    if (params.has("complete") && !params.isNull("complete")) complete = params.getBoolean("complete");
+	    if (params.has("completion_time") && !params.isNull("completion_time")) completionTime = Formatter.getDateFromString(params.getString("completion_time")); 
+	    if (params.has("id") && !params.isNull("id")) task_id = params.getInt("id");
+	    if (params.has("note") && !params.isNull("note")) note = params.getString("note");
+	    if (params.has("updated_at") && !params.isNull("updated_at")) updated_at = Formatter.getDateFromString(params.getString("updated_at"));
+	    if (params.has("users_report_id") && !params.isNull("users_report_id")) setUsers_report_id(params.getInt("users_report_id"));
+	    if (params.has("task") && !params.isNull("task")) {
 	    	JSONObject taskObject = params.getJSONObject("task");
 	    	description = taskObject.getString("description");
+	    	setName(description);
 	    }
 	    memento = params; 
 	    return true; 
@@ -64,7 +65,7 @@ public class ReportTask extends FireNode {
 			if (description != null) params.put("description", description);
 			if (testNote != null) params.put("note", testNote);
 			if (testResult != null) params.put("test_result", testResult);
-			if (users_report_id != null) params.put("users_report_id", users_report_id);
+			if (getUsers_report_id() != null) params.put("users_report_id", getUsers_report_id());
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -152,6 +153,10 @@ public class ReportTask extends FireNode {
 		item.setChecked(getNumericalResult());
 		return item;
 	}
+	
+	public String getTag() {
+		return "Leaf"; 
+	}
 
 	public String getDescription() {
 		return description;
@@ -167,6 +172,14 @@ public class ReportTask extends FireNode {
 
 	public void setCompletionTime(Date completed_at) {
 		this.completionTime = completed_at;
+	}
+
+	public Integer getUsers_report_id() {
+		return users_report_id;
+	}
+
+	public void setUsers_report_id(Integer users_report_id) {
+		this.users_report_id = users_report_id;
 	}
 	
 	

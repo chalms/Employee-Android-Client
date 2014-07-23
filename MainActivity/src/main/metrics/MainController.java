@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import models.Company;
 import models.Model;
 
 import org.json.JSONArray;
@@ -22,6 +23,7 @@ public class MainController {
 	private MainActivity context; 
 	private WebClient webClient; 
 	private Model model; 
+	private Company company; 
 	private LoadingBar loadingBar;
 	private HashMap <String, JSONObject> companyEmployees =  new HashMap <String, JSONObject> (); 
 	private ActiveController controller = null; 
@@ -30,6 +32,7 @@ public class MainController {
 	public MainController(MainActivity c) {
 		setWebClient(c.getWebClient());
 		setModel(c.getModel());
+		setCompany(c.getCompany());
 		context = c; 
 	}
 	
@@ -204,5 +207,13 @@ public class MainController {
 
 	public void makeToast(String string) {
 		Toast.makeText(context, string, Toast.LENGTH_LONG).show(); 
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 }

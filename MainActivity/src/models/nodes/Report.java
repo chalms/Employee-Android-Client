@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import models.UsersReport;
+
 public class Report extends FireNode {
 	UsersReport model;
 	
@@ -11,22 +13,22 @@ public class Report extends FireNode {
 		super(name, id, nodeID, tag);
 	}
 	
-	void build(UsersReport m) {
+	public void build(UsersReport m) {
+		
 		this.childList = new ArrayList<FireNode>();
-		model = m; 
+		model = m;
 		makeChildList(); 
 	}
 
 	void makeChildList() {
-		if (this.childList == null) {
 			this.childList = new ArrayList<FireNode>() ;
 			Iterator <Integer> iter = model.reportTasks.keySet().iterator(); 
 			while(iter.hasNext()) {
 				Integer key = iter.next();
 				ReportTask reportTask = model.reportTasks.get(key);
 				this.childList.add(reportTask);
+				System.out.println("Added a report task to node list");
 			}
-		}
 	}
 
 	public boolean isReady() {

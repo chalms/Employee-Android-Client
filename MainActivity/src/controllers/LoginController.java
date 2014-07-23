@@ -96,15 +96,15 @@ public class LoginController extends ActiveController {
 	}
 
 	public void authenticated(final EditText password, final EditText username) {
-			try {
-				this.context.getMainController().login(username.getText().toString(), password.getText().toString());
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (InvalidParametersException e) {
-				e.printStackTrace();
-			}
+		try {
+			this.context.getMainController().login(username.getText().toString(), password.getText().toString());
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InvalidParametersException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

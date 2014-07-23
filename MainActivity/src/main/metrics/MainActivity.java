@@ -6,6 +6,7 @@ import java.util.Stack;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import models.Company;
 import models.Model;
 import models.nodes.FireNode;
 import views.SettingsView;
@@ -76,6 +77,7 @@ public class MainActivity extends Activity {
 	//Models ----> 
 	FireNode root;
 	private Model model = null;
+	private Company company = null;
 
 	//Utilities ----> 
 	private WebClient webClient = null;
@@ -146,6 +148,7 @@ public class MainActivity extends Activity {
 
 	public void moveContextNodeUp(String headerId){
 		int numberOfRemovals = getNodeController().goToParentNode(headerId, this);
+		System.out.println("Deleting " + String.valueOf(numberOfRemovals) + " headers");
 		getListViewController().deleteHeaders(numberOfRemovals);
 		getListViewController().renderListView();
 	}
@@ -420,6 +423,17 @@ public class MainActivity extends Activity {
 	public void makeToast(String butter) {
 		Toast.makeText(this, butter, Toast.LENGTH_LONG).show();
 		return;	
+	}
+
+	public Company getCompany() {
+		if (company == null){
+			company = new Company(); 
+		}
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }
