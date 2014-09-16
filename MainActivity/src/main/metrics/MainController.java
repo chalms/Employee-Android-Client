@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import models.Company;
+import models.LocationTime;
 import models.Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.location.Location;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -153,6 +156,10 @@ public class MainController {
 		}
 	}
 	
+	public void sendCheckin(LocationTime l) {
+		
+	}
+	
 	public void getCompanyEmployees() throws InterruptedException {
 		if (companyEmployees.isEmpty()) {
 			context.getRouter().get("/special_index");
@@ -215,4 +222,11 @@ public class MainController {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
+
+	public void displayDailyReport() {
+		
+	}
+		// TODO Auto-generated method stub
+		
+	
 }

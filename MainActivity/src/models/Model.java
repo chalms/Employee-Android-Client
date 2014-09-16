@@ -16,7 +16,7 @@ import errors.InvalidParametersException;
 public class Model extends FireNode {
 	private MainActivity context; 
 	private UsersChats userChats;
-	private UsersReport userReports;
+	private UsersReport userReports = null;
 	private Company company = null;
 	
 	public Model(MainActivity c, JSONObject params){
@@ -25,11 +25,16 @@ public class Model extends FireNode {
 		
 		setParams(c, params);
 		callViews(); 
+		
 	}
 	
 	public void callViews() {
 		context.setRoot(this);
-		context.setHomeView();
+		if (userReports != null) {
+			context.setHomeView();
+		} else {
+			context.getListViewController().renderListView();
+		}
 	}
 	
 	public String getTag() {
@@ -41,18 +46,18 @@ public class Model extends FireNode {
 		setName(params);
 		setCompany(params);
 		setUserReports(params);
-		Report report = createReport(); 
-		
-		report.build(userReports);
-		this.childList = new ArrayList <FireNode>(); 
-		this.childList.add(report); 
+		if (userReports != null) {
+			Report report = createReport(); 
+			report.build(userReports, c);
+			this.childList = new ArrayList <FireNode>(); 
+			this.childList.add(report); 
+		} 
+
 	}
 	
 	public Report createReport() {
 		System.out.println("Users report built successfully");
-		Report report = new Report(userReports.name, 
-				String.valueOf(Formatter.getGlobalId()), 
-				String.valueOf(userReports.id), "Report");
+		Report report = new Report("Checkin", String.valueOf(Formatter.getGlobalId()), String.valueOf(userReports.id), "Report");
 		System.out.println("Report created successfully");
 		return report; 
 	}
@@ -73,10 +78,10 @@ public class Model extends FireNode {
 	public void setUserReports(JSONObject params) {
 		try {
 			createUsersReport(params);
-			if (userReports.build() ) {
+			if (userReports.build()) {
 				return; 
 			} else {
-				context.getMainController().makeToast("User reports are unavailable at the moment");
+				//context.getMainController().makeToast("User reports are unavailable at the moment");
 				return;
 			}
 		} catch (JSONException e) {

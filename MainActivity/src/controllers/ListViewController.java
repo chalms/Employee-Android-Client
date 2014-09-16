@@ -264,6 +264,7 @@ public class ListViewController {
 			return new ListItem(context, main.metrics.R.layout.list_view_row_buttons, rowContent);
 		}
 		else {
+	
 			return new ListItem(context, main.metrics.R.layout.list_view_row_item, rowContent);
 		}
 	}

@@ -38,6 +38,7 @@ public class ListItem extends ArrayAdapter<ListItemContent> {
         textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
         textViewItem.setText(listItem.getDisplay());
         textViewItem.setTag(listItem.getTag());
+        
 
         if (listItem.getTag().equals("Leaf")) {
         	if (listItem.getDisplay().equals("Part"))

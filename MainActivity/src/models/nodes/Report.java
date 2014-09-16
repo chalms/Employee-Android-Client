@@ -4,19 +4,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import android.content.Context;
+import main.metrics.MainActivity;
 import models.UsersReport;
 
 public class Report extends FireNode {
 	UsersReport model;
+	MainActivity context; 
+	boolean notCheckedIn = true; 
+	String checkinLocation = null;
+	Date checkinTime = null; 
+	Date checkoutTime = null; 
+	String checkoutLocation = null;
 	
 	public Report(String name, String id, String nodeID, String tag) {
 		super(name, id, nodeID, tag);
 	}
 	
-	public void build(UsersReport m) {
+	public void build(UsersReport m, MainActivity context) {
 		this.childList = new ArrayList<FireNode>();
 		model = m;
 		setName(m.name);
+		
 		makeChildList(); 
 	}
 
@@ -42,7 +51,13 @@ public class Report extends FireNode {
 
 	@Override
 	public String getDisplay() {
-		return (name + " - " + this.getNodeID());
+		String displayString = ""; 
+		if (notCheckedIn) {
+			displayString = "Checkin to Jobsite"; 
+		} else {
+			displayString = "Checkout of Jobsite"; 
+		}
+		return displayString;
 	}
 
 	public void add(FireNode element) {
@@ -56,11 +71,23 @@ public class Report extends FireNode {
 	}
 
 	public void setCheckin(Date c) {
+		if (model.checkin == null && c != null && checkinLocation == null) {
+			checkinLocation = context.getLocationString();
+			
+			System.out.println(checkinLocation);
+		}
+		
 		model.checkin = c; 
+		
 	}
 
 	public void setCheckout(Date c) {
+		if (model.checkout == null && c != null && checkoutLocation == null) {
+			checkoutLocation = Context.LOCATION_SERVICE; 
+			System.out.println(checkoutLocation);
+		}
 		model.checkout = c; 
+		
 	}
 
 	public String getCheckin() {

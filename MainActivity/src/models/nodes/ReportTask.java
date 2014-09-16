@@ -28,9 +28,21 @@ public class ReportTask extends FireNode {
 	public boolean sweep (JSONObject params) throws JSONException {
 		if (params.equals(memento)) return false; 
 	    if (params.has("complete") && !params.isNull("complete")) complete = params.getBoolean("complete");
+	    if (params.has("status") && !params.isNull("status")) {
+	    	Integer status = params.getInt("status");
+	    	if (status.equals(1)) {
+	    		testNote.equals("Pass");
+	    		this.completed = true; 
+	    	} else if (status.equals(-1)) {
+	    		testNote.equals("Fail");
+
+	    		this.completed = true; 
+	    	}
+	    }
+	    
 	    if (params.has("completion_time") && !params.isNull("completion_time")) completionTime = Formatter.getDateFromString(params.getString("completion_time")); 
 	    if (params.has("id") && !params.isNull("id")) task_id = params.getInt("id");
-	    if (params.has("note") && !params.isNull("note")) note = params.getString("note");
+	    if (params.has("note") && !params.isNull("note")) testNote = params.getString("note");
 	    if (params.has("updated_at") && !params.isNull("updated_at")) updated_at = Formatter.getDateFromString(params.getString("updated_at"));
 	    if (params.has("users_report_id") && !params.isNull("users_report_id")) setUsers_report_id(params.getInt("users_report_id"));
 	    if (params.has("task") && !params.isNull("task")) {
@@ -50,7 +62,7 @@ public class ReportTask extends FireNode {
 				System.out.println("No change to params!");
 			}
 		} catch (JSONException e) {
-			System.out.println("Error sweeping reporttask jsonobject params");
+			System.out.println("Error sweeping report task json object params");
 			e.printStackTrace();
 		}	
 	}
@@ -136,7 +148,11 @@ public class ReportTask extends FireNode {
 	}
 
 	public void setCompleted(boolean c) {
+		if (this.completionTime == null) {
+			this.completionTime = new Date();  
+		}
 		this.completed = c;
+		
 	}
 
 	@Override

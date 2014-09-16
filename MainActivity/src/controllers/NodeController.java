@@ -68,6 +68,7 @@ public class NodeController {
 		ReportTask reportTask = getReportTaskById(id);
 		System.out.println("report task: " + reportTask.toString());
 		
+		
 		HashMap<String, String[]> secondaryMap = new HashMap<String, String[]>();
 		
 		if (myDict != null){

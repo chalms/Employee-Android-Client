@@ -2,7 +2,6 @@ package models;
 
 import java.util.Date;
 import java.util.HashMap;
-
 import models.nodes.ReportTask;
 
 import org.json.JSONArray;
@@ -28,17 +27,25 @@ public class UsersReport {
 		
 
 	public boolean sweep(JSONObject params) throws JSONException {
-		System.out.println("Building a users report");
+		
 		if(params.has("chat_id") && !params.isNull("chat_id")) chatId = params.optInt("chat_id"); 
+		
 		if(params.has("checkin") && !params.isNull("checkin")) checkin = Formatter.parseDateTime(params.getString("checkin")); 
+		
 		if(params.has("checkout") && !params.isNull("checkout")) checkout = Formatter.parseDateTime(params.getString("checkout")); 
+		
 		if(params.has("complete") && !params.isNull("comeplete")) complete = params.getBoolean("checkout");
+		
 		if(params.has("id") && !params.isNull("id")) id = params.getInt("id");
+		
 		if(params.has("location_id") && !params.isNull("location_id")) locationId = params.getInt("location_id");
 		if(params.has("manager_id") && !params.isNull("manager_id")) managerId = params.getInt("manager_id");	
+		
 		if(params.has("reports_tasks") && !params.isNull("reports_tasks")) buildReportTasks(); 
+		
 		if(params.has("user_id") && !params.isNull("user_id")) user_id = params.getInt("user_id");
 		if(params.has("id") && !params.isNull("id")) reportId = params.getInt("report_id");	
+		
 		if(params.has("report")&& !params.isNull("report")) {
 			JSONObject reportObject = params.getJSONObject("report");
 			if(reportObject.has("name") && !reportObject.isNull("name")) name = reportObject.getString("name");	
@@ -51,7 +58,7 @@ public class UsersReport {
 		JSONArray arr = params.getJSONArray("reports_tasks");
 		for (int i = 0; i < arr.length(); i++) {
 			System.out.println("Building a report task");
-			ReportTask task = new ReportTask("Report Task", String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"),"Leaf"  );
+			ReportTask task = new ReportTask(name, String.valueOf(Formatter.getGlobalId()), arr.getJSONObject(i).getString("id"),"Leaf"  );
 			task.build(arr.getJSONObject(i));
 			System.out.println("Build task, name =>  " + task.getName());
 			reportTasks.put(task.getID(), task);
@@ -66,5 +73,6 @@ public class UsersReport {
 	
 	public UsersReport(JSONObject p) {
 		params = p; 
+		
 	}
 }

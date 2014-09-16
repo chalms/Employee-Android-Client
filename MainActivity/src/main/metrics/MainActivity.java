@@ -1,24 +1,34 @@
 package main.metrics;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Stack;
+
+import models.Company;
+import models.LocationTime;
+import models.Model;
+import models.nodes.FireNode;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import models.Company;
-import models.Model;
-import models.nodes.FireNode;
+import util.Formatter;
 import views.SettingsView;
 import web.Router;
 import web.WebClient;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,6 +47,7 @@ import controllers.TokenController;
 
 public class MainActivity extends Activity {
 
+	private static final long MAX_LAST_LOCATION_TIME = 0;
 	//For Toast ---> 
 	AlertDialog alertDialogStores;
 	AlertDialog alertDialogDescription;
@@ -82,6 +93,13 @@ public class MainActivity extends Activity {
 	//Utilities ----> 
 	private WebClient webClient = null;
 	private Router router;
+	
+	private Location location = null;
+	
+	public PendingIntent pendingIntent; 
+	
+	private LocationManager mLocationManager; 
+	private String checkinTime; 
 
 
 
@@ -93,6 +111,13 @@ public class MainActivity extends Activity {
 		setContentView(main.metrics.R.layout.activity_main);
 		initializeScanner(); 
 		selectController(); 
+		setLocationService(); 
+	}
+	
+	public void setLocationService(){
+		 Intent intent = new Intent();  
+	        intent.setClass(this,LocationIntentHandler.class);  
+	        pendingIntent =  PendingIntent.getActivity(this, 0, intent, 0);
 	}
 	
 	public void buildAPI() {
@@ -417,9 +442,74 @@ public class MainActivity extends Activity {
 		}
 		return c.substring(0, c.length()-1);
 	}
+	
+	private final LocationListener mLocationListener = new LocationListener() {
+	    @Override
+	    public void onLocationChanged(final Location location) {
+	        //your code here
+	    	LocationTime locationTime = new LocationTime(location.getLongitude(), location.getLatitude(), checkinTime);
+	    	mainController.sendCheckin(locationTime);
+	    	
+	    }
 
-	//Error Notifications ----> 
+		@Override
+		public void onProviderDisabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
 
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+//	
+//	PendingIntent.OnFinished
+//	
+//	PendingIntent.getActivity(this, generator.nextInt(), intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//	
+//	// Define a listener that responds to location updates
+//	PendingIntent locationListener = new LocationListener() {
+//	    public void onLocationChanged(Location l) {
+//			location = l;
+//	    	if (firedUp) {
+//	    		mainController.sendCheckin(l);
+//	    		firedUp = false; 
+//	    	}
+//	    		// Called when a new location is found by the network location provider.
+//	    }
+//
+//	    public void onStatusChanged(String provider, int status, Bundle extras) {}
+//
+//	    public void onProviderEnabled(String provider) {}
+//
+//	    public void onProviderDisabled(String provider) {}
+//	};
+//
+//	// Register the listener with the Location Manager to receive location updates
+//	
+//
+//	
+//	//Error Notifications ----> 
+	public void packageCheckin() {
+	    mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+	    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	    checkinTime = sdf.format(new Date());
+	    
+	    return ; 
+	    
+	    
+	}
+	
+	
 	public void makeToast(String butter) {
 		Toast.makeText(this, butter, Toast.LENGTH_LONG).show();
 		return;	
@@ -434,6 +524,11 @@ public class MainActivity extends Activity {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	public String getLocationString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
