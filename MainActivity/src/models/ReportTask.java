@@ -1,4 +1,4 @@
-package models.nodes;
+package models;
 
 import java.util.Date;
 
@@ -6,40 +6,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import util.Formatter;
-import views.ListItemContent;
+import views.ReportTaskLineItem;
 
-public class ReportTask extends FireNode {
+public class ReportTask {
 	Boolean complete; 
 	Date completionTime; 
-	Integer task_id; 
+	Integer id; 
 	String note; 
-	Date updated_at; 
-	private Integer users_report_id; 
-	String description; 
-	JSONObject memento; 
-	
-	private String testResult = ""; 
-	private String testNote = "";
-	
-	public ReportTask(String name, String id, String nodeID, String tag) throws JSONException {		
-		super(name, id, nodeID, tag);
-	}
+	String updated_at; 
+	String description;
+	Location completed_location; 
 	
 	public boolean sweep (JSONObject params) throws JSONException {
-		if (params.equals(memento)) return false; 
 	    if (params.has("complete") && !params.isNull("complete")) complete = params.getBoolean("complete");
-	    if (params.has("status") && !params.isNull("status")) {
-	    	Integer status = params.getInt("status");
-	    	if (status.equals(1)) {
-	    		testNote.equals("Pass");
-	    		this.completed = true; 
-	    	} else if (status.equals(-1)) {
-	    		testNote.equals("Fail");
-
-	    		this.completed = true; 
-	    	}
-	    }
-	    
 	    if (params.has("completion_time") && !params.isNull("completion_time")) completionTime = Formatter.getDateFromString(params.getString("completion_time")); 
 	    if (params.has("id") && !params.isNull("id")) task_id = params.getInt("id");
 	    if (params.has("note") && !params.isNull("note")) testNote = params.getString("note");
@@ -68,10 +47,9 @@ public class ReportTask extends FireNode {
 	}
 	
 	
-	public JSONObject upload () {
+	public JSONObject getJson() {
 		JSONObject params = new JSONObject(); 
 		try { 
-			if (id == null) { return null; } else  params.put("id", id);
 			if (complete != null) params.put("complete", complete);
 			if (completionTime != null) params.put("completed_timet", completionTime.toString());
 			if (description != null) params.put("description", description);
@@ -84,79 +62,16 @@ public class ReportTask extends FireNode {
 		}
 		return params;
 	}
-
-	String getResult(String result){
-		if (result == null){
-			return new String("");
-		} else {
-			return result; 
-		}
-	}
-
-	@Override
-	public int getChecked(){
-		return getNumericalResult();
-	}
-
-	int ensurePresent(){
-		if (this.testResult == null){
-			this.testResult = "";
-		}
-		return checked; 
-	}
-
-	public void clear(){ 
-		this.testNote = "";
-		this.testResult = "";
-		this.completed = false;
-		this.checked = 0; 
-		return; 
-	}
-
-	public int getNumericalResult() {	
-		System.out.println(this.testResult);
-		if (this.testResult.equals("Good"))
-			return 4;
-		else if (this.testResult.equals("Poor"))
-			return 3;
-		else if (this.testResult.equals("N/A"))
-			return 2;
-		else if (this.testResult.equals("Pass"))
-			return 1;
-		else if (this.testResult.equals("Fail"))
-			return -1;			
-		else
-			return ensurePresent(); 
-	}
-
-	public String getTestResult() {
-		return testResult;
-	}
-
-	public void setTestResult(String testResult) {
-		this.testResult = testResult;
-		setCompleted(true);
-	}
-
-	public String getTestNote() {
-		return testNote;
-	}
-
-	public void setTestNote(String testNote) {
-		this.testNote = testNote;
-		setCompleted(true);
-	}
-
+	
 	public void setCompleted(boolean c) {
 		if (this.completionTime == null) {
 			this.completionTime = new Date();  
 		}
 		this.completed = c;
-		
 	}
 
 	@Override
-	public boolean checkCompleted(boolean t) {
+	public boolean checkCompleted() {
 		if (!this.testResult.equals("")) {
 			this.completed = true; 
 		} 
@@ -164,16 +79,11 @@ public class ReportTask extends FireNode {
 	}
 
 	@Override
-	public ListItemContent createRowContent () {
-		ListItemContent item = new ListItemContent (this);
-		item.setChecked(getNumericalResult());
+	public ReportTaskLineItem createRowContent() {
+		ReportTaskLineItem item = new ReportTaskLineItem (this);
 		return item;
 	}
 	
-	public String getTag() {
-		return "Leaf"; 
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -188,16 +98,6 @@ public class ReportTask extends FireNode {
 
 	public void setCompletionTime(Date completed_at) {
 		this.completionTime = completed_at;
-	}
-
-	public Integer getUsers_report_id() {
-		return users_report_id;
-	}
-
-	public void setUsers_report_id(Integer users_report_id) {
-		this.users_report_id = users_report_id;
-	}
-	
-	
+	}	
 	    
 }

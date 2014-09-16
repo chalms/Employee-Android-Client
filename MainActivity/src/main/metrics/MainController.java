@@ -25,7 +25,6 @@ import web.WebClient;
 public class MainController {
 	private MainActivity context; 
 	private WebClient webClient; 
-	private Model model; 
 	private Company company; 
 	private LoadingBar loadingBar;
 	private HashMap <String, JSONObject> companyEmployees =  new HashMap <String, JSONObject> (); 
@@ -34,7 +33,7 @@ public class MainController {
 	
 	public MainController(MainActivity c) {
 		setWebClient(c.getWebClient());
-		setModel(c.getModel());
+		setUsersReport(c.getUsersReport());
 		setCompany(c.getCompany());
 		context = c; 
 	}
@@ -78,7 +77,7 @@ public class MainController {
 	}
 	
 	public void getHome(JSONObject params) {
-		setModel(new Model(context, params));
+		(new UserReports(context, params));
 	}
 
 	public void printParams(JSONArray response, int i) {
