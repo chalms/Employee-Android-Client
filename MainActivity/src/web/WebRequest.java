@@ -1,11 +1,9 @@
 package web;
-import util.JsonReader;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class WebRequest {
 	private String url; 
 	private AsyncHttpResponseHandler handler; 
-	private JsonReader reader; 
 	public CallbackWrapper callbackWrapper; 
 	public RequestWrapper requestWrapper; 
 	private ProgressDisplay progressDisplay = null;
@@ -66,12 +64,6 @@ public class WebRequest {
 	}
 	public void setProgressDisplay(ProgressDisplay progressDisplay) {
 		this.progressDisplay = progressDisplay;
-	}
-	public JsonReader getReader() {
-		return reader;
-	}
-	public void setReader(JsonReader reader) {
-		this.reader = reader;
 	}
 	
 //	public void setToken(Token t) {

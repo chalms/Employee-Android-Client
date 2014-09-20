@@ -1,5 +1,7 @@
 package views;
 
+import java.util.Date;
+
 import models.ReportTask;
 
 public class ReportTaskLineItem {
@@ -11,7 +13,7 @@ public class ReportTaskLineItem {
 	}
 	
 	public String getId() {
-		return ref.getId();
+		return String.valueOf(ref.getId());
 	}
 
 	public String getDisplay() {
@@ -19,10 +21,10 @@ public class ReportTaskLineItem {
 	}
 
 	public String getTag() {
-		return ref.getId();
+		return String.valueOf(ref.getId());
 	}
 	
-	public int getCompleted(){
-		return ref.getCompleted(); 
+	public Date getCompleted(){
+		return ref.getCompletedTime(); 
 	}
 }

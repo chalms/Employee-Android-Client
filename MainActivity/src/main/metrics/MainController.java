@@ -7,7 +7,7 @@ import java.util.List;
 
 import models.Company;
 import models.LocationTime;
-import models.Model;
+import models.UsersReport;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,36 +28,27 @@ public class MainController {
 	private Company company; 
 	private LoadingBar loadingBar;
 	private HashMap <String, JSONObject> companyEmployees =  new HashMap <String, JSONObject> (); 
-	private ActiveController controller = null; 
+	private ControllerHelper controller = null; 
 	private HashMap <String, String> companies = new HashMap<String, String> (); 
-	
+
 	public MainController(MainActivity c) {
 		setWebClient(c.getWebClient());
-		setUsersReport(c.getUsersReport());
 		setCompany(c.getCompany());
 		context = c; 
 	}
 	
-	public void setActiveController(ActiveController c) {
+	public void setControllerHelper(ControllerHelper c) {
 		controller = c; 
 	}
 	
-	public ActiveController getActiveController() {
+	public ControllerHelper getControllerHelper() {
 		return controller; 
 	}
 	
 	public HashMap <String, String> getCompanies() {
 		return companies; 
 	}
-	
-	public Model getModel() {
-		return model;
-	}
 
-	public void setModel(Model model) {
-		this.model = model;
-	}
-	
 	public void stateMessageError() {
 		if (!context.loggedIn) {
 			context.getLoginController().makeToast("Sorry! You could not be logged in");
@@ -76,8 +67,14 @@ public class MainController {
 		this.webClient = webClient;
 	}
 	
-	public void getHome(JSONObject params) {
-		(new UserReports(context, params));
+	public void getHome() {
+		if (UsersReport.usersReport == null) 
+			this.context.getCheckinController().render(UsersReport.build()); 
+			
+		if (UsersReport.usersReport.checkin == null)
+			this.context.getCheckinController().render(); 
+		else
+			this.context.getUsersReportController().render(); 
 	}
 
 	public void printParams(JSONArray response, int i) {
@@ -121,8 +118,8 @@ public class MainController {
 
 	
 	public void respondToValidity() {
-		if (this.getActiveController() == null) return; 
-		EditText t = this.getActiveController().getUserName();
+		if (this.getControllerHelper() == null) return; 
+		EditText t = this.getControllerHelper().getUserName();
 		String str = t.getText().toString();
 		System.out.println("Matching: " + str);
 		try {
@@ -130,20 +127,20 @@ public class MainController {
 				System.out.println("contains key");
 				JSONObject employee = companyEmployees.get(str);
 				if (employee.getBoolean("setup")) {
-					if (this.getActiveController().controllerName().equals("signup")) {
+					if (this.getControllerHelper().getControllerName().equals("signup")) {
 							System.out.println("signup controller");
 							context.getSignupController().dismissDialog();
-							this.setActiveController(context.getLoginController());
+							this.setControllerHelper(context.getLoginController());
 							context.getLoginController().showDialog();
-							t = this.getActiveController().getUserName();
+							t = this.getControllerHelper().getUserName();
 							t.setText(str);
 					}
-				} else if (this.getActiveController().controllerName().equals("login")) {
+				} else if (this.getControllerHelper().getControllerName().equals("login")) {
 						System.out.println("login controller");
 						context.getLoginController().dismissDialog();
-						this.setActiveController(context.getSignupController());
+						this.setControllerHelper(context.getSignupController());
 						context.getSignupController().showDialog();
-						t = this.getActiveController().getUserName();
+						t = this.getControllerHelper().getUserName();
 						t.setText(str);
 				}
 				t.setTextColor(context.getResources().getColor(main.metrics.R.color.green));
@@ -179,11 +176,6 @@ public class MainController {
 		System.out.println("Request Error Occurred!: " + errorString);
 	}
 
-	
-	public void loggedIn() {
-		context.loggedIn = true; 
-		getActiveController().getDialog().dismiss();
-	}
 	
 	public void setCompaniesList(JSONArray arr) {
 		for (int i = 0; i < arr.length(); i++) {
@@ -225,7 +217,5 @@ public class MainController {
 	public void displayDailyReport() {
 		
 	}
-		// TODO Auto-generated method stub
-		
 	
 }

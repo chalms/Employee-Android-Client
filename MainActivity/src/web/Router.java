@@ -15,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import util.DefaultReader;
 import android.annotation.SuppressLint;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -165,7 +164,7 @@ public class Router extends WebObject {
 			super();
 		}
 		public void render() {
-			getMainController().getActiveController().getDialog().dismiss();
+			getMainController().getSignupController().getDialog().dismiss();
 			getMainController().loggedIn();
 		}
 	}
@@ -239,7 +238,6 @@ public class Router extends WebObject {
 		this.requestCount = this.requestCount - n; 
 		if (this.requestCount.equals(0) && !n.equals(0)) {
 			System.out.println("Clearing modification dictionary!");
-			getMainContext().getNodeController().clearModificationDictionary();
 		}
 	}
 	
@@ -258,7 +256,6 @@ public class Router extends WebObject {
 	class DefaultJsonResponseHandler extends JsonHttpResponseHandler {
 		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 			WebClient.printValues(new String("success"), statusCode, headers, null, response);
-			new DefaultReader(getModel(), getMainContext()).read(response);
 		}
 		
 		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {

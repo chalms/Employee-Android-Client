@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import org.json.JSONException;
 
 import errors.InvalidParametersException;
-import main.metrics.ActiveController;
+import main.metrics.ControllerHelper;
 import main.metrics.MainActivity;
 import android.app.Dialog;
 import android.view.View;
@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginController extends ActiveController {
+public class LoginController extends ControllerHelper {
+	
+	MainActivity context; 
 
 	private OnClickListener loginListener = new OnClickListener() {
 		@Override
@@ -46,7 +48,7 @@ public class LoginController extends ActiveController {
 	};
 	
 	public LoginController(MainActivity c) {
-		this.context = c;
+		super(c); 
 		setDialog(new Dialog(this.context));
 		getDialog().setContentView(main.metrics.R.layout.login);
 		getDialog().setTitle("Login");
@@ -64,7 +66,7 @@ public class LoginController extends ActiveController {
 	 public void login() {
 		makeToast("Welcome to the Mobile Dashboard");
 		dismissDialog();
-		((MainActivity) context).getListViewController().renderListView();
+		this.context.getMainController().getHome(); 
 	}
 
 	private Button getSignInButton() {
@@ -86,6 +88,7 @@ public class LoginController extends ActiveController {
 		getDialog().show();
 		return;
 	}
+	
 
 	public EditText getUserName() {
 		return (EditText) getDialog().findViewById(main.metrics.R.id.editTextUserNameToLogin);

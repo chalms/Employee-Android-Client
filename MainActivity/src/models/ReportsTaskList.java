@@ -8,8 +8,9 @@ import org.json.JSONObject;
 
 public class ReportsTaskList {
 	private static ReportsTaskList reportsTaskList = null; 
-	UsersReport usersReport = null; 
-	HashMap <Integer, ReportTask> reportsTasks = null;
+	public UsersReport usersReport = null; 
+	public HashMap <Integer, ReportTask> reportsTasks = null;
+	
 	
 	private ReportsTaskList(UsersReport usersRep) {
 		 usersReport = usersRep; 
@@ -33,7 +34,7 @@ public class ReportsTaskList {
 				if (reportsTasks.containsKey(id)) 
 					reportsTasks.get(id).update(reportTask); 
 				else 
-					reportsTasks.put(id, new ReportTask(reportTask)); 
+					reportsTasks.put(id, new ReportTask()); 
 					
 			}
 		}

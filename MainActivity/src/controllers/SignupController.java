@@ -2,10 +2,12 @@ package controllers;
 
 import java.io.UnsupportedEncodingException;
 
-import main.metrics.ActiveController;
+import main.metrics.ControllerHelper;
 import main.metrics.MainActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Dialog;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import errors.InvalidParametersException;
 
-public class SignupController extends ActiveController {
+public class SignupController extends ControllerHelper {
 
 	private OnClickListener signupListener = new OnClickListener() {
 		@Override
@@ -52,7 +54,7 @@ public class SignupController extends ActiveController {
 	}
 	
 	public SignupController(MainActivity c) {
-		this.context = c;
+		super(c); 
 		setDialog(new Dialog(this.context));
 		getDialog().setContentView(main.metrics.R.layout.signup);
 		getDialog().setTitle("Signup");
@@ -66,7 +68,7 @@ public class SignupController extends ActiveController {
 	 public void login() {
 		makeToast("Welcome to the Mobile Dashboard");
 		dismissDialog();
-		((MainActivity) context).getListViewController().renderListView();
+		((MainActivity) context).getMainController().getHome();
 	}
 
 	private Button getSignInButton() {
@@ -119,7 +121,7 @@ public class SignupController extends ActiveController {
 			params.put("email", getUserName().getText().toString());
 			params.put("name", getName().getText().toString());
 			params.put("employee_number", getEmployeeNumber().getText().toString());
-			params.put("company_id", context.getMainController().getCompanies().get(getSpinner().getItemAtPosition(0)));
+			params.put("company_id", this.context.getMainController().getCompanies().get(getSpinner().getItemAtPosition(0)));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			makeToast("Invalid Login!");

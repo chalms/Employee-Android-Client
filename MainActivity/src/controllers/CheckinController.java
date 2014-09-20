@@ -1,31 +1,28 @@
 package controllers;
 
-import main.metrics.ActiveController;
+import main.metrics.ControllerHelper;
 import main.metrics.MainActivity;
-import android.app.Dialog;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class CheckinController extends ActiveController {
-	MainActivity context; 
+public class CheckinController extends ControllerHelper {
+	int LAYOUT = main.metrics.R.layout.main; 
 	
-	public CheckinController(MainActivity con){
-		this.context = con; 
-		setDialog(new Dialog(this.context));
-		getDialog().setContentView(main.metrics.R.layout.checkin);
-		getDialog().setTitle("Checkin");
+	public CheckinController(MainActivity c){
+		super(c); 
 		Button btnSignIn = this.getCheckInButton();
 		Button btnCancel = this.getCancelButton();
 		btnCancel.setOnClickListener(cancelListener);
 		btnSignIn.setOnClickListener(checkinListener);
-		showDialog();
 	}
 	
 	private OnClickListener checkinListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			
+			showDialog();
 			context.getMainController().displayDailyReport(); 
 			dismissDialog(); 
 		}
@@ -37,18 +34,18 @@ public class CheckinController extends ActiveController {
 			dismissDialog(); 
 		}
 	};
-
-
+	
+	public void render() {
+		if ()
+	}
+	
 	private Button getCheckInButton() {
-		System.out.println("Getting signin button ");
-		return (Button) getDialog().findViewById(main.metrics.R.id.button1);
+		return (Button) this.context.findViewById(main.metrics.R.id.button1);
 	}
 	
 	private Button getCancelButton() {
-		System.out.println("Getting signin button ");
 		return (Button) getDialog().findViewById(main.metrics.R.id.button1);
 	}
-
 
 	public void makeToast(String butter) {
 		Toast.makeText(context, butter, Toast.LENGTH_LONG).show();

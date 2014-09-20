@@ -1,19 +1,11 @@
 package main.metrics;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Stack;
-
 import models.Company;
 import models.LocationTime;
-import models.Model;
-import models.nodes.FireNode;
-
+import models.UsersReport;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import util.Formatter;
 import views.SettingsView;
 import web.Router;
 import web.WebClient;
@@ -22,7 +14,6 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -37,17 +28,16 @@ import android.view.Menu;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import controllers.ListViewController;
+import controllers.CheckinController;
 import controllers.LoginController;
-import controllers.NodeController;
-import controllers.ReportTasksController;
+import controllers.ReportTaskLineItemController;
 import controllers.SearchController;
 import controllers.SignupController;
 import controllers.TokenController;
+import controllers.UsersReportController;
 
 public class MainActivity extends Activity {
 
-	private static final long MAX_LAST_LOCATION_TIME = 0;
 	//For Toast ---> 
 	AlertDialog alertDialogStores;
 	AlertDialog alertDialogDescription;
@@ -62,7 +52,6 @@ public class MainActivity extends Activity {
 	boolean lock = false;
 	public String userName = null; 
 	int count = 0; 
-	Stack<FireNode> jumpDownList;
 	boolean popUp = false; 
 	boolean loggedOut = false; 
 	boolean loggedIn = false; 
@@ -73,31 +62,25 @@ public class MainActivity extends Activity {
 	private TextView tv_getdata_from_edittext;
 
 	// Controllers -----> 
-	public NodeController nodeController = null; 
 	public MainController mainController = null; 
-	public ListViewController listViewController = null;
+	public UsersReportController usersReportController = null;
 	public SearchController searchController = null;
-	private ReportTasksController reportTasksController = null;
+	public ReportTaskLineItemController reportTaskLineItemController = null; 
 	public LoginController loginController = null; 
 	public SignupController signupController = null; 
 	public TokenController tokenController = null; 
+	public CheckinController checkinController = null; 
 	
 	SettingsView settingsView = null; // <-- for logout
 	private EditText editText; //<--- login input
 
 	//Models ----> 
-	FireNode root;
-	private Model model = null;
 	private Company company = null;
 
 	//Utilities ----> 
 	private WebClient webClient = null;
 	private Router router;
-	
-	private Location location = null;
-	
 	public PendingIntent pendingIntent; 
-	
 	private LocationManager mLocationManager; 
 	private String checkinTime; 
 
@@ -132,21 +115,10 @@ public class MainActivity extends Activity {
 		if (this.userName == null) {
 			loggedIn = false; 
 			// next try: setHomeView(); 
-			getMainController().setActiveController(getLoginController());
+			
 		} else {
 			loggedIn = true; 
-			setHomeView(); 
 		}	
-	}
-	
-	public void setHomeView() {
-		if (this.getNodeController() != null) {
-			globalID = 0;
-			numberHeaders = 0;
-			dontAddHeader = false;
-			numberOfHeadersLeft = 0;
-			this.getListViewController().renderListView();
-		}
 	}
 	
 	public void initializeScanner() {
@@ -169,24 +141,6 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(main.metrics.R.menu.main, menu);
 		return true;
-	}
-
-	public void moveContextNodeUp(String headerId){
-		int numberOfRemovals = getNodeController().goToParentNode(headerId, this);
-		System.out.println("Deleting " + String.valueOf(numberOfRemovals) + " headers");
-		getListViewController().deleteHeaders(numberOfRemovals);
-		getListViewController().renderListView();
-	}
-	
-	public void onBackPressed() {
-		System.out.println("Back Pressed");
-		if(this.userName != null) {
-			if (getListViewController() != null) {
-				getListViewController().goBack(); 
-			}
-		} else {
-			super.onBackPressed(); 
-		}
 	}
 
 	public boolean getLockPopUp() {
@@ -241,14 +195,12 @@ public class MainActivity extends Activity {
 				} catch (Exception e) {
 					System.out.println("Dialog was showing exception");
 				}
-				nodeController = null; 
 				globalID = 0;
 				numberHeaders = 0;
 				dontAddHeader = false;
 				numberOfHeadersLeft = 0;
 				try {
-					nodeController = MainActivity.this.getNodeController();
-					setContentView(main.metrics.R.layout.activity_main);
+					setContentView(main.metrics.R.layout.checkin);
 				} catch (Exception e){
 					e.printStackTrace();
 					System.out.println("Exception... [Logout Task, OnPreExcecute, 2nd try]");
@@ -309,11 +261,9 @@ public class MainActivity extends Activity {
 
 	//Global Controllers -----> 
 
-	public ListViewController getListViewController() {
-		if (this.listViewController == null) {
-			this.listViewController = new ListViewController(this, getNodeController()); 
-		}
-		return this.listViewController; 
+	public UsersReportController getUsersReportController() {
+		if (this.usersReportController == null) this.usersReportController = new UsersReportController(this); 
+		return this.usersReportController; 
 	}
 
 	public SearchController getSearchController() {
@@ -323,27 +273,11 @@ public class MainActivity extends Activity {
 		return this.searchController;
 	}
 	
-	public void setNodeController () {
-		this.nodeController = new NodeController(getRootNode(), this);
-	}
-
-	public NodeController getNodeController() {
-		if (this.nodeController == null) {
-			FireNode root = getRootNode(); 
-			if (root != null) {
-				this.nodeController = new NodeController(getRootNode(), this); 
-			} else {
-				if (this.loggedIn) makeToast("There is no daily schedual loaded!");
-			}
+	public ReportTaskLineItemController getReportTaskLineItemController() {
+		if (this.reportTaskLineItemController == null) {
+			this.reportTaskLineItemController = new ReportTaskLineItemController(this); 
 		}
-		return this.nodeController; 
-	}
-
-	public ReportTasksController getTasksController() {
-		if (this.reportTasksController == null) {
-			this.reportTasksController = new ReportTasksController(this); 
-		}
-		return this.reportTasksController; 
+		return this.reportTaskLineItemController; 
 	}
 	
 	public MainController getMainController() {
@@ -359,21 +293,7 @@ public class MainActivity extends Activity {
 		}
 		return this.tokenController; 
 	}
-
-	// MODELS -----> 
 	
-	public void setRoot(FireNode r) {
-		this.root = r; 
-	}
-
-	public FireNode getRootNode(){
-		return this.root; 
-	}
-
-	public Model getModel() {
-		return this.model;
-	}
-
 	// WEB UTILITIES ----> 
 
 	public WebClient getWebClient() {
@@ -411,7 +331,7 @@ public class MainActivity extends Activity {
 		public void afterTextChanged(Editable s){
 			String x = editText.getText().toString();
 			tv_getdata_from_edittext.setText("Get data from EditText : " + x);
-			MainActivity.this.getListViewController().goToEquipment(x);
+			MainActivity.this.getUsersReportController().goToEquipment(x);
 		}
 	}; 
 
@@ -424,7 +344,7 @@ public class MainActivity extends Activity {
 				bundle  = intent.getExtras();
 				content = bundle.getString("CONTENT");
 				System.out.println(content);
-				getListViewController().goToEquipment(fixContent(content));
+				UsersReport.goToEquipment(fixContent(content));
 			}	
 		}
 	}
@@ -501,14 +421,10 @@ public class MainActivity extends Activity {
 	public void packageCheckin() {
 	    mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-	    checkinTime = sdf.format(new Date());
-	    
-	    return ; 
-	    
-	    
+//	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+//	    checkinTime = sdf.format(new Date());
+	    return ;    
 	}
-	
 	
 	public void makeToast(String butter) {
 		Toast.makeText(this, butter, Toast.LENGTH_LONG).show();
@@ -529,6 +445,10 @@ public class MainActivity extends Activity {
 	public String getLocationString() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public CheckinController getCheckinController() {
+		return this.getCheckinController(); 
 	}
 
 }

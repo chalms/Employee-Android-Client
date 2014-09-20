@@ -11,7 +11,7 @@ public class LocationIntentHandler<IParcel> extends Activity {
 
 	         IParcel pc = getIntent().getExtras().getParcelable("obj");
 	         if(pc != null){
-	                 pc. // this will launch the bluetooth enabling activity
+	                // this will launch the bluetooth enabling activity
 	         } 
 
 	  }

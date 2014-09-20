@@ -1,13 +1,13 @@
 package models;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import util.Formatter;
+import views.ReportTaskLineItem;
 
 public class UsersReport {
 		public static UsersReport usersReport = null; 
@@ -18,6 +18,7 @@ public class UsersReport {
 		public Date checkout = null; 
 		public Boolean complete = false; 
 		public String updatedAt = null; 
+		public String name = null; 
 		public ReportsTaskList reportsTaskList = null; 
 		
 	
@@ -34,6 +35,7 @@ public class UsersReport {
 			if(params.has("complete") && !params.isNull("comeplete")) complete = params.getBoolean("checkout");
 			if(params.has("id") && !params.isNull("id")) id = params.getInt("id");
 			if(params.has("reports_tasks") && !params.isNull("reports_tasks")) buildReportTasks(params); 
+			if(params.has("name") && !params.isNull("name")) name = params.getString(name); 
 		}
 	}
 	
@@ -44,6 +46,29 @@ public class UsersReport {
 	}
 	
 	private UsersReport(JSONObject p) {
+		
+	}
+	
+	public String getTagHash() {
+		return "UsersReport: " + String.valueOf(this.id); 
+	}
+	
+	public boolean checkedIn() {
+		return (checkin != null); 
+	}
+	
+	public static UsersReport build() {
+		return usersReport;
+		
+	}
+
+	public static ReportTaskLineItem[] getRowContent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void goToEquipment(String fixContent) {
+		// TODO Auto-generated method stub
 		
 	}
 }
