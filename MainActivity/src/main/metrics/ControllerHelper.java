@@ -1,6 +1,7 @@
 package main.metrics;
 
 import android.app.Dialog;
+import android.widget.EditText;
 
 public class ControllerHelper {
 	protected MainActivity context; 
@@ -18,6 +19,15 @@ public class ControllerHelper {
 	}
 	public void setControllerName(String n) {
 		controllerName = n; 
+	}
+	
+	public String getControllerName() {
+		return controllerName; 
+	}
+	
+	public EditText getUserName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -4,17 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import models.Company;
 import models.LocationTime;
-import models.UsersReport;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.content.Context;
-import android.location.Location;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -68,13 +62,17 @@ public class MainController {
 	}
 	
 	public void getHome() {
-		if (UsersReport.usersReport == null) 
-			this.context.getCheckinController().render(UsersReport.build()); 
+//		if (UsersReport.usersReport == null) 
+//			this.context.getCheckinController().render(UsersReport.build()); 
 			
-		if (UsersReport.usersReport.checkin == null)
-			this.context.getCheckinController().render(); 
-		else
-			this.context.getUsersReportController().render(); 
+//		if (UsersReport.usersReport.checkin == null)
+//			this.context.getCheckinController().render(); 
+//		else
+//			this.context.getUsersReportController().render(); 
+	}
+	
+	public void getHome(JSONObject j){
+		System.out.println(j);
 	}
 
 	public void printParams(JSONArray response, int i) {

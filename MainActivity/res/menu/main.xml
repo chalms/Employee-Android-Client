@@ -7,5 +7,8 @@
         android:title="@string/action_settings">      
         
     </item>
+    
+    <include android:layout_width="fill_parent" layout="@layout/top_list_header" />
+	<include android:layout_width="256dip" layout="@layout/top_list_header" />
 
 </menu>

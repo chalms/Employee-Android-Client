@@ -36,7 +36,7 @@ public class CheckinController extends ControllerHelper {
 	};
 	
 	public void render() {
-		if ()
+
 	}
 	
 	private Button getCheckInButton() {

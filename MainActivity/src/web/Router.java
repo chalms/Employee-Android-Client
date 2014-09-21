@@ -1,12 +1,9 @@
 package web;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import main.metrics.MainActivity;
 
@@ -27,6 +24,7 @@ public class Router extends WebObject {
 	private JSONObject loginParams; 
 	Synchronizer sync; 
 	Integer requestCount = 0; 
+	Queue<String> sentReportTasks = new LinkedList <String> (); 
 	
 	public Router(MainActivity c) {
 		super(c);
@@ -86,51 +84,17 @@ public class Router extends WebObject {
 	//	addRoute("/test", new AppStartingHandler());
 		addRoute("/chats", new DefaultJsonResponseHandler()); 
 		addRoute("/clients", new DefaultJsonResponseHandler()); 
-		addRoute("/companies",  new CompaniesResponseHandler(), new CompaniesCallbackWrapper());
+	//	addRoute("/companies",  new CompaniesResponseHandler(), new CompaniesCallbackWrapper());
 		addRoute("/logins", new TokenHandler(), null);
 		addRoute("/signups", new TokenHandler(), null);
 		addRoute("/special_index", new EmployeesEmailResponseHandler(), new EmployeesEmailCallbackWrapper());
 	}
 	
-	public void saveDictionary(HashMap<String, HashMap<String, String[]>> map) throws JSONException {
-		System.out.println("Save to dictionary called!");
-		Iterator<String> mapIter = map.keySet().iterator(); 
-		while(mapIter.hasNext()) {
-			String firstKey = mapIter.next(); 
-			HashMap <String, String[]> reportTaskMap = map.get(firstKey);
-			Iterator <String> reportTaskIterator = reportTaskMap.keySet().iterator(); 
-			while(reportTaskIterator.hasNext()) {
-				String secondKey = reportTaskIterator.next(); 
-				List <String> results = new ArrayList<String> (Arrays.asList(reportTaskMap.get(secondKey))); 
-				String passOrFail = results.get(0);
-				String testNote = results.get(1);
-				buildUpdateReportsTaskRequest(firstKey, secondKey, passOrFail, testNote);
-				System.out.println("Report Task: " + secondKey + "passOrFail: " + passOrFail + " note: " + testNote);
-			}
-		}
-	}
-	
-	public void buildUpdateReportsTaskRequest(String userReportID, String reportTaskID, String testResult, String testNote) throws JSONException {
-		JSONObject params = new JSONObject(); 
-		JSONObject reportsTaskObject = new JSONObject(); 
-		if (testResult.toLowerCase().equals("pass")) {
-			reportsTaskObject.put("complete", true);
-			reportsTaskObject.put("status", 1);
-		} else if (testResult.toLowerCase().equals("fail")){
-			reportsTaskObject.put("status", -1);
-		}
-		if (testNote != null) {
-			if (!testNote.equals("")){
-				reportsTaskObject.put("note", testNote);
-			}
-		}
-		reportsTaskObject.put("completion_time", new Date());
-		params.put("reports_task", reportsTaskObject);
-		params.put("id", Integer.valueOf(reportTaskID));
-		String url = "/reports_tasks/"+reportTaskID+"/update"; 
-		requestCount++; 
+	public void updateReportTaskRequest(JSONObject jsonObject) throws JSONException {
+		String url = "/reports_tasks/"+jsonObject.get("id")+"/update"; 
+		
 		System.out.println("Issuing post request for report data!");
-		WebClient.post(url, params,  new UpdateReportTasksEventHandler());	
+		WebClient.post(url,jsonObject,  new UpdateReportTasksEventHandler());	
 	}
 	
 	
@@ -164,8 +128,7 @@ public class Router extends WebObject {
 			super();
 		}
 		public void render() {
-			getMainController().getSignupController().getDialog().dismiss();
-			getMainController().loggedIn();
+			getMainContext().getSignupController().getDialog().dismiss();
 		}
 	}
 	
@@ -175,7 +138,6 @@ public class Router extends WebObject {
 		}
 		public void render() {
 			getMainContext().getLoginController().dismissDialog();
-			getMainController().loggedIn();
 		}
 	}
 	
@@ -228,22 +190,16 @@ public class Router extends WebObject {
 	    }
 	}
 	
-	class CompaniesCallbackWrapper extends CallbackWrapper {
-		public void render() {
-		
-		};
-	}
-	
-	private void decrementRequestCount(Integer n) {
-		this.requestCount = this.requestCount - n; 
-		if (this.requestCount.equals(0) && !n.equals(0)) {
-			System.out.println("Clearing modification dictionary!");
-		}
-	}
-	
 	class UpdateReportTasksEventHandler extends AsyncHttpResponseHandler {
 		public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-			decrementRequestCount(1);
+			if (getMainContext().getReportTaskController() != null) {
+				String id = sentReportTasks.poll(); 
+				if (id != null) {
+					if (id.equals(getMainContext().getReportTaskController().getReportId())) {
+						getMainContext().getReportTaskController().hideLoadingBar(); 
+					}
+				}
+			}
 		}
 		
 		public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {

@@ -1,7 +1,9 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +11,7 @@ import util.Formatter;
 import views.ReportTaskLineItem;
 
 public class ReportTask {
+	
 	Boolean complete; 
 	Date completionTime; 
 	Integer id; 
@@ -16,6 +19,7 @@ public class ReportTask {
 	String updated_at; 
 	String description;
 	LocationTime completed_location; 
+	ArrayList <String> photoNames; 
 	
 	public boolean update(JSONObject params) throws JSONException {
 		try {
@@ -27,6 +31,7 @@ public class ReportTask {
 			    if (params.has("updated_at") && !params.isNull("updated_at")) updated_at = params.getString("updated_at");
 			    if (params.has("description") && !params.isNull("description")) description = params.getString("description");
 			    if (params.has("location") && !params.isNull("location")) completed_location = LocationTime.build(params); 
+			    if (params.has("photos") && !params.isNull("photos")) setPhotos(params.getJSONArray("photos")); 
 			} else {
 				System.out.println("No change to params!");
 			}
@@ -36,6 +41,9 @@ public class ReportTask {
 	    return true; 
 	}
 	
+	public void upload(JSONObject params) {
+		
+	}
 	
 	public JSONObject getJson() {
 		JSONObject params = new JSONObject(); 
@@ -71,7 +79,15 @@ public class ReportTask {
 
 	public void setCompletionTime(Date completed_at) {
 		this.completionTime = completed_at;
-	}	
+	}
+	
+	public String getNote() {
+		return note; 
+	}
+	
+	public void setNote(String n) {
+		note = n; 
+	}
 	
 	public int getId() {
 		return id; 
@@ -80,5 +96,22 @@ public class ReportTask {
 	public void setId(int i) {
 		id = i; 
 	}
+	
+	public void setPhotos(JSONArray photos) {
+		photoNames = new ArrayList <String> (); 
+		for (int i = 0; i < photos.length(); i++) {
+			try {
+				photoNames.add(photos.getString(i));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+	}
+	
+	public ArrayList<String> getPhotoNames() {
+		return photoNames; 
+	}
+
 	    
 }

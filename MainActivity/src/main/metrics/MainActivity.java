@@ -1,11 +1,18 @@
 package main.metrics;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+
 import models.Company;
 import models.LocationTime;
+import models.ReportTask;
 import models.UsersReport;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import views.SettingsView;
 import web.Router;
 import web.WebClient;
@@ -17,19 +24,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import controllers.CheckinController;
 import controllers.LoginController;
+import controllers.ReportTaskController;
 import controllers.ReportTaskLineItemController;
 import controllers.SearchController;
 import controllers.SignupController;
@@ -83,6 +97,9 @@ public class MainActivity extends Activity {
 	public PendingIntent pendingIntent; 
 	private LocationManager mLocationManager; 
 	private String checkinTime; 
+	
+	
+	 public final static String REPORT_TASK_ID = "main.metrics.REPORT_TASK_ID"; 
 
 
 
@@ -90,8 +107,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		buildAPI(); 
+
 		setContentView(main.metrics.R.layout.activity_main);
+		buildAPI(); 
 		initializeScanner(); 
 		selectController(); 
 		setLocationService(); 
@@ -390,6 +408,7 @@ public class MainActivity extends Activity {
 			
 		}
 	};
+	private ReportTaskController reportTaskController;
 //	
 //	PendingIntent.OnFinished
 //	
@@ -447,8 +466,100 @@ public class MainActivity extends Activity {
 		return null;
 	}
 	
+	public Context getContext() {
+		return this.getApplicationContext(); 
+	}
+	
+	public void sendMessage(View view) {
+		Intent intent = new Intent(this, ReportTaskController.class);
+		TextView reportTaskNameLabel = (EditText) findViewById(R.id.textViewItem);
+	    intent.putExtra(REPORT_TASK_ID, reportTaskNameLabel.getTag().toString());
+	    startActivity(intent);
+	}
+	
+	public void setReportTaskController(ReportTask r){
+		this.reportTaskController = new ReportTaskController(this, r); 
+	}
+	
+	public ReportTaskController getReportTaskController() {
+		return this.reportTaskController; 
+	}
+	
 	public CheckinController getCheckinController() {
 		return this.getCheckinController(); 
+	}
+	
+	static final int REQUEST_PICK_IMAGE = 1;
+	static final int REQUEST_TAKE_PHOTO = 1;
+	
+	String mCurrentPhotoPath;
+	ImageView mImageView = null; 
+
+	private File createImageFile() throws IOException {
+	    String timeStamp = SimpleDateFormat.getDateInstance().toString();
+	    String imageFileName = "JPEG_" + timeStamp + "_";
+	    File storageDir = Environment.getExternalStoragePublicDirectory(
+	            Environment.DIRECTORY_PICTURES);
+	    File image = File.createTempFile(
+	        imageFileName,  /* prefix */
+	        ".jpg",         /* suffix */
+	        storageDir      /* directory */
+	    );
+	    mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+	    return image;
+	}
+
+	public void dispatchTakePictureIntent() {
+	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+	    	File photoFile = null;
+	        try {
+	            photoFile = createImageFile();
+	        } catch (IOException ex) {}
+	        if (photoFile != null) {
+	            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+	            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+	        }
+	    }
+	}
+	
+	public void selectPhotoIntent() {
+		Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+		photoPickerIntent.setType("image/*");
+		startActivityForResult(photoPickerIntent, REQUEST_TAKE_PHOTO);    
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+	        Bundle extras = data.getExtras();
+	        android.graphics.Bitmap imageBitmap = (android.graphics.Bitmap) extras.get("data");
+	        mImageView.setImageBitmap(imageBitmap);  
+	    } else if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK) {
+	            Uri selectedImage = data.getData();
+	            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+	            Cursor cursor = getContentResolver().query(
+	                               selectedImage, filePathColumn, null, null, null);
+	            cursor.moveToFirst();
+
+	            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+	            mCurrentPhotoPath= cursor.getString(columnIndex);
+	            cursor.close();
+	   } 
+	    galleryAddPic(); 
+	}
+	
+	private void galleryAddPic() {
+	    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+	    File f = new File(mCurrentPhotoPath);
+	    Uri contentUri = Uri.fromFile(f);
+	    mediaScanIntent.setData(contentUri);
+	    this.sendBroadcast(mediaScanIntent);
+	    if (this.getReportTaskController() != null) {
+	    	this.getReportTaskController().setPicture(contentUri); 
+	    	mCurrentPhotoPath = null; 
+	    }
 	}
 
 }
